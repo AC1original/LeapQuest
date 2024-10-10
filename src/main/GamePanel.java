@@ -32,6 +32,7 @@ public class GamePanel {
 	}
 
 	public void tick() {
+		entityHelper.tick();
 			timed.forEach((method, timeStamp) -> {
 				if (System.currentTimeMillis() - timeStamp >= method.getAnnotation(Timed.class).delay()) {
 					timed.put(method, System.currentTimeMillis());

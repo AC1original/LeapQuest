@@ -29,6 +29,10 @@ public class EntityHelper {
         return retuEntities;
     }
 
+    public void tick() {
+        entities.forEach(Entity::onTick);
+    }
+
     public void drawEntities(final Graphics g) {
         for (Entity entity : entities) {
             g.drawImage(entity.getImage(), entity.x, entity.y, entity.width, entity.height, null);

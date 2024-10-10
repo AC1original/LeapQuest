@@ -11,4 +11,8 @@ public class Player extends Entity {
     public BufferedImage getImage() {
         return Images.PLAYER.image;
     }
+
+    @Override
+    public void onTick() {
+    }
 }

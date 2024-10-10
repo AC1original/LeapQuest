@@ -1,10 +1,15 @@
 package entity;
 
+import graphics.animation.Animation;
+
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
     protected int x = 0, y = 0, width = 50, height = 50, speed = 3;
+    protected Animation animation;
+
     public abstract BufferedImage getImage();
+    public abstract void onTick();
 
     public int distanceTo(Entity entity) {
         return distanceTo(entity.x, entity.y);
@@ -43,5 +48,13 @@ public abstract class Entity {
     }
     public void setSpeed(int speed) {
         this.speed = speed;
+    }
+
+    public Animation getAnimation() {
+        return animation;
+    }
+
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
     }
 }
