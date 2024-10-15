@@ -1,15 +1,18 @@
 package entity;
-
-import graphics.animation.Animation;
+import graphics.animation.AnimationManager;
+import main.GamePanel;
+import main.Main;
 
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
-    protected int x = 0, y = 0, width = 50, height = 50, speed = 3;
-    protected Animation animation;
+    protected int x = 0, y = 0, width = 50, height = 50, speed = 10;
+    protected Direction direction = Direction.RIGHT;
 
     public abstract BufferedImage getImage();
     public abstract void onTick();
+    public abstract void onAdd();
+    public abstract void onRemove();
 
     public int distanceTo(Entity entity) {
         return distanceTo(entity.x, entity.y);
@@ -35,12 +38,13 @@ public abstract class Entity {
         return width;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+    public void move(Direction direction) {
+        switch (direction) {
+            case UP -> y -= speed;
+            case DOWN -> y += speed;
+            case LEFT -> x -= speed;
+            case RIGHT -> x += speed;
+        }
     }
 
     public int getSpeed() {
@@ -50,11 +54,19 @@ public abstract class Entity {
         this.speed = speed;
     }
 
-    public Animation getAnimation() {
-        return animation;
+    public Direction getDirection() {
+        return direction;
     }
 
-    public void setAnimation(Animation animation) {
-        this.animation = animation;
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public AnimationManager getAnimationManager() {
+        return Main.getGamePanel().getAnimationManager();
+    }
+
+    public final GamePanel getGamePanel() {
+        return Main.getGamePanel();
     }
 }

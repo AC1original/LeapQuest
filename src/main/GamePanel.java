@@ -8,6 +8,8 @@ import java.util.Map;
 import entity.EntityHelper;
 import entity.player.Player;
 import graphics.GameRenderer;
+import graphics.animation.AnimationManager;
+import user.UserKeyboardInput;
 import utils.Logger;
 import utils.Timed;
 
@@ -16,15 +18,21 @@ public class GamePanel {
 	private static final Map<Method, Long> timed = new HashMap<>();
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
-	private final GameRenderer gr = register(new GameRenderer(this));
+	private final AnimationManager animationManager = new AnimationManager(this);
 	private final Player player = register(new Player());
 	private final EntityHelper entityHelper = register(new EntityHelper());
+	private final UserKeyboardInput uKey = new UserKeyboardInput(this);
+	private final GameRenderer gr = register(new GameRenderer(this));
 
 	
 	public void run() throws InterruptedException {
+		entityHelper.spawn(player);
 		register(this);
 		running = true;
-		gr.run();
+
+		Thread rendererThread = new Thread(gr);
+		rendererThread.start();
+
         while (running) {
 			Thread.sleep(10);
         	tick();
@@ -35,13 +43,13 @@ public class GamePanel {
 		entityHelper.tick();
 			timed.forEach((method, timeStamp) -> {
 				if (System.currentTimeMillis() - timeStamp >= method.getAnnotation(Timed.class).delay()) {
-					timed.put(method, System.currentTimeMillis());
                     try {
 						Object instance = registered.stream()
 								.filter(obj -> method.getDeclaringClass().isInstance(obj))
 								.findFirst()
 								.orElse(null);
                         method.invoke(instance);
+						timed.replace(method, System.currentTimeMillis());
                     } catch (ReflectiveOperationException e) {
                         Logger.log("GamePanel: Failed to tick \"Timed\" annotation", true);
                     }
@@ -59,6 +67,10 @@ public class GamePanel {
 			}
 		}
 		return clazz;
+	}
+
+	public<T> void unregister(T clazz) {
+		timed.keySet().removeIf(method -> method.getDeclaringClass().equals(clazz.getClass()));
 	}
 	
 	public void setGameState(GameStates gameState) {
@@ -84,4 +96,17 @@ public class GamePanel {
 	public static boolean isRunning() {
 		return running;
 	}
+
+	public AnimationManager getAnimationManager() {
+		return animationManager;
+	}
+
+	public UserKeyboardInput getUserKeyboardInput() {
+		return uKey;
+	}
+
+	public GameRenderer getGameRenderer() {
+		return gr;
+	}
+
 }

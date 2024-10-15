@@ -17,6 +17,7 @@ public class GameRenderer extends JPanel implements Runnable {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
+        frame.addKeyListener(gp.getUserKeyboardInput());
         frame.setVisible(true);
         Logger.log("GameRenderer: Initialized");
     }
@@ -45,6 +46,8 @@ public class GameRenderer extends JPanel implements Runnable {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+        gp.getEntityHelper().drawEntities(g);
+        gp.getAnimationManager().getAnimations().forEach(animation -> animation.drawAnimation(g));
 	}
 
     public JFrame getFrame() {
