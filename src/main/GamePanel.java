@@ -42,12 +42,14 @@ public class GamePanel {
 	public void tick() {
 		entityHelper.tick();
 			timed.forEach((method, timeStamp) -> {
+				if (method == null) return;
 				if (System.currentTimeMillis() - timeStamp >= method.getAnnotation(Timed.class).delay()) {
                     try {
 						Object instance = registered.stream()
 								.filter(obj -> method.getDeclaringClass().isInstance(obj))
 								.findFirst()
 								.orElse(null);
+						if (instance == null) return;
                         method.invoke(instance);
 						timed.replace(method, System.currentTimeMillis());
                     } catch (ReflectiveOperationException e) {
@@ -70,7 +72,13 @@ public class GamePanel {
 	}
 
 	public<T> void unregister(T clazz) {
-		timed.keySet().removeIf(method -> method.getDeclaringClass().equals(clazz.getClass()));
+		timed.forEach((K, V) -> {
+			if (K.getDeclaringClass().equals(clazz.getClass())) {
+				timed.remove(K);
+			}
+		});
+		registered.remove(clazz);
+		Logger.log("GamePanel: Unregistered class " + clazz.getClass().getSimpleName());
 	}
 	
 	public void setGameState(GameStates gameState) {

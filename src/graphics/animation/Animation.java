@@ -7,10 +7,9 @@ import java.awt.*;
 public abstract class Animation {
     public static int DEFAULT_ANIMATION_DELAY = 10;
     public abstract AnimationFrame[] getFrames();
-    public abstract Point getLocation();
     public abstract int getDelay();
     public abstract boolean drawAnimation();
-    public abstract void onFrameUpdate(AnimationFrame newFrame);
+    public abstract void onFrameUpdate(AnimationFrame frame);
     private Graphics g;
     private int counter = 1;
     private int index = 0;
@@ -45,7 +44,14 @@ public abstract class Animation {
         }
     }
 
+    public Point getLocation() {
+        return new Point(0, 0);
+    }
+
     public Graphics getGraphics() {
         return g;
     }
+
+    public void onPlay() {}
+    public void onStop() {}
 }

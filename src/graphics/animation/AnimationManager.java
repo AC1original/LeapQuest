@@ -14,12 +14,22 @@ public class AnimationManager {
         this.gp = gp;
     }
 
-    public void play(Animation animation) {
+    public Animation play(Animation animation) {
         if (animation.isValid()) {
             Logger.log("AnimationManager: Playing animation " + animation.getClass().getSimpleName());
             animations.add(animation);
             gp.register(animation);
+            animation.onPlay();
         }
+        return animation;
+    }
+
+    public void stopByClass(Class<?> clazz) {
+        animations.forEach(animation -> {
+            if (animation.getClass().equals(clazz)) {
+                stop(animation);
+            }
+        });
     }
 
     public void stop(Animation animation) {
@@ -27,8 +37,10 @@ public class AnimationManager {
             Logger.log("AnimationManager: Stopped animation " + animation.getClass().getSimpleName());
             animations.remove(animation);
             gp.unregister(animation);
+            animation.onStop();
+        } else {
+            Logger.log("AnimationManager: Failed to stop animation " + animation.getClass().getSimpleName(), true);
         }
-        Logger.log("AnimationManager: Failed to stop animation " + animation.getClass().getSimpleName(), true);
     }
 
     public List<Animation> getAnimations() {

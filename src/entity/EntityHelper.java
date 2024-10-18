@@ -33,10 +33,7 @@ public class EntityHelper {
 
     public List<Entity> getEntitiesAt(int x, int y) {
         final List<Entity> retuEntities = new ArrayList<>();
-        entities.forEach(entity -> {
-            if (entity.x == x && entity.y == y)
-                retuEntities.add(entity);
-        });
+        retuEntities.add(entities.stream().filter(entity -> entity.x == x && entity.y == y).findAny().orElse(null));
         return retuEntities;
     }
 

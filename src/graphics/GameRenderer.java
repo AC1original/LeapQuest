@@ -1,9 +1,10 @@
 package graphics;
 
-import java.awt.Graphics;
+import java.awt.*;
 import javax.swing.*;
 
 import main.GamePanel;
+import main.Main;
 import utils.Logger;
 
 public class GameRenderer extends JPanel implements Runnable {
@@ -48,7 +49,7 @@ public class GameRenderer extends JPanel implements Runnable {
 		super.paintComponent(g);
         gp.getEntityHelper().drawEntities(g);
         gp.getAnimationManager().getAnimations().forEach(animation -> animation.drawAnimation(g));
-	}
+    }
 
     public JFrame getFrame() {
         return frame;
