@@ -1,5 +1,8 @@
 package graphics.animation;
 
+import graphics.ImageLoader;
+import graphics.Images;
+
 import java.awt.image.BufferedImage;
 
 public class AnimationFrame {
@@ -10,6 +13,14 @@ public class AnimationFrame {
         this.image = image;
         this.imgWidth = imgWidth;
         this.imgHeight = imgHeight;
+    }
+
+    public static AnimationFrame[] create(BufferedImage img, int split) {
+        AnimationFrame[] animationFrames = new AnimationFrame[split];
+        for (int i = 0; i<split; i++) {
+            animationFrames[i] = create(ImageLoader.getSubImage(img, i*(img.getWidth()/split), 0, img.getWidth()/split, img.getHeight()));
+        }
+        return animationFrames;
     }
 
     public static AnimationFrame create(BufferedImage image) {

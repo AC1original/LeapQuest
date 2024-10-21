@@ -5,7 +5,6 @@ import utils.Timed;
 import java.awt.*;
 
 public abstract class Animation {
-    public static int DEFAULT_ANIMATION_DELAY = 10;
     public abstract AnimationFrame[] getFrames();
     public abstract int getDelay();
     public abstract boolean drawAnimation();

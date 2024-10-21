@@ -34,12 +34,12 @@ public class AnimationManager {
 
     public void stop(Animation animation) {
         if (animations.contains(animation)) {
-            Logger.log("AnimationManager: Stopped animation " + animation.getClass().getSimpleName());
+            //Logger.log("AnimationManager: Stopped animation " + animation.getClass().getSimpleName());
             animations.remove(animation);
             gp.unregister(animation);
             animation.onStop();
         } else {
-            Logger.log("AnimationManager: Failed to stop animation " + animation.getClass().getSimpleName(), true);
+            //Logger.log("AnimationManager: Failed to stop animation " + animation.getClass().getSimpleName(), true);
         }
     }
 

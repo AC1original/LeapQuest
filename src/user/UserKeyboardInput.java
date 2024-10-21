@@ -22,22 +22,10 @@ public class UserKeyboardInput implements KeyListener {
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
         switch (key) {
-            case 'w' -> {
-                gp.getPlayer().setMoving(true);
-                gp.getPlayer().move(Direction.UP);
-            }
-            case 'a' -> {
-                gp.getPlayer().setMoving(true);
-                gp.getPlayer().move(Direction.LEFT);
-            }
-            case 's' -> {
-                gp.getPlayer().setMoving(true);
-                gp.getPlayer().move(Direction.DOWN);
-            }
-            case 'd' -> {
-                gp.getPlayer().setMoving(true);
-                gp.getPlayer().move(Direction.RIGHT);
-            }
+            case 'w' -> gp.getPlayer().move(Direction.UP);
+            case 'a' -> gp.getPlayer().move(Direction.LEFT);
+            case 's' -> gp.getPlayer().move(Direction.DOWN);
+            case 'd' -> gp.getPlayer().move(Direction.RIGHT);
         }
     }
 

@@ -44,13 +44,14 @@ public abstract class Entity {
     }
 
     public void move(Direction direction) {
+        setMoving(true);
+        setDirection(direction);
         switch (direction) {
             case UP -> y -= speed;
             case DOWN -> y += speed;
             case LEFT -> x -= speed;
             case RIGHT -> x += speed;
         }
-        setDirection(direction);
     }
 
     public int getX() {
