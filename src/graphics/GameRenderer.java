@@ -47,6 +47,7 @@ public class GameRenderer extends JPanel implements Runnable {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+        gp.getLevelManager().drawLevel(g);
         gp.getEntityHelper().drawEntities(g);
         gp.getAnimationManager().getAnimations().forEach(animation -> animation.drawAnimation(g));
     }

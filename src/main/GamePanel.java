@@ -9,6 +9,7 @@ import entity.EntityHelper;
 import entity.player.Player;
 import graphics.GameRenderer;
 import graphics.animation.AnimationManager;
+import level.LevelManager;
 import user.UserKeyboardInput;
 import utils.Logger;
 import utils.Timed;
@@ -22,6 +23,7 @@ public class GamePanel {
 	private final Player player = register(new Player());
 	private final EntityHelper entityHelper = register(new EntityHelper());
 	private final UserKeyboardInput uKey = new UserKeyboardInput(this);
+	private final LevelManager levelManager = register(new LevelManager(this));
 	private final GameRenderer gr = register(new GameRenderer(this));
 
 	
@@ -117,4 +119,7 @@ public class GamePanel {
 		return gr;
 	}
 
+	public LevelManager getLevelManager() {
+		return levelManager;
+	}
 }

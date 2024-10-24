@@ -8,7 +8,8 @@ public enum Images {
     PLAYER_IDLING_LEFT(ImageLoader.getImageByPath("res/entity/player/player_idle_left.png")),
     PLAYER_IDLING_RIGHT(ImageLoader.getImageByPath("res/entity/player/player_idle_right.png")),
     PLAYER_WALK_LEFT(ImageLoader.getImageByPath("res/entity/player/player_walk_left.png")),
-    PLAYER_WALK_RIGHT(ImageLoader.getImageByPath("res/entity/player/player_walk_right.png"));
+    PLAYER_WALK_RIGHT(ImageLoader.getImageByPath("res/entity/player/player_walk_right.png")),
+    TEST(ImageLoader.getImageByPath("res/level/tiles/test.png"));
 
     public final BufferedImage image;
     Images(BufferedImage image) {
