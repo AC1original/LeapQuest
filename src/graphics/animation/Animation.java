@@ -26,7 +26,10 @@ public abstract class Animation {
 
     public void drawAnimation(Graphics g) {
         this.g = g;
-        if (drawAnimation()) g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y, getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
+        if (!drawAnimation()) {
+            return;
+        }
+        g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y, getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
     }
 
     @Timed(delay = 1)

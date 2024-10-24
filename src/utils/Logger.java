@@ -1,11 +1,7 @@
 package utils;
-
 import java.time.LocalDateTime;
 
 public class Logger {
-    private int second = 0;
-    private int minute = 0;
-
 
     public static void log(String log) {
         log(log, false, null);

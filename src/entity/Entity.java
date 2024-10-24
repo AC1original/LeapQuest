@@ -44,7 +44,6 @@ public abstract class Entity {
     }
 
     public void move(Direction direction) {
-        setMoving(true);
         setDirection(direction);
         switch (direction) {
             case UP -> y -= speed;
@@ -52,6 +51,7 @@ public abstract class Entity {
             case LEFT -> x -= speed;
             case RIGHT -> x += speed;
         }
+        setMoving(true);
     }
 
     public int getX() {

@@ -18,7 +18,7 @@ public class GamePanel {
 	private static final Map<Method, Long> timed = new HashMap<>();
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
-	private final AnimationManager animationManager = new AnimationManager(this);
+	private final AnimationManager animationManager = register(new AnimationManager(this));
 	private final Player player = register(new Player());
 	private final EntityHelper entityHelper = register(new EntityHelper());
 	private final UserKeyboardInput uKey = new UserKeyboardInput(this);
@@ -34,7 +34,7 @@ public class GamePanel {
 		rendererThread.start();
 
         while (running) {
-			Thread.sleep(10);
+			Thread.sleep(8);
         	tick();
         }
 	}

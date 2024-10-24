@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.LOCAL_VARIABLE})
 public @interface Timed {
-    int delay() default 1000;
+    long delay() default 1000;
 }
