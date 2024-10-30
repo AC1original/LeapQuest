@@ -5,13 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import entity.Direction;
 import entity.EntityHelper;
-import entity.player.Player;
 import graphics.GameRenderer;
+import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
-import user.UserKeyboardInput;
 import utils.Logger;
 import utils.Timed;
 
@@ -21,7 +19,7 @@ public class GamePanel {
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
 	private final AnimationManager animationManager = register(new AnimationManager(this));
-	private final EntityHelper entityHelper = register(new EntityHelper());
+	private final EntityHelper entityHelper = register(new EntityHelper(this));
 	private final LevelManager levelManager = register(new LevelManager(this));
 	private final GameRenderer gameRenderer = register(new GameRenderer(this));
 
@@ -64,7 +62,8 @@ public class GamePanel {
 	public static <T> T register(T clazz) {
 		if (!registered.contains(clazz)) {
 			registered.add(clazz);
-			Logger.log("GamePanel: Registered class " + clazz.getClass().getSimpleName());
+			if (!clazz.getClass().getSuperclass().equals(Animation.class))
+				Logger.log("GamePanel: Registered class " + clazz.getClass().getSimpleName());
 		}
 
 		for (Method methods : clazz.getClass().getMethods()) {
@@ -83,7 +82,8 @@ public class GamePanel {
 		});
 		if (registered.contains(clazz)) {
 			registered.remove(clazz);
-			Logger.log("GamePanel: Unregistered class " + clazz.getClass().getSimpleName());
+			if (!clazz.getClass().getSuperclass().equals(Animation.class))
+				Logger.log("GamePanel: Unregistered class " + clazz.getClass().getSimpleName());
 		}
 	}
 	
