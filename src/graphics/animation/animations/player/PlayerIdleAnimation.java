@@ -25,7 +25,7 @@ public class PlayerIdleAnimation extends Animation {
 
     @Override
     public int getDelay() {
-        return 12;
+        return 20;
     }
 
     @Override

@@ -22,11 +22,7 @@ public class PlayerWalkAnimation extends Animation {
         if (player.getDirection().equals(Direction.RIGHT)) {
             walk = ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_walk_right.png", "player_walk_right");
         }
-        AnimationFrame[] animationFrames = new AnimationFrame[6];
-        for (int i = 0; i<6; i++) {
-            animationFrames[i] = AnimationFrame.create(ImageLoader.getSubImage(walk, i*(walk.getWidth()/6), 0, walk.getWidth()/6, walk.getHeight()));
-        }
-        return animationFrames;
+        return AnimationFrame.create(walk, 6);
     }
 
     @Override
