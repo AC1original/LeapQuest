@@ -2,7 +2,6 @@ package level;
 
 import data.filemanager.FileManager;
 import data.filemanager.IncorrectPathException;
-import graphics.ImageLoader;
 import main.GamePanel;
 
 import java.awt.*;
@@ -35,15 +34,17 @@ public class LevelManager {
     }
 
     public void drawLevel(Graphics g) {
-        int[][] level = loadLevel("C:\\Users\\bitte\\Documents\\Programmierung\\PA-2BKI2\\src\\res\\level\\test_level.txt");
+        /*int[][] level = loadLevel("C:\\Users\\bitte\\Documents\\Programmierung\\PA-2BKI2\\src\\res\\level\\test_level.txt");
         for (int y = 0; y < level.length; y++) {
             for (int x = 0; x < level[y].length; x++) {
                 if (level[y][x] != 1) {
                     return;
                 }
-                g.drawImage(ImageLoader.getAutomated("/res/level/tiles/test.png"), x*32, y*32, 32, 32, null);
+                g.drawImage(ImageLoader.getAutomated("/res/level/tiles/test.png", "test"), x*32, y*32, 32, 32, null);
             }
         }
+
+         */
     }
 
     public GamePanel getGamePanel() {

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entity.Direction;
 import entity.EntityHelper;
 import entity.player.Player;
 import graphics.GameRenderer;

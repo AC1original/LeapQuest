@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
     private final UserKeyboardInput userKeyboardInput = GamePanel.register(new UserKeyboardInput(this));
-    private final BufferedImage fullImage = ImageLoader.getAutomated(DEFAULT_PATH + "player/player_idle_right.png");
+    private final BufferedImage fullImage = ImageLoader.getAutomated(DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right");
     private BufferedImage playerImage = fullImage.getSubimage(0, 0, fullImage.getWidth()/12, fullImage.getHeight());
 
     @Override
@@ -34,8 +34,8 @@ public class Player extends Entity {
 
     @Override
     public void onAdd() {
-        width = 38*11;
-        height = 28*11;
+        width = 38*2;
+        height = 28*2;
         speed = 5;
         playAnimation(new PlayerIdleAnimation(this));
     }

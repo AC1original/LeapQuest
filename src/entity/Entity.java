@@ -23,7 +23,7 @@ public abstract class Entity {
     }
 
     public int distanceTo(int x, int y) {
-        return Math.abs(this.x-x) + (this.y-y);
+        return Math.abs(this.x-x + this.y-y);
     }
 
     public void playAnimation(Animation animation) {
