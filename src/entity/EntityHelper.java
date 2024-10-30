@@ -9,14 +9,20 @@ import java.util.HashSet;
 import java.util.List;
 
 public class EntityHelper {
-    private final HashSet<Entity> entities = new HashSet<>();
-    private final Player player = GamePanel.register(new Player());
+    private final HashSet<Entity<?>> entities = new HashSet<>();
+    private final Player player;
+    private final GamePanel gamePanel;
 
-    public void spawn(Entity entity) {
+    public EntityHelper(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
+        player = GamePanel.register(new Player(gamePanel));
+    }
+
+    public void spawn(Entity<?> entity) {
         spawn(entity, entity.x, entity.y);
     }
 
-    public void spawn(Entity entity, int x, int y) {
+    public void spawn(Entity<?> entity, int x, int y) {
         entity.x = x;
         entity.y = y;
         entity.onAdd();
@@ -24,9 +30,9 @@ public class EntityHelper {
         Logger.log(this.getClass(), "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\"");
     }
 
-    public void remove(Entity entity) {
+    public void remove(Entity<?> entity) {
         if (entities.contains(entity)) {
-            Logger.log("Failed to remove Entity \"" + entity.getClass().getSimpleName() + "\". Entity not found!", true, this.getClass());
+            Logger.log(this.getClass(), "Failed to remove Entity \"" + entity.getClass().getSimpleName() + "\". Entity not found!", true);
             return;
         }
         entity.onRemove();
@@ -34,8 +40,8 @@ public class EntityHelper {
         Logger.log(this.getClass(), "Successfully removed Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
 
-    public List<Entity> getEntitiesAt(int x, int y) {
-        final List<Entity> retuEntities = new ArrayList<>();
+    public List<Entity<?>> getEntitiesAt(int x, int y) {
+        final List<Entity<?>> retuEntities = new ArrayList<>();
         retuEntities.add(entities.stream().filter(entity -> entity.x == x && entity.y == y).findAny().orElse(null));
         return retuEntities;
     }
@@ -45,12 +51,12 @@ public class EntityHelper {
     }
 
     public void drawEntities(Graphics g) {
-        for (Entity entity : entities) {
+        for (Entity<?> entity : entities) {
             g.drawImage(entity.getImage(), entity.x, entity.y, entity.width, entity.height, null);
         }
     }
 
-    public List<Entity> getEntities() {
+    public List<Entity<?>> getEntities() {
         return List.copyOf(entities);
     }
 

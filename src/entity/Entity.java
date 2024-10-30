@@ -27,7 +27,7 @@ public abstract class Entity<T extends Entity<?>> {
     public abstract T onAdd();
     public abstract T onRemove();
 
-    public int distanceTo(Entity entity) {
+    public int distanceTo(Entity<?> entity) {
         return distanceTo(entity.x, entity.y);
     }
 
