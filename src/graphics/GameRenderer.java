@@ -35,7 +35,7 @@ public class GameRenderer extends JPanel implements Runnable {
             now = System.nanoTime();
             updateTime = System.nanoTime() - now;
             wait = (OPTIMAL_TIME - updateTime) / 1000000;
-            if (frame.isFocused()) repaint();
+            repaintTick();
             try {
                 Thread.sleep(wait);
             } catch (Exception e) {
@@ -43,6 +43,10 @@ public class GameRenderer extends JPanel implements Runnable {
             }
         }
 	}
+
+    private void repaintTick() {
+        if (frame.isFocused()) repaint();
+    }
 	
 	@Override
 	protected void paintComponent(Graphics g) {
