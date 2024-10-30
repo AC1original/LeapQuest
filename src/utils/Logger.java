@@ -1,19 +1,21 @@
 package utils;
+import org.jetbrains.annotations.Nullable;
+
 import java.time.LocalDateTime;
 
 public class Logger {
 
     public static void log(String log) {
-        log(log, false, null);
+        log(null, log, false);
     }
     public static void log(Class<?> clazz, String log) {
-        log(log, false, clazz);
+        log(clazz, log, false);
     }
     public static void log(String log, boolean error) {
-        log(log, error, null);
+        log(null, log, error);
     }
 
-    public static void log(String log, boolean error, Class<?> clazz) {
+    public static void log(@Nullable Class<?> clazz, String log, boolean error) {
         LocalDateTime time = LocalDateTime.now();
         int hours = time.getHour();
         int minutes = time.getMinute();
