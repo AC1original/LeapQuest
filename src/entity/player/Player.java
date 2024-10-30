@@ -34,8 +34,8 @@ public class Player extends Entity {
 
     @Override
     public void onAdd() {
-        width = 38*2;
-        height = 28*2;
+        width = 38*11;
+        height = 28*11;
         speed = 5;
         playAnimation(new PlayerIdleAnimation(this));
     }

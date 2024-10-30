@@ -17,8 +17,8 @@ public class AnimationManager {
     public Animation play(Animation animation) {
         if (animation.isValid()) {
             animations.add(animation);
-            gp.register(animation);
-            animation.onPlay();
+            GamePanel.register(animation);
+            animation.onPlay(gp);
         }
         return animation;
     }
@@ -34,7 +34,7 @@ public class AnimationManager {
     public void stop(Animation animation) {
         if (animations.contains(animation)) {
             animations.remove(animation);
-            gp.unregister(animation);
+            GamePanel.unregister(animation);
             animation.onStop();
         } else {
             Logger.log("AnimationManager: Failed to stop animation " + animation.getClass().getSimpleName(), true);

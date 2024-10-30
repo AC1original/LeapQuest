@@ -62,8 +62,10 @@ public class GamePanel {
 	}
 	
 	public static <T> T register(T clazz) {
-		registered.add(clazz);
-		Logger.log("GamePanel: Registered class " + clazz.getClass().getSimpleName());
+		if (!registered.contains(clazz)) {
+			registered.add(clazz);
+			Logger.log("GamePanel: Registered class " + clazz.getClass().getSimpleName());
+		}
 
 		for (Method methods : clazz.getClass().getMethods()) {
 			if (methods.isAnnotationPresent(Timed.class)) {
@@ -79,8 +81,10 @@ public class GamePanel {
 				timed.remove(K);
 			}
 		});
-		registered.remove(clazz);
-		Logger.log("GamePanel: Unregistered class " + clazz.getClass().getSimpleName());
+		if (registered.contains(clazz)) {
+			registered.remove(clazz);
+			Logger.log("GamePanel: Unregistered class " + clazz.getClass().getSimpleName());
+		}
 	}
 	
 	public void setGameState(GameStates gameState) {
