@@ -67,7 +67,7 @@ public abstract class Animation {
         return gp;
     }
 
-    private boolean isAllowedToUpdate() {
+    public final boolean isAllowedToUpdate() {
         return gp != null && gp.getGameRenderer().getFrame().isFocused();
     }
 }

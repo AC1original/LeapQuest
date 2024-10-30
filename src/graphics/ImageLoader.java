@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
+//TODO: ImageLoader logging
 public class ImageLoader {
     private static final String emptyPath = "/res/util/empty.png";
     private static final Set<CachedImage> cachedImages = new HashSet<>();
