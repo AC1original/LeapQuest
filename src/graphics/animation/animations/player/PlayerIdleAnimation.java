@@ -1,13 +1,11 @@
 package graphics.animation.animations.player;
 
 import entity.Direction;
+import entity.Entity;
 import entity.player.Player;
 import graphics.ImageLoader;
-import graphics.Images;
 import graphics.animation.Animation;
 import graphics.animation.AnimationFrame;
-
-import java.awt.image.BufferedImage;
 
 public class PlayerIdleAnimation extends Animation {
     private final Player player;
@@ -19,9 +17,9 @@ public class PlayerIdleAnimation extends Animation {
     @Override
     public AnimationFrame[] getFrames() {
         if (player.getDirection().equals(Direction.RIGHT)) {
-            return AnimationFrame.create(Images.PLAYER_IDLING_RIGHT.image, 12);
+            return AnimationFrame.create(ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_idle_right.png"), 12);
         } else {
-            return AnimationFrame.create(Images.PLAYER_IDLING_LEFT.image, 12);
+            return AnimationFrame.create(ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_idle_left.png"), 12);
         }
     }
 

@@ -7,6 +7,7 @@ import main.Main;
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
+    public static final String DEFAULT_PATH = "/res/entity/";
     protected int x = 0, y = 0, width = 50, height = 50, speed = 10;
     protected Direction direction = Direction.RIGHT;
     private boolean moving = false;

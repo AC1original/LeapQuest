@@ -2,11 +2,11 @@ package level;
 
 import data.filemanager.FileManager;
 import data.filemanager.IncorrectPathException;
-import graphics.Images;
+import graphics.ImageLoader;
 import main.GamePanel;
-import utils.Timed;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class LevelManager {
     private final GamePanel gp;
@@ -24,6 +24,9 @@ public class LevelManager {
         }
         int[][] retu = new int[fileManager.length()][fileManager.get(0).length()];
         for (int i = 0; i < fileManager.length(); i++) {
+            String s = Arrays.toString(fileManager.get(i).split(" "));
+            //System.out.println(s);
+
             for (int c = 0; c < fileManager.get(i).length(); c++) {
                 retu[i][c] = fileManager.get(i).toCharArray()[c];
             }
@@ -36,11 +39,14 @@ public class LevelManager {
         for (int y = 0; y < level.length; y++) {
             for (int x = 0; x < level[y].length; x++) {
                 if (level[y][x] != 1) {
-                    System.out.println(level[y][x]);
                     return;
                 }
-                g.drawImage(Images.TEST.image, x*32, y*32, 32, 32, null);
+                g.drawImage(ImageLoader.getAutomated("/res/level/tiles/test.png"), x*32, y*32, 32, 32, null);
             }
         }
+    }
+
+    public GamePanel getGamePanel() {
+        return gp;
     }
 }

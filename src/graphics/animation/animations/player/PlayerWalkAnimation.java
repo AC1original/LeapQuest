@@ -1,9 +1,9 @@
 package graphics.animation.animations.player;
 
 import entity.Direction;
+import entity.Entity;
 import entity.player.Player;
 import graphics.ImageLoader;
-import graphics.Images;
 import graphics.animation.Animation;
 import graphics.animation.AnimationFrame;
 
@@ -18,9 +18,9 @@ public class PlayerWalkAnimation extends Animation {
 
     @Override
     public AnimationFrame[] getFrames() {
-        BufferedImage walk = Images.PLAYER_WALK_LEFT.image;
+        BufferedImage walk = ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_walk_left.png");
         if (player.getDirection().equals(Direction.RIGHT)) {
-            walk = Images.PLAYER_WALK_RIGHT.image;
+            walk = ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_walk_left.png");
         }
         AnimationFrame[] animationFrames = new AnimationFrame[6];
         for (int i = 0; i<6; i++) {

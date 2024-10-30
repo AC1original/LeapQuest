@@ -1,7 +1,6 @@
 package graphics.animation;
 
 import graphics.ImageLoader;
-import graphics.Images;
 
 import java.awt.image.BufferedImage;
 

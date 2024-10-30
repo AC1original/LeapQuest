@@ -1,16 +1,17 @@
 package user;
 
 import entity.Direction;
+import entity.player.Player;
 import main.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class UserKeyboardInput implements KeyListener {
-    private final GamePanel gp;
+    private final Player player;
 
-    public UserKeyboardInput(GamePanel gp) {
-        this.gp = gp;
+    public UserKeyboardInput(Player player) {
+        this.player = player;
     }
 
     @Override
@@ -22,15 +23,15 @@ public class UserKeyboardInput implements KeyListener {
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
         switch (key) {
-            case 'w' -> gp.getPlayer().move(Direction.UP);
-            case 'a' -> gp.getPlayer().move(Direction.LEFT);
-            case 's' -> gp.getPlayer().move(Direction.DOWN);
-            case 'd' -> gp.getPlayer().move(Direction.RIGHT);
+            case 'w' -> player.move(Direction.UP);
+            case 'a' -> player.move(Direction.LEFT);
+            case 's' -> player.move(Direction.DOWN);
+            case 'd' -> player.move(Direction.RIGHT);
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        gp.getPlayer().setMoving(false);
+        player.setMoving(false);
     }
 }

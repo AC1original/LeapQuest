@@ -1,4 +1,6 @@
 package entity;
+import entity.player.Player;
+import main.GamePanel;
 import utils.Logger;
 
 import java.awt.*;
@@ -8,6 +10,7 @@ import java.util.List;
 
 public class EntityHelper {
     private final HashSet<Entity> entities = new HashSet<>();
+    private final Player player = GamePanel.register(new Player());
 
     public void spawn(Entity entity) {
         spawn(entity, entity.x, entity.y);
@@ -49,5 +52,9 @@ public class EntityHelper {
 
     public List<Entity> getEntities() {
         return List.copyOf(entities);
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

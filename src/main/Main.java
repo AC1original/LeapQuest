@@ -1,8 +1,5 @@
 package main;
-
 import utils.Logger;
-
-import java.util.logging.Level;
 
 public class Main {
 	private static final GamePanel gp = new GamePanel();

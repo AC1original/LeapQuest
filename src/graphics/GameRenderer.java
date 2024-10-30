@@ -18,7 +18,7 @@ public class GameRenderer extends JPanel implements Runnable {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
-        frame.addKeyListener(gp.getUserKeyboardInput());
+        frame.addKeyListener(gp.getEntityHelper().getPlayer().getUserKeyboardInput());
         frame.setVisible(true);
         Logger.log("GameRenderer: Initialized");
     }

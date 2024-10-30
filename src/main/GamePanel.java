@@ -20,19 +20,18 @@ public class GamePanel {
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
 	private final AnimationManager animationManager = register(new AnimationManager(this));
-	private final Player player = register(new Player());
 	private final EntityHelper entityHelper = register(new EntityHelper());
-	private final UserKeyboardInput uKey = new UserKeyboardInput(this);
 	private final LevelManager levelManager = register(new LevelManager(this));
-	private final GameRenderer gr = register(new GameRenderer(this));
+	private final GameRenderer gameRenderer = register(new GameRenderer(this));
 
 	
 	public void run() throws InterruptedException {
-		entityHelper.spawn(player);
 		register(this);
 		running = true;
 
-		Thread rendererThread = new Thread(gr);
+		entityHelper.spawn(entityHelper.getPlayer());
+
+		Thread rendererThread = new Thread(gameRenderer);
 		rendererThread.start();
 
         while (running) {
@@ -61,7 +60,7 @@ public class GamePanel {
 			});
 	}
 	
-	public<T> T register(T clazz) {
+	public static <T> T register(T clazz) {
 		registered.add(clazz);
 		Logger.log("GamePanel: Registered class " + clazz.getClass().getSimpleName());
 
@@ -73,7 +72,7 @@ public class GamePanel {
 		return clazz;
 	}
 
-	public<T> void unregister(T clazz) {
+	public static <T> void unregister(T clazz) {
 		timed.forEach((K, V) -> {
 			if (K.getDeclaringClass().equals(clazz.getClass())) {
 				timed.remove(K);
@@ -95,10 +94,6 @@ public class GamePanel {
 		running = false;
 	}
 
-	public Player getPlayer() {
-		return player;
-	}
-
 	public EntityHelper getEntityHelper() {
 		return entityHelper;
 	}
@@ -111,12 +106,8 @@ public class GamePanel {
 		return animationManager;
 	}
 
-	public UserKeyboardInput getUserKeyboardInput() {
-		return uKey;
-	}
-
 	public GameRenderer getGameRenderer() {
-		return gr;
+		return gameRenderer;
 	}
 
 	public LevelManager getLevelManager() {

@@ -1,15 +1,18 @@
 package entity.player;
 
-import entity.Direction;
 import entity.Entity;
-import graphics.Images;
+import graphics.ImageLoader;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
+import main.GamePanel;
+import user.UserKeyboardInput;
 
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
-    private BufferedImage playerImage = Images.PLAYER_DEFAULT.image;
+    private final UserKeyboardInput userKeyboardInput = GamePanel.register(new UserKeyboardInput(this));
+    private final BufferedImage fullImage = ImageLoader.getAutomated(DEFAULT_PATH + "player/player_idle_right.png");
+    private BufferedImage playerImage = fullImage.getSubimage(0, 0, fullImage.getWidth()/12, fullImage.getHeight());
 
     @Override
     public BufferedImage getImage() {
@@ -39,4 +42,8 @@ public class Player extends Entity {
 
     @Override
     public void onRemove() {}
+
+    public UserKeyboardInput getUserKeyboardInput() {
+        return userKeyboardInput;
+    }
 }
