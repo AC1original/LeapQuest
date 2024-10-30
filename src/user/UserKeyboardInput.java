@@ -21,17 +21,11 @@ public class UserKeyboardInput implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        char key = e.getKeyChar();
-        switch (key) {
-            case 'w' -> player.move(Direction.UP);
-            case 'a' -> player.move(Direction.LEFT);
-            case 's' -> player.move(Direction.DOWN);
-            case 'd' -> player.move(Direction.RIGHT);
-        }
+        player.keyPressed(e.getKeyChar());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        player.setMoving(false);
+        player.keyReleased(e.getKeyChar());
     }
 }
