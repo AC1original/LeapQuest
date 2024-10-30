@@ -1,0 +1,24 @@
+<component name="libraryTable">
+  <library name="zippedAssets">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Treasure Hunters.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Forest_Monsters_FREE.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Kings and Pigs.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Music by Pascal Belisle.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/SunnyLand Music.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Pirate Bomb.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Seasonal Tilesets.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/DuckyV2.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Base Character - Free.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/cavesofgallet.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/free-swamp-game-tileset-pixel-art.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/stringstar fields.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Pixel Art Platformer - Village Props v2.3.0.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/sunny-land-phaser-project.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/forest-nature-fantasy-tileset-free.zip!/" />
+      <root url="jar://$PROJECT_DIR$/zippedAssets/Sunny Land Collection Files.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
