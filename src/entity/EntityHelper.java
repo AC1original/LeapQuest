@@ -15,7 +15,7 @@ public class EntityHelper {
 
     public EntityHelper(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        player = GamePanel.register(new Player(gamePanel));
+        player = GamePanel.register(new Player());
     }
 
     public void spawn(Entity<?> entity) {
@@ -25,7 +25,7 @@ public class EntityHelper {
     public void spawn(Entity<?> entity, int x, int y) {
         entity.x = x;
         entity.y = y;
-        entity.onAdd();
+        entity.onAdd(gamePanel);
         entities.add(entity);
         Logger.log(this.getClass(), "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\"");
     }

@@ -16,15 +16,10 @@ public abstract class Entity<T extends Entity<?>> {
     protected Direction direction = Direction.RIGHT;
     private boolean moving = false;
     private Animation animation;
-    private final GamePanel gp;
-
-    public Entity(GamePanel gp) {
-        this.gp = gp;
-    }
+    private GamePanel gp;
 
     public abstract BufferedImage getImage();
     public abstract T onTick();
-    public abstract T onAdd();
     public abstract T onRemove();
 
     public int distanceTo(Entity<?> entity) {
@@ -129,6 +124,10 @@ public abstract class Entity<T extends Entity<?>> {
 
     public T setMoving(boolean moving) {
         this.moving = moving;
+        return (T) this;
+    }
+    public T onAdd(GamePanel gamePanel) {
+        this.gp = gamePanel;
         return (T) this;
     }
 }

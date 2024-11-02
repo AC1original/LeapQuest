@@ -15,8 +15,7 @@ public class Player extends Entity<Player> {
     private final BufferedImage fullImage = ImageLoader.getAutomated(DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right");
     private BufferedImage playerImage = fullImage.getSubimage(0, 0, fullImage.getWidth()/12, fullImage.getHeight());
 
-    public Player(GamePanel gp) {
-        super(gp);
+    public Player() {
     }
 
     @Override
@@ -39,14 +38,14 @@ public class Player extends Entity<Player> {
     }
 
     @Override
-    public Player onAdd() {
+    public Player onAdd(GamePanel gamePanel) {
+        super.onAdd(gamePanel);
         width = 38*11;
         height = 28*11;
         speed = 5;
         playAnimation(new PlayerIdleAnimation(this));
         return this;
     }
-
 
     @Override
     public Player onRemove() {
