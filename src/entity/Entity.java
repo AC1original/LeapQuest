@@ -2,21 +2,17 @@ package entity;
 import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import main.GamePanel;
-import main.Main;
-import org.jetbrains.annotations.Nullable;
 import utils.Logger;
 
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-@SuppressWarnings("ALL")
+@SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";
     protected int x = 0, y = 0, width = 50, height = 50, speed = 10;
     protected Direction direction = Direction.RIGHT;
     private boolean moving = false;
     private Animation animation;
-    private GamePanel gp;
 
     public abstract BufferedImage getImage();
     public abstract T onTick();
@@ -107,11 +103,11 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public final GamePanel getGamePanel() {
-        return gp == null ? Main.getGamePanel() : gp;
+        return GamePanel.getInstance();
     }
 
     public AnimationManager getAnimationManager() {
-        return gp.getAnimationManager();
+        return GamePanel.getInstance().getAnimationManager();
     }
 
     public Animation getAnimation() {
@@ -126,8 +122,7 @@ public abstract class Entity<T extends Entity<?>> {
         this.moving = moving;
         return (T) this;
     }
-    public T onAdd(GamePanel gamePanel) {
-        this.gp = gamePanel;
+    public T onSpawn() {
         return (T) this;
     }
 }

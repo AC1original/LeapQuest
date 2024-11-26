@@ -1,9 +1,7 @@
 package main;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import entity.EntityHelper;
 import graphics.GameRenderer;
@@ -12,17 +10,27 @@ import graphics.animation.AnimationManager;
 import level.LevelManager;
 import utils.Logger;
 import utils.Timed;
+import utils.caching.Cache;
 
 public class GamePanel {
+	private static GamePanel instance = null;
 	private static final List<Object> registered = new ArrayList<>();
 	private static final Map<Method, Long> timed = new HashMap<>();
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
 	private final AnimationManager animationManager = register(new AnimationManager(this));
-	private final EntityHelper entityHelper = register(new EntityHelper(this));
+	private final EntityHelper entityHelper = register(new EntityHelper());
 	private final LevelManager levelManager = register(new LevelManager(this));
 	private final GameRenderer gameRenderer = register(new GameRenderer(this));
 
+	public static GamePanel getInstance() {
+		if (instance == null) {
+			instance = new GamePanel();
+		}
+		return instance;
+	}
+
+	private GamePanel() {}
 	
 	public void run() throws InterruptedException {
 		register(this);

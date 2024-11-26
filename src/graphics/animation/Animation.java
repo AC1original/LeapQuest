@@ -1,18 +1,16 @@
 package graphics.animation;
 import main.GamePanel;
-import main.Main;
 import utils.Logger;
 import utils.Timed;
 
 import java.awt.*;
-import java.util.Map;
 
 public abstract class Animation {
     public abstract AnimationFrame[] getFrames();
     public abstract int getDelay();
     public abstract boolean drawAnimation();
     public abstract void onFrameUpdate(AnimationFrame frame);
-    private GamePanel gp;
+    private final GamePanel gp = GamePanel.getInstance();
     private Graphics g;
     private int counter = 1;
     private int index = 0;
@@ -30,7 +28,7 @@ public abstract class Animation {
 
     public void drawAnimation(Graphics g) {
         this.g = g;
-        if (!drawAnimation() || !isAllowedToUpdate()) {
+        if (!drawAnimation()) {
             return;
         }
         g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y, getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
@@ -58,14 +56,9 @@ public abstract class Animation {
         return g;
     }
 
-    public void onPlay(GamePanel gp) {
-        this.gp = gp;
-    }
-    public void onStop() {}
+    public void onPlay() {}
 
-    public GamePanel getGamePanel() {
-        return gp;
-    }
+    public void onStop() {}
 
     public final boolean isAllowedToUpdate() {
         return gp != null && gp.getGameRenderer().getFrame().isFocused();

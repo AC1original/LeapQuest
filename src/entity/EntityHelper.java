@@ -11,10 +11,8 @@ import java.util.List;
 public class EntityHelper {
     private final HashSet<Entity<?>> entities = new HashSet<>();
     private final Player player;
-    private final GamePanel gamePanel;
 
-    public EntityHelper(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    public EntityHelper() {
         player = GamePanel.register(new Player());
     }
 
@@ -25,7 +23,7 @@ public class EntityHelper {
     public void spawn(Entity<?> entity, int x, int y) {
         entity.x = x;
         entity.y = y;
-        entity.onAdd(gamePanel);
+        entity.onSpawn();
         entities.add(entity);
         Logger.log(this.getClass(), "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\"");
     }

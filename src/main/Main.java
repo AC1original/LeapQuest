@@ -2,17 +2,26 @@ package main;
 import utils.Logger;
 
 public class Main {
-	private static GamePanel gp;
 	
 	public static void main(String[] args) throws InterruptedException {
-		gp = new GamePanel();
-
 		Logger.log("Main: Starting Game Loop");
-		gp.run();
+		GamePanel.getInstance().run();
 		Logger.log("Main: Game Loop failed", true);
 	}
 
-	public static GamePanel getGamePanel() {
-		return gp;
+	public static long getMaxMemory() {
+		return Runtime.getRuntime().maxMemory();
+	}
+
+	public static long getUsedMemory() {
+		return getTotalMemory() - getFreeMemory();
+	}
+
+	public static long getTotalMemory() {
+		return Runtime.getRuntime().totalMemory();
+	}
+
+	public static long getFreeMemory() {
+		return Runtime.getRuntime().freeMemory();
 	}
 }

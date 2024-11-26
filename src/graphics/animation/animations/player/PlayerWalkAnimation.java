@@ -18,9 +18,9 @@ public class PlayerWalkAnimation extends Animation {
 
     @Override
     public AnimationFrame[] getFrames() {
-        BufferedImage walk = ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_walk_left.png", "player_walk_left");
+        BufferedImage walk = ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_left.png", "player_walk_left");
         if (player.getDirection().equals(Direction.RIGHT)) {
-            walk = ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_walk_right.png", "player_walk_right");
+            walk = ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_right.png", "player_walk_right");
         }
         return AnimationFrame.create(walk, 6);
     }

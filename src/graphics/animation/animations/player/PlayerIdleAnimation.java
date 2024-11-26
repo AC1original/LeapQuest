@@ -17,9 +17,9 @@ public class PlayerIdleAnimation extends Animation {
     @Override
     public AnimationFrame[] getFrames() {
         if (player.getDirection().equals(Direction.RIGHT)) {
-            return AnimationFrame.create(ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right"), 12);
+            return AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right"), 12);
         } else {
-            return AnimationFrame.create(ImageLoader.getAutomated(Entity.DEFAULT_PATH + "player/player_idle_left.png", "player_idle_left"), 12);
+            return AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_left.png", "player_idle_left"), 12);
         }
     }
 

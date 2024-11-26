@@ -54,6 +54,9 @@ public class GameRenderer extends JPanel implements Runnable {
         gp.getLevelManager().drawLevel(g);
         gp.getEntityHelper().drawEntities(g);
         gp.getAnimationManager().getAnimations().forEach(animation -> animation.drawAnimation(g));
+
+        g.setFont(new Font("Arial", Font.BOLD, 12));
+        g.drawString(Main.getUsedMemory() / (1024 * 1024) + "MB", 20, 20);
     }
 
     public JFrame getFrame() {
