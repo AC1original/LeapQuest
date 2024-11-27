@@ -7,18 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnimationManager {
-    private final GamePanel gp;
     private final List<Animation> animations = new ArrayList<>();
-
-    public AnimationManager(GamePanel gp){
-        this.gp = gp;
-    }
 
     public Animation play(Animation animation) {
         if (animation.isValid()) {
             animations.add(animation);
             GamePanel.register(animation);
-            animation.onPlay(gp);
+            animation.onPlay();
         }
         return animation;
     }

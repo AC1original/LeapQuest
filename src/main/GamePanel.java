@@ -18,7 +18,7 @@ public class GamePanel {
 	private static final Map<Method, Long> timed = new HashMap<>();
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
-	private final AnimationManager animationManager = register(new AnimationManager(this));
+	private final AnimationManager animationManager = register(new AnimationManager());
 	private final EntityHelper entityHelper = register(new EntityHelper());
 	private final LevelManager levelManager = register(new LevelManager(this));
 	private final GameRenderer gameRenderer = register(new GameRenderer(this));

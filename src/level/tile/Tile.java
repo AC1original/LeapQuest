@@ -12,6 +12,8 @@ public interface Tile {
     default int getHeight() {
         return DEFAULT_SIZE;
     }
+    String getName();
     void tick();
-    void onCollide(Entity entity, Direction direction);
+    void onCollide(Entity<?> entity, Direction direction);
+    boolean register();
 }

@@ -19,9 +19,7 @@ public class ImageLoader {
         if (cachedImages.contains(name)) {
             return cachedImages.get(name);
         } else {
-            BufferedImage fallback = load(path);
-            cachedImages.add(name, fallback);
-            return fallback;
+            return cache(load(path), name);
         }
     }
 
@@ -30,6 +28,12 @@ public class ImageLoader {
             return cachedImages.get(name);
         }
         return load("fallbackimage");
+    }
+
+    public static BufferedImage cache(BufferedImage img, String name) {
+        cachedImages.add(name, img);
+        Logger.log(ImageLoader.class, "Cached image '" + name + "'");
+        return img;
     }
 
     public static BufferedImage load(String path) {
