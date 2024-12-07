@@ -14,7 +14,7 @@ public class GameRenderer extends JPanel implements Runnable {
     public GameRenderer(GamePanel gp) {
         this.gp = gp;
 
-        frame.setSize(800, 600);
+        frame.setSize(gp.getGameWidth(), gp.getGameHeight());
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);

@@ -13,6 +13,7 @@ import utils.Timed;
 import utils.caching.Cache;
 
 public class GamePanel {
+	private int gameWidth = 900, gameHeight = 600;
 	private static GamePanel instance = null;
 	private static final List<Object> registered = new ArrayList<>();
 	private static final Map<Method, Long> timed = new HashMap<>();
@@ -49,9 +50,10 @@ public class GamePanel {
 
 	public void tick() {
 		entityHelper.tick();
+		levelManager.tick();
 			timed.forEach((method, timeStamp) -> {
 				if (method == null) return;
-				if (System.currentTimeMillis() - timeStamp >= method.getAnnotation(Timed.class).delay()) {
+				if ((System.currentTimeMillis() - timeStamp >= method.getAnnotation(Timed.class).delay()) || method.getAnnotation(Timed.class).delay() < 1) {
                     try {
 						Object instance = registered.stream()
 								.filter(obj -> method.getDeclaringClass().isInstance(obj))
@@ -94,7 +96,23 @@ public class GamePanel {
 				Logger.log("GamePanel: Unregistered class " + clazz.getClass().getSimpleName());
 		}
 	}
-	
+
+	public void setGameWidth(int gameWidth) {
+		this.gameWidth = gameWidth;
+	}
+
+	public void setGameHeight(int gameHeight) {
+		this.gameHeight = gameHeight;
+	}
+
+	public int getGameWidth() {
+		return gameWidth;
+	}
+
+	public int getGameHeight() {
+		return gameHeight;
+	}
+
 	public void setGameState(GameStates gameState) {
 		this.gameState = gameState;
 	}

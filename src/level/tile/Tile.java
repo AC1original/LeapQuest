@@ -2,6 +2,8 @@ package level.tile;
 import entity.Direction;
 import entity.Entity;
 
+import java.awt.*;
+
 public interface Tile {
     int DEFAULT_SIZE = 64;
 
@@ -15,5 +17,6 @@ public interface Tile {
     String getName();
     void tick();
     void onCollide(Entity<?> entity, Direction direction);
+    boolean isSolid();
     boolean register();
 }

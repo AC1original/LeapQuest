@@ -1,46 +1,158 @@
 package level;
 
 import data.filemanager.Filemanager;
+import entity.Direction;
+import entity.Entity;
 import graphics.ImageLoader;
 import level.tile.Tile;
 import level.tile.TileType;
 import level.tile.Tiles;
 import main.GamePanel;
+import org.jetbrains.annotations.NotNull;
 import utils.Logger;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class LevelManager {
     private final GamePanel gp;
     private final Filemanager fileManager = new Filemanager();
+    private boolean showHitBox = false;
     private final int[][] level = loadLevel(Objects.requireNonNull(getClass().getResource("/res/level/test_level.txt")).getPath());
+    private final Map<Rectangle, TileType> levelDat = new HashMap<>();
 
     public LevelManager(GamePanel gp) {
         this.gp = gp;
         Logger.log(this.getClass(), "Initialized");
+        reloadLevelDat();
+        showHitBox(true);
     }
 
     public int[][] loadLevel(String path) {
         fileManager.setPath(path);
-        int[][] level = new int[fileManager.lines()][fileManager.get(0).length()];
+        int[][] level = new int[fileManager.lines()][fileManager.get(0).split(" ").length];
         for (int line = 0; line < fileManager.lines(); line++) {
             String[] nums = fileManager.get(line).split(" ");
             for (int number = 0; number < nums.length; number++) {
-                level[line][number] = Integer.parseInt(nums[number]);
+                try {
+                    level[line][number] = Integer.parseInt(nums[number]);
+                } catch (NumberFormatException e) {
+                    Logger.log(this.getClass(), "Failed to read level from file. Returned empty 2D-int-array instead", true);
+                    return new int[0][0];
+                }
             }
         }
         return level;
     }
 
-    public void drawLevel(Graphics g) {
-        for (int i = 0; i < level.length; i++) {
-            for (int j = 0; j < level[i].length; j++) {
-                var type = Tiles.getTypeByID(level[i][j]);
+    public void reloadLevelDat() {
+        levelDat.clear();
+        for (int y = 0; y < level.length; y++) {
+            for (int x = 0; x < level[y].length; x++) {
+                var type = Tiles.getTypeByID(level[y][x]);
                 var tile = type.parent();
-                g.drawImage(ImageLoader.getCachedOrLoad(type.getPath(), type.parent().getName()), j * tile.getWidth(),
-                        i * tile.getHeight(), tile.getWidth(), tile.getHeight(), null);
+                levelDat.put(new Rectangle(x * tile.getWidth(), y * tile.getHeight(), tile.getWidth(), tile.getHeight()), type);
             }
         }
+    }
+
+    public void drawLevel(@NotNull Graphics g) {
+        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sky.png", "background_sky"),
+                0, 0, gp.getGameWidth(), gp.getGameHeight(), null);
+        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/mountains.png", "background_mountains"),
+                0, 0, gp.getGameWidth(), gp.getGameHeight(), null);
+        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/ruins.png", "background_ruins"),
+                0, 0, gp.getGameWidth(), gp.getGameHeight(), null);
+        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sun.png", "background_sun"),
+                gp.getGameWidth() - 120, 10, 100, 100, null);
+
+
+        levelDat.forEach((loc, type) -> {
+            g.drawImage(type.getImage(), loc.x, loc.y, loc.width, loc.height, null);
+
+            if (isHitBoxShown()) {
+                if (true) {
+                    g.setColor(Color.RED);
+                    g.drawRect(loc.x, loc.y, loc.width, loc.height);
+                }
+            }
+        });
+    }
+
+    public void tick() {
+        Tiles.getRegistered().forEach(Tile::tick);
+    }
+
+    /*public Rectangle wouldCollideWith(Entity<?> entity, Direction direction) {
+        return wouldCollideWith(entity, direction, -1);
+    }
+
+    public Rectangle wouldCollideWith(Entity<?> entity, Direction direction, int speed) {
+        for (Rectangle tileBox : levelDat.keySet()) {
+            TileType type = levelDat.get(tileBox);
+            Tile tile = type.parent();
+
+            if (tile.isSolid()) {
+                Rectangle updatedEntityBox = entity.getHitBox().getBounds();
+                Point newLoc = Direction.getNewLocation(entity.getLocation(), speed < 0 ? entity.getSpeed() : speed, direction);
+                updatedEntityBox.x = newLoc.x;
+                updatedEntityBox.y = newLoc.y;
+
+                if (updatedEntityBox.intersects(tileBox)) {
+                    return tileBox;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean wouldCollide(Entity<?> entity, Direction direction) {
+        return wouldCollideWith(entity, direction) != null;
+    }
+
+    public boolean wouldCollide(Entity<?> entity, Direction direction, int speed) {
+        return wouldCollideWith(entity, direction, speed) != null;
+    }
+
+    public int wouldCollideAfter(Entity<?> entity, Rectangle tileHitBox) {
+        if (!wouldCollide(entity, entity.getDirection())) {
+            return -1;
+        }
+
+        Rectangle entityBox = entity.getHitBox().getBounds();
+
+        int deltaX = Math.abs(entityBox.x - tileHitBox.x);
+        int deltaY = Math.abs(entityBox.y - tileHitBox.y);
+
+        if (entity.getDirection() == Direction.RIGHT || entity.getDirection() == Direction.LEFT) {
+            return deltaX;
+        } else if (entity.getDirection() == Direction.UP || entity.getDirection() == Direction.DOWN) {
+            return deltaY;
+        }
+
+        return -1;
+    }
+     */
+
+    public void showHitBox(boolean hitBox) {
+        this.showHitBox = hitBox;
+    }
+    public boolean isHitBoxShown() {
+        return showHitBox;
+    }
+
+    public Tile wouldCollide(Rectangle hitBox) {
+        for (Rectangle rect : levelDat.keySet()) {
+            if (levelDat.get(rect).parent().isSolid() && hitBox.intersects(rect)) {
+                return levelDat.get(rect).parent();
+            }
+        }
+        return null;
+    }
+
+    public void collide(@NotNull Tile tile, Entity<?> entity, Direction direction) {
+        tile.onCollide(entity, direction);
     }
 }

@@ -16,13 +16,11 @@ public class UserKeyboardInput implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        player.keyTyped(e);
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        player.keyPressed(e.getKeyChar());
-    }
+    public void keyPressed(KeyEvent e) {}
 
     @Override
     public void keyReleased(KeyEvent e) {

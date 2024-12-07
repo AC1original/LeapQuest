@@ -15,6 +15,14 @@ public class ImageLoader {
             .build();
 
 
+    public static BufferedImage getCachedOrLoad(BufferedImage image, String name) {
+        if (cachedImages.contains(name)) {
+            return cachedImages.get(name);
+        } else {
+            return cache(image, name);
+        }
+    }
+
     public static BufferedImage getCachedOrLoad(String path, String name) {
         if (cachedImages.contains(name)) {
             return cachedImages.get(name);
@@ -43,13 +51,17 @@ public class ImageLoader {
             Logger.log("ImageLoader: Loaded image at: " + path + ".");
         } catch (Exception e) {
             Logger.log("ImageLoader: Failed loading image \""+path+"\" | " + e + ". Returned fallback image instead.", true);
-            BufferedImage fallback = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
-            fallback.setRGB(0, 0, new Color(241, 28, 28).getRGB());
-            fallback.setRGB(1, 0, new Color(0, 0, 0).getRGB());
-            fallback.setRGB(1, 1, new Color(241, 28, 28).getRGB());
-            fallback.setRGB(0, 1, new Color(0, 0, 0).getRGB());
-            return fallback;
+            return getFallback();
         }
         return image;
+    }
+
+    public static BufferedImage getFallback() {
+        BufferedImage fallback = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
+        fallback.setRGB(0, 0, new Color(241, 28, 28).getRGB());
+        fallback.setRGB(1, 0, new Color(0, 0, 0).getRGB());
+        fallback.setRGB(1, 1, new Color(241, 28, 28).getRGB());
+        fallback.setRGB(0, 1, new Color(0, 0, 0).getRGB());
+        return fallback;
     }
 }

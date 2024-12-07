@@ -50,7 +50,13 @@ public class EntityHelper {
 
     public void drawEntities(Graphics g) {
         for (Entity<?> entity : entities) {
+            entity.onDraw(g);
             g.drawImage(entity.getImage(), entity.x, entity.y, entity.width, entity.height, null);
+
+            if (entity.isHitBoxShown()) {
+                g.setColor(Color.RED);
+                g.drawRect(entity.getHitBox().x, entity.getHitBox().y, entity.getHitBox().width, entity.getHitBox().height);
+            }
         }
     }
 
