@@ -73,7 +73,7 @@ public class LevelManager {
             g.drawImage(type.getImage(), loc.x, loc.y, loc.width, loc.height, null);
 
             if (isHitBoxShown()) {
-                if (true) {
+                if (type.parent().isSolid()) {
                     g.setColor(Color.RED);
                     g.drawRect(loc.x, loc.y, loc.width, loc.height);
                 }
@@ -84,57 +84,6 @@ public class LevelManager {
     public void tick() {
         Tiles.getRegistered().forEach(Tile::tick);
     }
-
-    /*public Rectangle wouldCollideWith(Entity<?> entity, Direction direction) {
-        return wouldCollideWith(entity, direction, -1);
-    }
-
-    public Rectangle wouldCollideWith(Entity<?> entity, Direction direction, int speed) {
-        for (Rectangle tileBox : levelDat.keySet()) {
-            TileType type = levelDat.get(tileBox);
-            Tile tile = type.parent();
-
-            if (tile.isSolid()) {
-                Rectangle updatedEntityBox = entity.getHitBox().getBounds();
-                Point newLoc = Direction.getNewLocation(entity.getLocation(), speed < 0 ? entity.getSpeed() : speed, direction);
-                updatedEntityBox.x = newLoc.x;
-                updatedEntityBox.y = newLoc.y;
-
-                if (updatedEntityBox.intersects(tileBox)) {
-                    return tileBox;
-                }
-            }
-        }
-        return null;
-    }
-
-    public boolean wouldCollide(Entity<?> entity, Direction direction) {
-        return wouldCollideWith(entity, direction) != null;
-    }
-
-    public boolean wouldCollide(Entity<?> entity, Direction direction, int speed) {
-        return wouldCollideWith(entity, direction, speed) != null;
-    }
-
-    public int wouldCollideAfter(Entity<?> entity, Rectangle tileHitBox) {
-        if (!wouldCollide(entity, entity.getDirection())) {
-            return -1;
-        }
-
-        Rectangle entityBox = entity.getHitBox().getBounds();
-
-        int deltaX = Math.abs(entityBox.x - tileHitBox.x);
-        int deltaY = Math.abs(entityBox.y - tileHitBox.y);
-
-        if (entity.getDirection() == Direction.RIGHT || entity.getDirection() == Direction.LEFT) {
-            return deltaX;
-        } else if (entity.getDirection() == Direction.UP || entity.getDirection() == Direction.DOWN) {
-            return deltaY;
-        }
-
-        return -1;
-    }
-     */
 
     public void showHitBox(boolean hitBox) {
         this.showHitBox = hitBox;
