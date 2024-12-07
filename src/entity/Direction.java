@@ -22,23 +22,9 @@ public enum Direction {
         return deltaY;
     }
 
+    private static final Point newLoc = new Point(0, 0);
     public static Point getNewLocation(Point location, int speed, Direction direction) {
-        switch (direction) {
-            case UP -> {
-                return new Point(location.x, location.y - speed);
-            }
-            case DOWN -> {
-                return new Point(location.x, location.y + speed);
-            }
-            case LEFT -> {
-                return new Point(location.x - speed, location.y);
-            }
-            case RIGHT -> {
-                return new Point(location.x + speed, location.y);
-            }
-            case null, default -> {
-                return location;
-            }
-        }
+        newLoc.move(location.x + speed * direction.getDeltaX(), location.y + speed * direction.getDeltaY());
+        return newLoc;
     }
 }
