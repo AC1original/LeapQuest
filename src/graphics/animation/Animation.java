@@ -15,11 +15,8 @@ public abstract class Animation {
     private int counter = 1;
     private int index = 0;
 
-    public boolean isValid() {
-        if (getFrames().length == 0) {
-            Logger.log("AnimationManager: Failed to start animation. No animation frames.", true);
-            return false;
-        } else if (getDelay() <= 0) {
+    public boolean checkValidation() {
+        if (getDelay() <= 0) {
             Logger.log("AnimationManager: Failed to start animation. Delay is shorter than 1.", true);
             return false;
         }

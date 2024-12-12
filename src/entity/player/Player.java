@@ -6,15 +6,13 @@ import graphics.ImageLoader;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
 import main.GamePanel;
-import user.UserKeyboardInput;
 import utils.Timed;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity<Player> {
-    private final UserKeyboardInput userKeyboardInput = GamePanel.register(new UserKeyboardInput(this));
+    private final PlayerKeyboardInput userKeyboardInput = GamePanel.register(new PlayerKeyboardInput(this));
     private final BufferedImage fullImage = ImageLoader.getCachedOrLoad(DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right");
     private BufferedImage playerImage = fullImage.getSubimage(0, 0, fullImage.getWidth()/12, fullImage.getHeight());
     private char moveRequested = '0';
@@ -38,9 +36,8 @@ public class Player extends Entity<Player> {
     @Timed(delay = 50)
     public final void movementTicks() {
         switch (moveRequested) {
-            case 'w' -> move(Direction.UP);
+            case ' ' -> jump();
             case 'a' -> move(Direction.LEFT);
-            case 's' -> move(Direction.DOWN);
             case 'd' -> move(Direction.RIGHT);
         }
     }
@@ -53,9 +50,8 @@ public class Player extends Entity<Player> {
     public Player onSpawn() {
         width = 19*3;
         height = 22*3;
-        playAnimation(new PlayerIdleAnimation(this));
-
         showHitBox(true);
+        playAnimation(new PlayerIdleAnimation(this));
         return this;
     }
 
@@ -64,7 +60,7 @@ public class Player extends Entity<Player> {
         return this;
     }
 
-    public UserKeyboardInput getUserKeyboardInput() {
+    public PlayerKeyboardInput getUserKeyboardInput() {
         return userKeyboardInput;
     }
 

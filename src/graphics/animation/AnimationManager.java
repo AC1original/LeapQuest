@@ -10,7 +10,7 @@ public class AnimationManager {
     private final List<Animation> animations = new ArrayList<>();
 
     public Animation play(Animation animation) {
-        if (animation.isValid()) {
+        if (animation.checkValidation()) {
             animations.add(animation);
             GamePanel.register(animation);
             animation.onPlay();
@@ -19,11 +19,9 @@ public class AnimationManager {
     }
 
     public void stopByClass(Class<?> clazz) {
-        animations.forEach(animation -> {
-            if (animation.getClass().equals(clazz)) {
-                stop(animation);
-            }
-        });
+        animations.stream()
+                .filter(animation -> animation.getClass().equals(clazz))
+                .forEach(this::stop);
     }
 
     public void stop(Animation animation) {

@@ -3,8 +3,9 @@ package entity;
 import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
-import level.tile.Tile;
+import level.tile.TileType;
 import main.GamePanel;
+import org.jetbrains.annotations.NotNull;
 import utils.Logger;
 
 import java.awt.*;
@@ -15,10 +16,11 @@ public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";
     protected int x = 0, y = 0, width = 50, height = 50, speed = 5;
     protected Direction direction = Direction.RIGHT;
+    protected Direction lookDirection = Direction.RIGHT;
     private final Point location = new Point(x, y);
     private final Rectangle hitBox = new Rectangle(x, y, width, height);
     private long lastMoved = 0;
-    private boolean moving = false, showHitBox = false;
+    private boolean moving = false, falling = false, showHitBox = false;
     private Animation animation;
 
     public abstract BufferedImage getImage();
@@ -31,10 +33,11 @@ public abstract class Entity<T extends Entity<?>> {
         if (System.currentTimeMillis() - lastMoved >= 350) {
             setMoving(false);
         }
+        checkPhysics();
         return (T) this;
     }
 
-    public int distanceTo(final Entity<?> entity) {
+    public int distanceTo(final @NotNull Entity<?> entity) {
         int ex = entity.getX() + entity.getWidth() / 2;
         int ey = entity.getY() + entity.getHeight() / 2;
         return distanceTo(ex, ey);
@@ -54,9 +57,7 @@ public abstract class Entity<T extends Entity<?>> {
         if (this.animation != null) {
             if (this.animation.getClass() != animation.getClass()) {
                 stopAnimation();
-                if (getGamePanel() != null) {
-                    this.animation = getAnimationManager().play(animation);
-                }
+                this.animation = getAnimationManager().play(animation);
             }
         } else {
             this.animation = getAnimationManager().play(animation);
@@ -76,26 +77,30 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public T move(Direction direction) {
+    public T move(Direction direction, int speed) {
         setDirection(direction);
+        setLookDirection(direction);
 
-        Point targetLoc = Direction.getNewLocation(getLocation(), getSpeed(), direction);
+        Point targetLoc = Direction.getNewLocation(getLocation(), speed, direction);
 
         LevelManager levelManager = getGamePanel().getLevelManager();
         Rectangle uEntityBox = getHitBox();
         uEntityBox.x = targetLoc.x;
         uEntityBox.y = targetLoc.y;
 
-        Tile tile = levelManager.wouldCollide(uEntityBox);
+
+        TileType tile = levelManager.wouldCollideTile(uEntityBox);
         if (tile != null) {
             for (int i = 0; i < speed; i++) {
                 Point step = Direction.getNewLocation(getLocation(), 1, direction);
                 uEntityBox.x = step.x;
                 uEntityBox.y = step.y;
-                if (levelManager.wouldCollide(uEntityBox) == null) {
+                if (levelManager.wouldCollideTile(uEntityBox) == null) {
                     this.x = step.x;
                     this.y = step.y;
-                } else tile.onCollide(this, direction);
+                } else {
+                    tile.parent().onCollide(this, direction);
+                }
             }
         } else {
             this.x = targetLoc.x;
@@ -104,6 +109,11 @@ public abstract class Entity<T extends Entity<?>> {
 
         setMoving(true);
         lastMoved = System.currentTimeMillis();
+        return (T) this;
+    }
+
+    public T move(Direction direction) {
+        move(direction, getSpeed());
         return (T) this;
     }
 
@@ -174,33 +184,53 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public T checkPhysics() {
+        if (!isOnGround()) {
+            falling = true;
+            move(Direction.DOWN, 3);
+        } else falling = false;
         return (T) this;
     }
 
+    public boolean isOnGround() {
+        LevelManager levelManager = getGamePanel().getLevelManager();
+        if (levelManager.wouldCollideHitBox(getHitBox()) != null) {
+            Rectangle hit = levelManager.wouldCollideHitBox(getHitBox());
+            return getHitBox().y + getHitBox().height > hit.y;
+        } else {
+            return false;
+        }
+    }
+
     public T jump() {
-        return jump((short) 2);
+        return jump((short) 10);
     }
 
     public T jump(short strength) {
+        move(Direction.UP, strength);
         return (T) this;
     }
 
     public Rectangle getHitBox() {
-        hitBox.setBounds(getX() + getHitBoxBuffer() / 2, getY() + getHitBoxBuffer() / 2, getWidth() - getHitBoxBuffer(), getHeight() - getHitBoxBuffer());
+        hitBox.setBounds(getX() + getHitBoxBufferX() / 2, getY() + getHitBoxBufferY() / 2, getWidth() - getHitBoxBufferX(), getHeight() - getHitBoxBufferY());
         return hitBox;
     }
 
-    public int getHitBoxBuffer() {
+    public int getHitBoxBufferX() {
         return 5;
     }
 
-    public Point getLocation() {
+    public int getHitBoxBufferY() {
+        return 5;
+    }
+
+    public final Point getLocation() {
         location.move(getX(), getY());
         return location;
     }
 
-    public void showHitBox(boolean hitBox) {
+    public T showHitBox(boolean hitBox) {
         this.showHitBox = hitBox;
+        return (T) this;
     }
 
     public boolean isHitBoxShown() {
@@ -209,5 +239,29 @@ public abstract class Entity<T extends Entity<?>> {
 
     protected T onDraw(Graphics g) {
         return (T) this;
+    }
+
+    public Direction getLookDirection() {
+        return lookDirection;
+    }
+
+    public long getLastMoved() {
+        return lastMoved;
+    }
+
+    public T setLookDirection(Direction lookDirection) {
+        if (lookDirection.equals(Direction.LEFT) || lookDirection.equals(Direction.RIGHT)) {
+            this.lookDirection = lookDirection;
+        }
+        return (T) this;
+    }
+
+    public T setFalling(boolean falling) {
+        this.falling = falling;
+        return (T) this;
+    }
+
+    public boolean isFalling() {
+        return falling;
     }
 }

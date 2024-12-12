@@ -7,10 +7,10 @@ import graphics.ImageLoader;
 import graphics.animation.Animation;
 import graphics.animation.AnimationFrame;
 
-import java.awt.image.BufferedImage;
-
 public class PlayerWalkAnimation extends Animation {
     private final Player player;
+    private final AnimationFrame[] walkLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_left.png", "player_walk_left"), 6);
+    private final AnimationFrame[] walkRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_right.png", "player_walk_right"), 6);
 
     public PlayerWalkAnimation(Player player) {
         this.player = player;
@@ -18,11 +18,12 @@ public class PlayerWalkAnimation extends Animation {
 
     @Override
     public AnimationFrame[] getFrames() {
-        BufferedImage walk = ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_left.png", "player_walk_left");
-        if (player.getDirection().equals(Direction.RIGHT)) {
-            walk = ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_right.png", "player_walk_right");
+        if (player.getLookDirection().equals(Direction.RIGHT)) {
+            return walkRight;
+        } else if (player.getLookDirection().equals(Direction.LEFT)) {
+            return walkLeft;
         }
-        return AnimationFrame.create(walk, 6);
+        return AnimationFrame.createEmpty();
     }
 
     @Override

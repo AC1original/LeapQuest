@@ -9,6 +9,8 @@ import graphics.animation.AnimationFrame;
 
 public class PlayerIdleAnimation extends Animation {
     private final Player player;
+    private final AnimationFrame[] animationRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right"), 12);
+    private final AnimationFrame[] animationLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_left.png", "player_idle_left"), 12);
 
     public PlayerIdleAnimation(Player player) {
         this.player = player;
@@ -16,11 +18,12 @@ public class PlayerIdleAnimation extends Animation {
 
     @Override
     public AnimationFrame[] getFrames() {
-        if (player.getDirection().equals(Direction.RIGHT)) {
-            return AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right"), 12);
-        } else {
-            return AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_left.png", "player_idle_left"), 12);
+        if (player.getLookDirection().equals(Direction.RIGHT)) {
+            return animationRight;
+        } else if (player.getLookDirection().equals(Direction.LEFT)) {
+            return animationLeft;
         }
+        return AnimationFrame.createEmpty();
     }
 
     @Override

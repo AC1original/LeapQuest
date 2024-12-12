@@ -4,11 +4,16 @@ import java.awt.image.BufferedImage;
 public class AnimationFrame {
     private BufferedImage image;
     private int imgWidth, imgHeight;
+    private static final AnimationFrame[] empty = new AnimationFrame[0];
 
     private AnimationFrame(BufferedImage image, int imgWidth, int imgHeight) {
         this.image = image;
         this.imgWidth = imgWidth;
         this.imgHeight = imgHeight;
+    }
+
+    public static AnimationFrame[] createEmpty() {
+        return empty;
     }
 
     public static AnimationFrame[] create(BufferedImage img, int split) {

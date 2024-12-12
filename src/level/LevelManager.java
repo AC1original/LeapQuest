@@ -9,6 +9,7 @@ import level.tile.TileType;
 import level.tile.Tiles;
 import main.GamePanel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import utils.Logger;
 
 import java.awt.*;
@@ -20,14 +21,14 @@ public class LevelManager {
     private final GamePanel gp;
     private final Filemanager fileManager = new Filemanager();
     private boolean showHitBox = false;
-    private final int[][] level = loadLevel(Objects.requireNonNull(getClass().getResource("/res/level/test_level.txt")).getPath());
+    private final int[][] level;
     private final Map<Rectangle, TileType> levelDat = new HashMap<>();
 
-    public LevelManager(GamePanel gp) {
+    public LevelManager(GamePanel gp, String resourceLocation) {
         this.gp = gp;
+        level = loadLevel(Objects.requireNonNull(getClass().getResource(resourceLocation)).getPath());
         Logger.log(this.getClass(), "Initialized");
         reloadLevelDat();
-        showHitBox(true);
     }
 
     public int[][] loadLevel(String path) {
@@ -92,13 +93,23 @@ public class LevelManager {
         return showHitBox;
     }
 
-    public Tile wouldCollide(Rectangle hitBox) {
-        for (Rectangle rect : levelDat.keySet()) {
-            if (levelDat.get(rect).parent().isSolid() && hitBox.intersects(rect)) {
-                return levelDat.get(rect).parent();
-            }
-        }
-        return null;
+    @Nullable
+    public TileType wouldCollideTile(Rectangle hitBox) {
+        return levelDat.get(wouldCollideHitBox(hitBox));
+    }
+
+    public boolean wouldCollide(Rectangle hitBox) {
+        return wouldCollideHitBox(hitBox) != null;
+    }
+
+    @Nullable
+    public Rectangle wouldCollideHitBox(@NotNull Rectangle hitBox) {
+        return levelDat.keySet()
+                .stream()
+                .filter(rect -> levelDat.get(rect).parent().isSolid())
+                .filter(hitBox::intersects)
+                .findFirst()
+                .orElse(null);
     }
 
     public void collide(@NotNull Tile tile, Entity<?> entity, Direction direction) {

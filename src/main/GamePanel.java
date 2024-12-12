@@ -21,7 +21,7 @@ public class GamePanel {
 	private static boolean running = false;
 	private final AnimationManager animationManager = register(new AnimationManager());
 	private final EntityHelper entityHelper = register(new EntityHelper());
-	private final LevelManager levelManager = register(new LevelManager(this));
+	private final LevelManager levelManager = register(new LevelManager(this, "/res/level/test_level.txt"));
 	private final GameRenderer gameRenderer = register(new GameRenderer(this));
 
 	public static GamePanel getInstance() {
@@ -43,7 +43,7 @@ public class GamePanel {
 		rendererThread.start();
 
         while (running) {
-			Thread.sleep(8);
+			Thread.sleep(10);
         	tick();
         }
 	}
@@ -63,6 +63,8 @@ public class GamePanel {
                         method.invoke(instance);
 						timed.replace(method, System.currentTimeMillis());
                     } catch (ReflectiveOperationException e) {
+						System.err.println(instance.getClass().getSimpleName());
+						System.err.println(method.getName());
                         Logger.log("GamePanel: Failed to tick \"Timed\" annotation", true);
                     }
                 }

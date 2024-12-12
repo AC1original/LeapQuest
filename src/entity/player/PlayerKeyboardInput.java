@@ -1,16 +1,12 @@
-package user;
-
-import entity.Direction;
-import entity.player.Player;
-import main.GamePanel;
+package entity.player;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class UserKeyboardInput implements KeyListener {
+public class PlayerKeyboardInput implements KeyListener {
     private final Player player;
 
-    public UserKeyboardInput(Player player) {
+    public PlayerKeyboardInput(Player player) {
         this.player = player;
     }
 
