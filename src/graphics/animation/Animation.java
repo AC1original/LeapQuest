@@ -11,9 +11,10 @@ public abstract class Animation {
     public abstract boolean drawAnimation();
     public abstract void onFrameUpdate(AnimationFrame frame);
     private final GamePanel gp = GamePanel.getInstance();
-    private Graphics g;
+    private Graphics graphics;
     private int counter = 1;
     private int index = 0;
+    private final Point location = new Point(0, 0);
 
     public boolean checkValidation() {
         if (getDelay() <= 0) {
@@ -24,14 +25,14 @@ public abstract class Animation {
     }
 
     public void drawAnimation(Graphics g) {
-        this.g = g;
+        this.graphics = g;
         if (!drawAnimation()) {
             return;
         }
         g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y, getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
     }
 
-    @Timed(delay = 1)
+    @Timed(delay = 0)
     public void updateIndex() {
         if (isAllowedToUpdate()) counter++;
         if (counter >= getDelay()) {
@@ -46,18 +47,27 @@ public abstract class Animation {
     }
 
     public Point getLocation() {
-        return new Point(0, 0);
+        return location;
+    }
+
+    public Point updateLocation(int x, int y) {
+        location.move(x, y);
+        return location;
+    }
+
+    public final int getAnimationIndex() {
+        return index;
     }
 
     public Graphics getGraphics() {
-        return g;
+        return graphics;
     }
 
     public void onPlay() {}
 
     public void onStop() {}
 
-    public final boolean isAllowedToUpdate() {
-        return gp != null && gp.getGameRenderer().getFrame().isFocused();
+    public boolean isAllowedToUpdate() {
+        return gp.getGameRenderer().getFrame().isFocused();
     }
 }
