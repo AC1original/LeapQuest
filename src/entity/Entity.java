@@ -11,6 +11,10 @@ import utils.Logger;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+//TODO: Jump physics
+//TODO: Better hitbox
+//TODO: Heath & enemies
+
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";
@@ -24,10 +28,9 @@ public abstract class Entity<T extends Entity<?>> {
     private Animation animation;
 
     public abstract BufferedImage getImage();
-
     public abstract T onRemove();
-
     public abstract T onSpawn();
+    public abstract T setImage(BufferedImage image);
 
     public T onTick() {
         if (System.currentTimeMillis() - lastMoved >= 350) {
@@ -95,7 +98,7 @@ public abstract class Entity<T extends Entity<?>> {
                 Point step = Direction.getNewLocation(getLocation(), 1, direction);
                 uEntityBox.x = step.x;
                 uEntityBox.y = step.y;
-                if (levelManager.wouldCollideTile(uEntityBox) == null) {
+                if (!levelManager.wouldCollide(uEntityBox)) {
                     this.x = step.x;
                     this.y = step.y;
                 } else {
@@ -211,7 +214,8 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public Rectangle getHitBox() {
-        hitBox.setBounds(getX() + getHitBoxBufferX() / 2, getY() + getHitBoxBufferY() / 2, getWidth() - getHitBoxBufferX(), getHeight() - getHitBoxBufferY());
+        hitBox.setBounds(getX() + getHitBoxBufferX() / 2, getY() + getHitBoxBufferY() / 2,
+                getWidth() - getHitBoxBufferX(), getHeight() - getHitBoxBufferY());
         return hitBox;
     }
 

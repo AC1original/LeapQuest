@@ -42,16 +42,18 @@ public class Player extends Entity<Player> {
         }
     }
 
-    public void setImage(BufferedImage image) {
-        this.playerImage = image;
-    }
-
     @Override
     public Player onSpawn() {
         width = 19*3;
         height = 22*3;
-        showHitBox(true);
         playAnimation(new PlayerIdleAnimation(this));
+        showHitBox(true);
+        return this;
+    }
+
+    @Override
+    public Player setImage(BufferedImage image) {
+        this.playerImage = image;
         return this;
     }
 
@@ -68,7 +70,9 @@ public class Player extends Entity<Player> {
         moveRequested = event.getKeyChar();
     }
 
-    public void keyReleased(char key) {
+    public void keyPressed(KeyEvent event) {}
+
+    public void keyReleased(KeyEvent event) {
         moveRequested = '0';
     }
 }

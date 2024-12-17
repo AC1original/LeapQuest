@@ -14,6 +14,7 @@ public class EntityHelper {
 
     public EntityHelper() {
         player = GamePanel.register(new Player());
+        Logger.log(this.getClass(), "Initialized");
     }
 
     public void spawn(Entity<?> entity) {

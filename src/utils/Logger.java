@@ -1,4 +1,5 @@
 package utils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -26,11 +27,11 @@ public class Logger {
         }
 
         if (clazz != null) {
-            if (error) System.err.printf("[LOGGER/%d:%d:%d:%d] " + clazz.getSimpleName() + ": " + log + "%n", hours, minutes, seconds, milli);
-            else System.out.printf("[LOGGER/%d:%d:%d:%d] " + clazz.getSimpleName() + ": " + log + "%n", hours, minutes, seconds, milli);
+            if (error) System.err.printf("[LOGGER/WARN/%d:%d:%d:%d] " + clazz.getSimpleName() + ": " + log + "%n", hours, minutes, seconds, milli);
+            else System.out.printf("[LOGGER/INFO/%d:%d:%d:%d] " + clazz.getSimpleName() + ": " + log + "%n", hours, minutes, seconds, milli);
         } else {
-            if (error) System.err.printf("[LOGGER/%d:%d:%d:%d] " + log + "%n", hours, minutes, seconds, milli);
-            else System.out.printf("[LOGGER/%d:%d:%d:%d] " + log + "%n", hours, minutes, seconds, milli);
+            if (error) System.err.printf("[LOGGER/WARN/%d:%d:%d:%d] " + log + "%n", hours, minutes, seconds, milli);
+            else System.out.printf("[LOGGER/INFO/%d:%d:%d:%d] " + log + "%n", hours, minutes, seconds, milli);
         }
     }
 }

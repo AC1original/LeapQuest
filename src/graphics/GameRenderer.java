@@ -42,6 +42,7 @@ public class GameRenderer extends JPanel implements Runnable {
                 e.printStackTrace();
             }
         }
+        Logger.log(this.getClass(), "Failed to run rendering thread", true);
 	}
 
     private void repaintTick() {

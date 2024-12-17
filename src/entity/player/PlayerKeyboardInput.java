@@ -16,10 +16,12 @@ public class PlayerKeyboardInput implements KeyListener {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {}
+    public void keyPressed(KeyEvent e) {
+        player.keyPressed(e);
+    }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        player.keyReleased(e.getKeyChar());
+        player.keyReleased(e);
     }
 }

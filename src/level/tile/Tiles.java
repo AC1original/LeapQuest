@@ -4,6 +4,7 @@ import level.tile.tiles.FallbackTile;
 import level.tile.tiles.GrassTile;
 import level.tile.tiles.VoidTile;
 import main.GamePanel;
+import utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Tiles {
     private static Tile register(Tile tile) {
         registered.add(tile);
         if (tile.register()) GamePanel.register(tile);
+        Logger.log(tile.getClass(), "Loaded tile: " + tile.getName());
         return tile;
     }
 

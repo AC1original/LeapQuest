@@ -1,7 +1,6 @@
 package main;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import entity.EntityHelper;
 import graphics.GameRenderer;
@@ -10,8 +9,9 @@ import graphics.animation.AnimationManager;
 import level.LevelManager;
 import utils.Logger;
 import utils.Timed;
-import utils.caching.Cache;
 
+//TODO: Dev cheat-chat
+//TODO: Gamestate management
 public class GamePanel {
 	private int gameWidth = 900, gameHeight = 600;
 	private static GamePanel instance = null;
@@ -31,7 +31,9 @@ public class GamePanel {
 		return instance;
 	}
 
-	private GamePanel() {}
+	private GamePanel() {
+		Logger.log(this.getClass(), "Initialized");
+	}
 	
 	public void run() throws InterruptedException {
 		register(this);

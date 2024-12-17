@@ -1,7 +1,9 @@
 package utils.caching;
 
 import main.GamePanel;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import utils.Logger;
 import utils.Timed;
 
 import java.util.*;
@@ -109,6 +111,7 @@ public final class Cache<T> {
         }
 
         public Cache<C> build() {
+            Logger.log(this.getClass(), "Initialized new cache");
             return GamePanel.register(new Cache<>(delTime, timeUnit, unusedDelete, oldestIndexDelete, maxIndex, timeoutDelete));
         }
     }

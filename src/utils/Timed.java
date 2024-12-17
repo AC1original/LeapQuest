@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.LOCAL_VARIABLE})
+@Target(ElementType.METHOD)
 public @interface Timed {
     long delay() default 1000;
 }

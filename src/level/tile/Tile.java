@@ -1,6 +1,7 @@
 package level.tile;
 import entity.Direction;
 import entity.Entity;
+import main.GamePanel;
 
 import java.awt.*;
 
@@ -19,4 +20,7 @@ public interface Tile {
     void onCollide(Entity<?> entity, Direction direction);
     boolean isSolid();
     boolean register();
+    default GamePanel getGamePanel() {
+        return GamePanel.getInstance();
+    }
 }

@@ -17,6 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/*
+TODO: Create nice level
+TODO: Level movement
+ */
 public class LevelManager {
     private final GamePanel gp;
     private final Filemanager fileManager = new Filemanager();
@@ -27,11 +31,13 @@ public class LevelManager {
     public LevelManager(GamePanel gp, String resourceLocation) {
         this.gp = gp;
         level = loadLevel(Objects.requireNonNull(getClass().getResource(resourceLocation)).getPath());
-        Logger.log(this.getClass(), "Initialized");
         reloadLevelDat();
+        showHitBox(true);
+        Logger.log(this.getClass(), "Initialized");
     }
 
     public int[][] loadLevel(String path) {
+        Logger.log(this.getClass(), "Try to load level at: " + path);
         fileManager.setPath(path);
         int[][] level = new int[fileManager.lines()][fileManager.get(0).split(" ").length];
         for (int line = 0; line < fileManager.lines(); line++) {
@@ -45,10 +51,12 @@ public class LevelManager {
                 }
             }
         }
+        Logger.log(this.getClass(), "Successfully loaded level at: " + path);
         return level;
     }
 
     public void reloadLevelDat() {
+        Logger.log(this.getClass(), "Try to reload level data");
         levelDat.clear();
         for (int y = 0; y < level.length; y++) {
             for (int x = 0; x < level[y].length; x++) {
@@ -57,6 +65,7 @@ public class LevelManager {
                 levelDat.put(new Rectangle(x * tile.getWidth(), y * tile.getHeight(), tile.getWidth(), tile.getHeight()), type);
             }
         }
+        Logger.log(this.getClass(), "Successfully reloaded level data");
     }
 
     public void drawLevel(@NotNull Graphics g) {
@@ -110,9 +119,5 @@ public class LevelManager {
                 .filter(hitBox::intersects)
                 .findFirst()
                 .orElse(null);
-    }
-
-    public void collide(@NotNull Tile tile, Entity<?> entity, Direction direction) {
-        tile.onCollide(entity, direction);
     }
 }
