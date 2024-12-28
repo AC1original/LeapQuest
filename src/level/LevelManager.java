@@ -32,7 +32,6 @@ public class LevelManager {
         this.gp = gp;
         level = loadLevel(Objects.requireNonNull(getClass().getResource(resourceLocation)).getPath());
         reloadLevelDat();
-        showHitBox(true);
         Logger.log(this.getClass(), "Initialized");
     }
 

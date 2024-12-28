@@ -11,6 +11,7 @@ import utils.Timed;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+//TODO: Fix fall animations
 public class Player extends Entity<Player> {
     private final PlayerKeyboardInput userKeyboardInput = GamePanel.register(new PlayerKeyboardInput(this));
     private final BufferedImage fullImage = ImageLoader.getCachedOrLoad(DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right");
@@ -25,6 +26,10 @@ public class Player extends Entity<Player> {
     @Override
     public Player onTick() {
         super.onTick();
+        if (isFalling()) {
+            stopAnimation();
+            return this;
+        }
         if (isMoving()) {
             playAnimation(new PlayerWalkAnimation(this));
         } else {
@@ -35,19 +40,15 @@ public class Player extends Entity<Player> {
 
     @Timed(delay = 50)
     public final void movementTicks() {
-        switch (moveRequested) {
-            case ' ' -> jump();
-            case 'a' -> move(Direction.LEFT);
-            case 'd' -> move(Direction.RIGHT);
-        }
+        if (moveRequested == ' ') jump();
+        if (moveRequested == 'a') move(Direction.LEFT);
+        if (moveRequested == 'd') move(Direction.RIGHT);
     }
 
     @Override
     public Player onSpawn() {
         width = 19*3;
         height = 22*3;
-        playAnimation(new PlayerIdleAnimation(this));
-        showHitBox(true);
         return this;
     }
 

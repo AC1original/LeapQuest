@@ -116,8 +116,7 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public T move(Direction direction) {
-        move(direction, getSpeed());
-        return (T) this;
+        return move(direction, getSpeed());
     }
 
     public T teleport(Point location) {
@@ -189,7 +188,7 @@ public abstract class Entity<T extends Entity<?>> {
     public T checkPhysics() {
         if (!isOnGround()) {
             falling = true;
-            move(Direction.DOWN, 3);
+            move(Direction.DOWN, 1);
         } else falling = false;
         return (T) this;
     }

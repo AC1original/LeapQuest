@@ -12,6 +12,8 @@ import utils.Timed;
 
 //TODO: Dev cheat-chat
 //TODO: Gamestate management
+//TODO: Timed annotation thread
+//TODO: Timed annotation cant tick error
 public class GamePanel {
 	private int gameWidth = 900, gameHeight = 600;
 	private static GamePanel instance = null;
@@ -65,9 +67,7 @@ public class GamePanel {
                         method.invoke(instance);
 						timed.replace(method, System.currentTimeMillis());
                     } catch (ReflectiveOperationException e) {
-						System.err.println(instance.getClass().getSimpleName());
-						System.err.println(method.getName());
-                        Logger.log("GamePanel: Failed to tick \"Timed\" annotation", true);
+                        Logger.log("GamePanel: Failed to tick \"Timed\" annotation. Cause: " + e.getMessage(), true);
                     }
                 }
 			});
