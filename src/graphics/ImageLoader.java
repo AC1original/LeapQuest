@@ -14,6 +14,8 @@ public class ImageLoader {
             .onlyDeleteWhenUnused(true)
             .build();
 
+    private static BufferedImage fallback = null;
+
 
     public static BufferedImage getCachedOrLoad(BufferedImage image, String name) {
         if (cachedImages.contains(name)) {
@@ -35,7 +37,7 @@ public class ImageLoader {
         if (cachedImages.contains(name)) {
             return cachedImages.get(name);
         }
-        return load("fallbackimage");
+        return getFallback();
     }
 
     public static BufferedImage cache(BufferedImage img, String name) {
@@ -57,11 +59,13 @@ public class ImageLoader {
     }
 
     public static BufferedImage getFallback() {
-        BufferedImage fallback = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
-        fallback.setRGB(0, 0, new Color(241, 28, 28).getRGB());
-        fallback.setRGB(1, 0, new Color(0, 0, 0).getRGB());
-        fallback.setRGB(1, 1, new Color(241, 28, 28).getRGB());
-        fallback.setRGB(0, 1, new Color(0, 0, 0).getRGB());
+        if (fallback == null) {
+            fallback = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
+            fallback.setRGB(0, 0, new Color(241, 28, 28).getRGB());
+            fallback.setRGB(1, 0, new Color(0, 0, 0).getRGB());
+            fallback.setRGB(1, 1, new Color(241, 28, 28).getRGB());
+            fallback.setRGB(0, 1, new Color(0, 0, 0).getRGB());
+        }
         return fallback;
     }
 }
