@@ -38,7 +38,7 @@ public class Player extends Entity<Player> {
         return this;
     }
 
-    @Timed(delay = 50)
+    @Timed(delay = 10)
     public final void movementTicks() {
         if (moveRequested == ' ') jump();
         if (moveRequested == 'a') move(Direction.LEFT);

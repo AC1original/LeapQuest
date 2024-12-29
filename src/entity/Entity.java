@@ -18,13 +18,16 @@ import java.awt.image.BufferedImage;
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";
-    protected int x = 0, y = 0, width = 50, height = 50, speed = 5;
+    protected int x = 0, y = 0, width = 50, height = 50, speed = 1;
     protected Direction direction = Direction.RIGHT;
     protected Direction lookDirection = Direction.RIGHT;
     private final Point location = new Point(x, y);
     private final Rectangle hitBox = new Rectangle(x, y, width, height);
     private long lastMoved = 0;
-    private boolean moving = false, falling = false, showHitBox = false;
+    private boolean moving = false, showHitBox = false;
+    private float falling = 0;
+    protected int maxFallSpeed = 10;
+    protected final float GRAVITY = 0.5f;
     private Animation animation;
 
     public abstract BufferedImage getImage();
@@ -187,9 +190,10 @@ public abstract class Entity<T extends Entity<?>> {
 
     public T checkPhysics() {
         if (!isOnGround()) {
-            falling = true;
-            move(Direction.DOWN, 1);
-        } else falling = false;
+            falling += 0.1f;
+            if (falling > maxFallSpeed) falling = maxFallSpeed;
+            move(Direction.DOWN, Math.round(falling));
+        } else falling = 0;
         return (T) this;
     }
 
@@ -259,12 +263,15 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public T setFalling(boolean falling) {
-        this.falling = falling;
-        return (T) this;
+    public boolean isFalling() {
+        return falling > 0;
     }
 
-    public boolean isFalling() {
-        return falling;
+    public int getMaxFallSpeed() {
+        return maxFallSpeed;
+    }
+
+    public final float getGravity() {
+        return GRAVITY;
     }
 }

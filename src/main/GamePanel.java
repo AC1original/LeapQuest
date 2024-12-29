@@ -13,8 +13,8 @@ import utils.Timed;
 //TODO: Dev cheat-chat
 //TODO: Gamestate management
 //TODO: Timed annotation thread
-//TODO: Timed annotation cant tick error
-public class GamePanel {
+//TODO: Timed annotation cant tick error (Maybe cached class)
+public final class GamePanel {
 	private int gameWidth = 900, gameHeight = 600;
 	private static GamePanel instance = null;
 	private static final List<Object> registered = new ArrayList<>();

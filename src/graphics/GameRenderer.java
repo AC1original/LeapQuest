@@ -8,7 +8,7 @@ import main.Main;
 import utils.Logger;
 
 public class GameRenderer extends JPanel implements Runnable {
-    private final JFrame frame = new JFrame("Projektarbeit 2BKI2");
+    private final JFrame frame = new JFrame("Leap Quest");
     private final GamePanel gp;
 
     public GameRenderer(GamePanel gp) {

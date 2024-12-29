@@ -1,8 +1,6 @@
 package level;
 
 import data.filemanager.Filemanager;
-import entity.Direction;
-import entity.Entity;
 import graphics.ImageLoader;
 import level.tile.Tile;
 import level.tile.TileType;

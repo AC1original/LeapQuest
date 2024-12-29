@@ -16,7 +16,6 @@ public class ImageLoader {
 
     private static BufferedImage fallback = null;
 
-
     public static BufferedImage getCachedOrLoad(BufferedImage image, String name) {
         if (cachedImages.contains(name)) {
             return cachedImages.get(name);

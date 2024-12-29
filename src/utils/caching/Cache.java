@@ -12,11 +12,13 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+//TODO: General Cache improvements (Structure and function)
 public final class Cache<T> {
     private final int delTime, maxIndex;
     private final TimeUnit timeUnit;
     private final boolean unusedDelete, oldestIndexDelete, timeoutDelete;
     private final Map<String, CachedObject<T>> cached = Collections.synchronizedMap(new LinkedHashMap<>());
+    private CachedObject<T> lastExpired;
 
     private Cache(int delTime, TimeUnit timeUnit, boolean unusedDelete, boolean oldestDelete, int maxIndex, boolean timeoutDelete) {
         this.delTime = delTime;
@@ -32,13 +34,13 @@ public final class Cache<T> {
        if (timeoutDelete) {
            cached.forEach((k, v) -> {
                if (System.currentTimeMillis() - (unusedDelete ? v.getLastUsed() : v.getAdded()) > timeUnit.toMillis(delTime)) {
-                   cached.remove(k);
+                   remove(k);
                }
            });
        }
 
        if (oldestIndexDelete && cached.size() > maxIndex) {
-           cached.remove(cached.keySet().iterator().next());
+           remove(cached.keySet().iterator().next());
        }
     }
 
@@ -55,11 +57,21 @@ public final class Cache<T> {
     }
 
     public void remove(T object) {
-        cached.values().removeIf(c -> c.getObject().equals(object));
+        cached.forEach((k, v) -> {
+            if (v.getObject().equals(object)) {
+                lastExpired = v;
+                remove(k);
+            }
+        });
+    }
+
+    //TODO: Fix and improve onExpire methode
+    public void onExpire(Consumer<CachedObject<T>> callback) {
+        callback.accept(lastExpired);
     }
 
     public void remove(String key) {
-        cached.remove(key);
+        remove(cached.get(key).getObject());
     }
 
     public T get(String key) {
