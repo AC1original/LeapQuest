@@ -16,11 +16,8 @@ public abstract class Animation {
     private int index = 0;
     private final Point location = new Point(0, 0);
 
+
     public boolean checkValidation() {
-        if (getDelay() <= 0) {
-            Logger.log("AnimationManager: Failed to start animation. Delay is shorter than 1.", true);
-            return false;
-        }
         return true;
     }
 
@@ -34,14 +31,16 @@ public abstract class Animation {
 
     @Timed(delay = 0)
     public void updateIndex() {
-        if (isAllowedToUpdate()) counter++;
-        if (counter >= getDelay()) {
-            counter = 1;
-            if (index < getFrames().length-1) {
-                index++;
-                onFrameUpdate(getFrames()[index]);
-            } else {
-                index = 0;
+        if (getDelay() > 0) {
+            if (isAllowedToUpdate()) counter++;
+            if (counter >= getDelay()) {
+                counter = 1;
+                if (index < getFrames().length - 1) {
+                    index++;
+                    onFrameUpdate(getFrames()[index]);
+                } else {
+                    index = 0;
+                }
             }
         }
     }
@@ -57,6 +56,14 @@ public abstract class Animation {
 
     public final int getAnimationIndex() {
         return index;
+    }
+
+    public final void jumpIndex(int index) {
+        this.index = index;
+    }
+
+    public final void reset() {
+        this.index = 0;
     }
 
     public Graphics getGraphics() {

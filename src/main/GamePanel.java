@@ -46,10 +46,19 @@ public final class GamePanel {
 		Thread rendererThread = new Thread(gameRenderer);
 		rendererThread.start();
 
-        while (running) {
-			Thread.sleep(10);
-        	tick();
-        }
+		//Game loop with 100 FPS
+		long now;
+		long updateTime;
+		long wait;
+		int TARGET_FPS = 100;
+		long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+		while (running) {
+			now = System.nanoTime();
+			updateTime = System.nanoTime() - now;
+			wait = (OPTIMAL_TIME - updateTime) / 1000000;
+			tick();
+			Thread.sleep(wait);
+		}
 	}
 
 	public void tick() {

@@ -3,6 +3,7 @@ package entity.player;
 import entity.Direction;
 import entity.Entity;
 import graphics.ImageLoader;
+import graphics.animation.animations.player.PlayerFallAnimation;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
 import main.GamePanel;
@@ -11,7 +12,6 @@ import utils.Timed;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-//TODO: Fix fall animations
 public class Player extends Entity<Player> {
     private final PlayerKeyboardInput userKeyboardInput = GamePanel.register(new PlayerKeyboardInput(this));
     private final BufferedImage fullImage = ImageLoader.getCachedOrLoad(DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right");
@@ -27,7 +27,7 @@ public class Player extends Entity<Player> {
     public Player onTick() {
         super.onTick();
         if (isFalling()) {
-            stopAnimation();
+            playAnimation(new PlayerFallAnimation(this));
             return this;
         }
         if (isMoving()) {
@@ -38,7 +38,7 @@ public class Player extends Entity<Player> {
         return this;
     }
 
-    @Timed(delay = 10)
+    @Timed(delay = 0)
     public final void movementTicks() {
         if (moveRequested == ' ') jump();
         if (moveRequested == 'a') move(Direction.LEFT);

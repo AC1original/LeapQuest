@@ -11,23 +11,22 @@ import utils.Logger;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-//TODO: Jump physics
 //TODO: Better hitbox
 //TODO: Heath & enemies
-
+//TODO: Allow jump and move at the same time
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";
-    protected int x = 0, y = 0, width = 50, height = 50, speed = 1;
+    protected int x = 0, y = 0, width = 50, height = 50, speed = 2;
     protected Direction direction = Direction.RIGHT;
     protected Direction lookDirection = Direction.RIGHT;
     private final Point location = new Point(x, y);
     private final Rectangle hitBox = new Rectangle(x, y, width, height);
     private long lastMoved = 0;
     private boolean moving = false, showHitBox = false;
-    private float falling = 0;
+    private float fallSpeed = 0;
     protected int maxFallSpeed = 10;
-    protected final float GRAVITY = 0.5f;
+    protected final float GRAVITY = 0.1f;
     private Animation animation;
 
     public abstract BufferedImage getImage();
@@ -190,10 +189,10 @@ public abstract class Entity<T extends Entity<?>> {
 
     public T checkPhysics() {
         if (!isOnGround()) {
-            falling += 0.1f;
-            if (falling > maxFallSpeed) falling = maxFallSpeed;
-            move(Direction.DOWN, Math.round(falling));
-        } else falling = 0;
+            fallSpeed += getGravity();
+            if (fallSpeed > maxFallSpeed) fallSpeed = maxFallSpeed;
+            move(Direction.DOWN, Math.round(fallSpeed));
+        } else fallSpeed = 0;
         return (T) this;
     }
 
@@ -212,7 +211,10 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public T jump(short strength) {
-        move(Direction.UP, strength);
+        if (isOnGround()) {
+            fallSpeed -= (float) strength /2;
+            move(Direction.UP, strength);
+        }
         return (T) this;
     }
 
@@ -264,7 +266,7 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public boolean isFalling() {
-        return falling > 0;
+        return fallSpeed > 0;
     }
 
     public int getMaxFallSpeed() {
