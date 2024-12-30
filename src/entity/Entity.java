@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 //TODO: Better hitbox
 //TODO: Heath & enemies
 //TODO: Stop jump when bump head
+//TODO: Short jump cooldown
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";
