@@ -8,7 +8,7 @@ import level.tile.TileType;
 import java.awt.image.BufferedImage;
 
 public class VoidTile implements Tile {
-    private final TileType[] types= new TileType[]{new TileType(this, 0, null, new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB))};
+    private final TileType[] types= new TileType[]{new TileType(this, 0, null, new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB), -1, -1)};
 
     @Override
     public TileType[] getTypes() {

@@ -41,7 +41,7 @@ public final class GamePanel {
 		register(this);
 		running = true;
 
-		entityHelper.spawn(entityHelper.getPlayer());
+		entityHelper.spawn(entityHelper.getPlayer(), 400, 150);
 
 		Thread rendererThread = new Thread(gameRenderer);
 		rendererThread.start();

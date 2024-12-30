@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 
 //TODO: Better hitbox
 //TODO: Heath & enemies
-//TODO: Allow jump and move at the same time
+//TODO: Stop fall when bump head
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";

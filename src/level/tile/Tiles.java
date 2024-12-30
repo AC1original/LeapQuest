@@ -1,5 +1,6 @@
 package level.tile;
 
+import level.tile.tiles.BarrierTile;
 import level.tile.tiles.FallbackTile;
 import level.tile.tiles.GrassTile;
 import level.tile.tiles.VoidTile;
@@ -15,6 +16,7 @@ public class Tiles {
     public static Tile FALLBACK_TILE = register(new FallbackTile());
     public static Tile VOID_TILE = register(new VoidTile());
     public static Tile GRASS_TILE = register(new GrassTile());
+    public static Tile BARRIER_TILE = register(new BarrierTile());
 
     private static Tile register(Tile tile) {
         registered.add(tile);

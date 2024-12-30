@@ -59,7 +59,7 @@ public class LevelManager {
             for (int x = 0; x < level[y].length; x++) {
                 var type = Tiles.getTypeByID(level[y][x]);
                 var tile = type.parent();
-                levelDat.put(new Rectangle(x * tile.getWidth(), y * tile.getHeight(), tile.getWidth(), tile.getHeight()), type);
+                levelDat.put(new Rectangle(x * type.width(), y * type.height(), type.width(), type.height()), type);
             }
         }
         Logger.log(this.getClass(), "Successfully reloaded level data");
@@ -77,7 +77,7 @@ public class LevelManager {
 
 
         levelDat.forEach((loc, type) -> {
-            g.drawImage(type.getImage(), loc.x, loc.y, loc.width, loc.height, null);
+            g.drawImage(type.image(), loc.x, loc.y, loc.width, loc.height, null);
 
             if (isHitBoxShown()) {
                 if (type.parent().isSolid()) {

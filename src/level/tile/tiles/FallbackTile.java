@@ -7,7 +7,7 @@ import level.tile.Tile;
 import level.tile.TileType;
 
 public class FallbackTile implements Tile {
-    private final TileType[] types = {new TileType(this, -1, null, ImageLoader.getFallback())};
+    private final TileType[] types = {new TileType(this, -1, null, ImageLoader.getFallback(), -1, -1)};
 
     @Override
     public TileType[] getTypes() {
