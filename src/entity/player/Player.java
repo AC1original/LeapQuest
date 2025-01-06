@@ -3,13 +3,10 @@ package entity.player;
 import entity.Direction;
 import entity.Entity;
 import graphics.ImageLoader;
-import graphics.animation.animations.player.PlayerFallAnimation;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
 import main.GamePanel;
-import utils.Timed;
 
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
@@ -26,21 +23,9 @@ public final class Player extends Entity<Player> {
 
     @Override
     public Player onTick() {
+        System.out.println(isOnGround());
         super.onTick();
-        if (isFalling()) {
-            playAnimation(new PlayerFallAnimation(this));
-            return this;
-        }
-        if (isMoving()) {
-            playAnimation(new PlayerWalkAnimation(this));
-        } else {
-            playAnimation(new PlayerIdleAnimation(this));
-        }
-        return this;
-    }
 
-    @Timed(delay = 0)
-    public final void movementTicks() {
         for (char c : moveRequests) {
             switch (c) {
                 case ' ' -> jump();
@@ -48,12 +33,18 @@ public final class Player extends Entity<Player> {
                 case 'd' -> move(Direction.RIGHT);
             }
         }
+
+        if (hasMoveRequests()) {
+            playAnimation(new PlayerWalkAnimation(this));
+        } else {
+            playAnimation(new PlayerIdleAnimation(this));
+        }
+        return this;
     }
 
     @Override
     public Player onSpawn() {
-        width = 19*3;
-        height = 22*3;
+        showHitBox(true);
         return this;
     }
 
@@ -61,6 +52,16 @@ public final class Player extends Entity<Player> {
     public Player setImage(BufferedImage image) {
         this.playerImage = image;
         return this;
+    }
+
+    @Override
+    public int getWidth() {
+        return 19*3;
+    }
+
+    @Override
+    public int getHeight() {
+        return 22*3;
     }
 
     @Override
@@ -72,17 +73,7 @@ public final class Player extends Entity<Player> {
         return userKeyboardInput;
     }
 
-    public void keyTyped(KeyEvent event) {}
-
-    public void keyPressed(KeyEvent event) {
-        addMoveRequest(event.getKeyChar());
-    }
-
-    public void keyReleased(KeyEvent event) {
-        removeMoveRequest(event.getKeyChar());
-    }
-
-    public void addMoveRequest(char key) {
+    public synchronized void addMoveRequest(char key) {
         if (hasMoveRequest(key)) return;
         for (int i = 0; i < moveRequests.length; i++) {
             if (moveRequests[i] == 0) {
@@ -92,7 +83,7 @@ public final class Player extends Entity<Player> {
         }
     }
 
-    public void removeMoveRequest(char key) {
+    public synchronized void removeMoveRequest(char key) {
         for (int i = 0; i < moveRequests.length; i++) {
             if (moveRequests[i] == key) {
                 moveRequests[i] = 0;
@@ -109,6 +100,17 @@ public final class Player extends Entity<Player> {
             if (moveRequest == key) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public char[] getMoveRequests() {
+        return moveRequests;
+    }
+
+    public boolean hasMoveRequests() {
+        for (char moveRequest : moveRequests) {
+            if (moveRequest != 0) return true;
         }
         return false;
     }

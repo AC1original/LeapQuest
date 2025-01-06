@@ -1,12 +1,14 @@
 package entity;
 import entity.player.Player;
 import main.GamePanel;
+import utils.HitBox;
 import utils.Logger;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EntityHelper {
     private final HashSet<Entity<?>> entities = new HashSet<>();
@@ -40,9 +42,11 @@ public class EntityHelper {
     }
 
     public List<Entity<?>> getEntitiesAt(int x, int y) {
-        final List<Entity<?>> retuEntities = new ArrayList<>();
-        retuEntities.add(entities.stream().filter(entity -> entity.x == x && entity.y == y).findAny().orElse(null));
-        return retuEntities;
+        HitBox hitBox = new HitBox(x, y, 1, 1);
+        return entities
+                .stream()
+                .filter(entity -> entity.getHitBox().intersects(hitBox))
+                .collect(Collectors.toList());
     }
 
     public void tick() {
@@ -52,11 +56,11 @@ public class EntityHelper {
     public void drawEntities(Graphics g) {
         for (Entity<?> entity : entities) {
             entity.onDraw(g);
-            g.drawImage(entity.getImage(), entity.x, entity.y, entity.width, entity.height, null);
+            g.drawImage(entity.getImage(), entity.x, entity.y, entity.getWidth(), entity.getHeight(), null);
 
             if (entity.isHitBoxShown()) {
                 g.setColor(Color.RED);
-                g.drawRect(entity.getHitBox().x, entity.getHitBox().y, entity.getHitBox().width, entity.getHitBox().height);
+                g.drawRect(entity.getHitBox().getX(), entity.getHitBox().getY(), entity.getHitBox().getWidth(), entity.getHitBox().getHeight());
             }
         }
     }

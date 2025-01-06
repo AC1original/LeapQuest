@@ -18,6 +18,9 @@ public class PlayerIdleAnimation extends Animation {
 
     @Override
     public AnimationFrame[] getFrames() {
+
+        if (!player.isOnGround()) return AnimationFrame.createEmpty();
+
         if (player.getLookDirection().equals(Direction.RIGHT)) {
             return animationRight;
         } else if (player.getLookDirection().equals(Direction.LEFT)) {
@@ -28,12 +31,12 @@ public class PlayerIdleAnimation extends Animation {
 
     @Override
     public int getDelay() {
-        return 20;
+        return 10;
     }
 
     @Override
     public boolean drawAnimation() {
-        return false;
+        return true;
     }
 
     @Override

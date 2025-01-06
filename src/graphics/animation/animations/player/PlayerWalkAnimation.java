@@ -28,12 +28,12 @@ public class PlayerWalkAnimation extends Animation {
 
     @Override
     public int getDelay() {
-        return 12;
+        return 7;
     }
 
     @Override
     public boolean drawAnimation() {
-        return false;
+        return true;
     }
 
     @Override

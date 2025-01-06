@@ -5,11 +5,13 @@ import javax.swing.*;
 
 import main.GamePanel;
 import main.Main;
+import org.jetbrains.annotations.Nullable;
 import utils.Logger;
 
 public class GameRenderer extends JPanel implements Runnable {
     private final JFrame frame = new JFrame("Leap Quest");
     private final GamePanel gp;
+    private Graphics graphics = null;
 
     public GameRenderer(GamePanel gp) {
         this.gp = gp;
@@ -51,6 +53,8 @@ public class GameRenderer extends JPanel implements Runnable {
 	
 	@Override
 	protected void paintComponent(Graphics g) {
+        if (graphics == null) graphics = g;
+
 		super.paintComponent(g);
         gp.getLevelManager().drawLevel(g);
         gp.getEntityHelper().drawEntities(g);
@@ -62,5 +66,10 @@ public class GameRenderer extends JPanel implements Runnable {
 
     public JFrame getFrame() {
         return frame;
+    }
+
+    @Nullable
+    public Graphics getUGraphics() {
+        return graphics;
     }
 }

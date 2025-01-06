@@ -1,6 +1,6 @@
 package level;
 
-import data.filemanager.Filemanager;
+import de.ac.Filemanager;
 import graphics.ImageLoader;
 import level.tile.Tile;
 import level.tile.TileType;
@@ -8,9 +8,11 @@ import level.tile.Tiles;
 import main.GamePanel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import utils.HitBox;
 import utils.Logger;
 
 import java.awt.*;
+import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,18 +26,23 @@ public class LevelManager {
     private final Filemanager fileManager = new Filemanager();
     private boolean showHitBox = false;
     private final int[][] level;
-    private final Map<Rectangle, TileType> levelDat = new HashMap<>();
+    private final Map<HitBox, TileType> levelDat = new HashMap<>();
 
     public LevelManager(GamePanel gp, String resourceLocation) {
         this.gp = gp;
         level = loadLevel(Objects.requireNonNull(getClass().getResource(resourceLocation)).getPath());
         reloadLevelDat();
+        showHitBox(true);
         Logger.log(this.getClass(), "Initialized");
     }
 
     public int[][] loadLevel(String path) {
         Logger.log(this.getClass(), "Try to load level at: " + path);
-        fileManager.setPath(path);
+        try {
+            fileManager.setPath(path);
+        } catch (NoSuchFileException e) {
+            throw new RuntimeException(e);
+        }
         int[][] level = new int[fileManager.lines()][fileManager.get(0).split(" ").length];
         for (int line = 0; line < fileManager.lines(); line++) {
             String[] nums = fileManager.get(line).split(" ");
@@ -58,8 +65,7 @@ public class LevelManager {
         for (int y = 0; y < level.length; y++) {
             for (int x = 0; x < level[y].length; x++) {
                 var type = Tiles.getTypeByID(level[y][x]);
-                var tile = type.parent();
-                levelDat.put(new Rectangle(x * type.width(), y * type.height(), type.width(), type.height()), type);
+                levelDat.put(new HitBox(x * type.width(), y * type.height(), type.width(), type.height()), type);
             }
         }
         Logger.log(this.getClass(), "Successfully reloaded level data");
@@ -77,12 +83,12 @@ public class LevelManager {
 
 
         levelDat.forEach((loc, type) -> {
-            g.drawImage(type.image(), loc.x, loc.y, loc.width, loc.height, null);
+            g.drawImage(type.image(), loc.getX(), loc.getY(), loc.getWidth(), loc.getHeight(), null);
 
             if (isHitBoxShown()) {
                 if (type.parent().isSolid()) {
                     g.setColor(Color.RED);
-                    g.drawRect(loc.x, loc.y, loc.width, loc.height);
+                    g.drawRect(loc.getX(), loc.getY(), loc.getWidth(), loc.getHeight());
                 }
             }
         });
@@ -100,16 +106,16 @@ public class LevelManager {
     }
 
     @Nullable
-    public TileType wouldCollideTile(Rectangle hitBox) {
+    public TileType wouldCollideTile(HitBox hitBox) {
         return levelDat.get(wouldCollideHitBox(hitBox));
     }
 
-    public boolean wouldCollide(Rectangle hitBox) {
+    public boolean wouldCollide(HitBox hitBox) {
         return wouldCollideHitBox(hitBox) != null;
     }
 
     @Nullable
-    public Rectangle wouldCollideHitBox(@NotNull Rectangle hitBox) {
+    public HitBox wouldCollideHitBox(@NotNull HitBox hitBox) {
         return levelDat.keySet()
                 .stream()
                 .filter(rect -> levelDat.get(rect).parent().isSolid())

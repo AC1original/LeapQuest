@@ -6,6 +6,7 @@ import level.LevelManager;
 import level.tile.TileType;
 import main.GamePanel;
 import org.jetbrains.annotations.NotNull;
+import utils.HitBox;
 import utils.Logger;
 
 import java.awt.*;
@@ -15,25 +16,29 @@ import java.awt.image.BufferedImage;
 //TODO: Heath & enemies
 //TODO: Stop jump when bump head
 //TODO: Short jump cooldown
+//TODO: FIX IS ON GROUND!!!!
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";
-    protected int x = 0, y = 0, width = 50, height = 50, speed = 2;
+    protected int x = 0, y = 0, speed = 4;
     protected Direction direction = Direction.RIGHT;
     protected Direction lookDirection = Direction.RIGHT;
     private final Point location = new Point(x, y);
-    private final Rectangle hitBox = new Rectangle(x, y, width, height);
+    private final HitBox hitBox = new HitBox(x, y, getWidth(), getHeight());
     private long lastMoved = 0;
     private boolean moving = false, showHitBox = false;
     private float fallSpeed = 0;
     protected int maxFallSpeed = 10;
-    protected final float GRAVITY = 0.1f;
+    protected final float GRAVITY = 0.3f;
     private Animation animation;
 
     public abstract BufferedImage getImage();
     public abstract T onRemove();
     public abstract T onSpawn();
     public abstract T setImage(BufferedImage image);
+    public abstract int getWidth();
+    public abstract int getHeight();
+
 
     public T onTick() {
         if (System.currentTimeMillis() - lastMoved >= 350) {
@@ -50,12 +55,12 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public int distanceTo(int x, int y) {
-        int fx = x + width / 2;
-        int fy = y + height / 2;
+        int fx = x + getWidth() / 2;
+        int fy = y + getHeight() / 2;
         return Math.abs(fx - x + fy - y);
     }
 
-    public T playAnimation(Animation animation) {
+    public synchronized T playAnimation(Animation animation) {
         if (getAnimationManager() == null) {
             Logger.log(this.getClass(), "Failed playing animation " + animation.getClass().getSimpleName() + ". AnimationManager is null", true);
             return (T) this;
@@ -71,7 +76,7 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public T stopAnimation() {
+    public synchronized T stopAnimation() {
         if (animation != null) {
             if (getAnimationManager() == null) {
                 Logger.log(this.getClass(), "Failed to stop animation " + animation.getClass().getSimpleName() + ". AnimationManager is null", true);
@@ -83,29 +88,28 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public T move(Direction direction, int speed) {
+    public synchronized T move(Direction direction, int speed) {
         setDirection(direction);
-        setLookDirection(direction);
 
         Point targetLoc = Direction.getNewLocation(getLocation(), speed, direction);
 
         LevelManager levelManager = getGamePanel().getLevelManager();
-        Rectangle uEntityBox = getHitBox();
-        uEntityBox.x = targetLoc.x;
-        uEntityBox.y = targetLoc.y;
-
+        HitBox uEntityBox = getHitBox();
+        uEntityBox.setX(targetLoc.x);
+        uEntityBox.setY(targetLoc.y);
 
         TileType tile = levelManager.wouldCollideTile(uEntityBox);
         if (tile != null) {
             for (int i = 0; i < speed; i++) {
                 Point step = Direction.getNewLocation(getLocation(), 1, direction);
-                uEntityBox.x = step.x;
-                uEntityBox.y = step.y;
+                uEntityBox.setX(step.x);
+                uEntityBox.setY(step.y);
                 if (!levelManager.wouldCollide(uEntityBox)) {
                     this.x = step.x;
                     this.y = step.y;
                 } else {
                     tile.parent().onCollide(this, direction);
+                    break;
                 }
             }
         } else {
@@ -118,7 +122,7 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public T move(Direction direction) {
+    public synchronized T move(Direction direction) {
         return move(direction, getSpeed());
     }
 
@@ -141,14 +145,6 @@ public abstract class Entity<T extends Entity<?>> {
         return y;
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
     public int getSpeed() {
         return speed;
     }
@@ -164,6 +160,7 @@ public abstract class Entity<T extends Entity<?>> {
 
     public T setDirection(Direction direction) {
         this.direction = direction;
+        setLookDirection(direction);
         return (T) this;
     }
 
@@ -199,12 +196,14 @@ public abstract class Entity<T extends Entity<?>> {
 
     public boolean isOnGround() {
         LevelManager levelManager = getGamePanel().getLevelManager();
-        if (levelManager.wouldCollideHitBox(getHitBox()) != null) {
-            Rectangle hit = levelManager.wouldCollideHitBox(getHitBox());
-            return getHitBox().y + getHitBox().height > hit.y;
-        } else {
-            return false;
+        HitBox collideBox = levelManager.wouldCollideHitBox(getHitBox());
+
+        if (collideBox != null) {
+            if (collideBox.getY() < getY() - getHeight()) {
+                return true;
+            }
         }
+        return false;
     }
 
     public T jump() {
@@ -213,15 +212,16 @@ public abstract class Entity<T extends Entity<?>> {
 
     public T jump(short strength) {
         if (isOnGround()) {
-            fallSpeed -= (float) strength /2;
+            fallSpeed -= (float) strength;
             move(Direction.UP, strength);
         }
         return (T) this;
     }
 
-    public Rectangle getHitBox() {
-        hitBox.setBounds(getX() + getHitBoxBufferX() / 2, getY() + getHitBoxBufferY() / 2,
-                getWidth() - getHitBoxBufferX(), getHeight() - getHitBoxBufferY());
+    public HitBox getHitBox() {
+        hitBox.setX(getX());
+        hitBox.setY(getY());
+        hitBox.resize(getWidth(), getHeight());
         return hitBox;
     }
 

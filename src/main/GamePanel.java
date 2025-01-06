@@ -46,11 +46,11 @@ public final class GamePanel {
 		Thread rendererThread = new Thread(gameRenderer);
 		rendererThread.start();
 
-		//Game loop with 100 FPS
+		//Game loop with 50 FPS
 		long now;
 		long updateTime;
 		long wait;
-		int TARGET_FPS = 100;
+		int TARGET_FPS = 50;
 		long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
 		while (running) {
 			now = System.nanoTime();

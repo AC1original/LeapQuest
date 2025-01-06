@@ -55,5 +55,12 @@ public class AnimationFrame {
     public void setImgHeight(int imgHeight) {
         this.imgHeight = imgHeight;
     }
+
+    public void modifySize(AnimationFrame[] frames, int newWidth, int newHeight) {
+        for (AnimationFrame frame : frames) {
+            frame.setImgWidth(newWidth);
+            frame.setImgHeight(newHeight);
+        }
+    }
 }
 

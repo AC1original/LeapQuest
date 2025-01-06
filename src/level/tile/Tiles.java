@@ -10,6 +10,7 @@ import utils.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: Class independent tiles
 public class Tiles {
     private static final List<Tile> registered = new ArrayList<>();
 

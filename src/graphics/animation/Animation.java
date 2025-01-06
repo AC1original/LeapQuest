@@ -18,7 +18,7 @@ public abstract class Animation {
 
 
     public boolean checkValidation() {
-        return true;
+        return getFrames().length > 0;
     }
 
     public void drawAnimation(Graphics g) {
@@ -42,6 +42,8 @@ public abstract class Animation {
                     index = 0;
                 }
             }
+        } else {
+            onFrameUpdate(getFrames()[index]);
         }
     }
 
