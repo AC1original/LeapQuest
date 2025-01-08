@@ -18,15 +18,10 @@ public class PlayerIdleAnimation extends Animation {
 
     @Override
     public AnimationFrame[] getFrames() {
-
-        if (!player.isOnGround()) return AnimationFrame.createEmpty();
-
-        if (player.getLookDirection().equals(Direction.RIGHT)) {
-            return animationRight;
-        } else if (player.getLookDirection().equals(Direction.LEFT)) {
+        if (player.getLookDirection().equals(Direction.LEFT)) {
             return animationLeft;
         }
-        return AnimationFrame.createEmpty();
+        return animationRight;
     }
 
     @Override

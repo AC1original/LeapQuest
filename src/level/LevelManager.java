@@ -13,9 +13,12 @@ import utils.Logger;
 
 import java.awt.*;
 import java.nio.file.NoSuchFileException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /*
 TODO: Create nice level
@@ -105,22 +108,23 @@ public class LevelManager {
         return showHitBox;
     }
 
-    @Nullable
-    public TileType wouldCollideTile(HitBox hitBox) {
-        return levelDat.get(wouldCollideHitBox(hitBox));
+    public List<TileType> getCollisionTiles(@NotNull HitBox hitBox) {
+        return getCollisions(hitBox).stream()
+                .map(levelDat::get)
+                .collect(Collectors.toList());
     }
 
-    public boolean wouldCollide(HitBox hitBox) {
-        return wouldCollideHitBox(hitBox) != null;
+
+    public boolean checkCollision(HitBox hitBox) {
+        return !getCollisions(hitBox).isEmpty();
     }
 
-    @Nullable
-    public HitBox wouldCollideHitBox(@NotNull HitBox hitBox) {
+    public List<HitBox> getCollisions(@NotNull HitBox hitBox) {
         return levelDat.keySet()
                 .stream()
                 .filter(rect -> levelDat.get(rect).parent().isSolid())
                 .filter(hitBox::intersects)
-                .findFirst()
-                .orElse(null);
+                .collect(Collectors.toList());
     }
+
 }

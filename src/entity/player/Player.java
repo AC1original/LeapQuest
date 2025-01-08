@@ -23,7 +23,6 @@ public final class Player extends Entity<Player> {
 
     @Override
     public Player onTick() {
-        System.out.println(isOnGround());
         super.onTick();
 
         for (char c : moveRequests) {
@@ -36,8 +35,10 @@ public final class Player extends Entity<Player> {
 
         if (hasMoveRequests()) {
             playAnimation(new PlayerWalkAnimation(this));
-        } else {
+        } else if (isOnGround()){
             playAnimation(new PlayerIdleAnimation(this));
+        } else {
+            stopAnimation();
         }
         return this;
     }

@@ -11,12 +11,11 @@ import utils.Logger;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
-//TODO: Better hitbox
 //TODO: Heath & enemies
 //TODO: Stop jump when bump head
 //TODO: Short jump cooldown
-//TODO: FIX IS ON GROUND!!!!
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> {
     public static final String DEFAULT_PATH = "/res/entity/";
@@ -98,17 +97,17 @@ public abstract class Entity<T extends Entity<?>> {
         uEntityBox.setX(targetLoc.x);
         uEntityBox.setY(targetLoc.y);
 
-        TileType tile = levelManager.wouldCollideTile(uEntityBox);
-        if (tile != null) {
+        List<TileType> tiles = levelManager.getCollisionTiles(uEntityBox);
+        if (!tiles.isEmpty()) {
             for (int i = 0; i < speed; i++) {
                 Point step = Direction.getNewLocation(getLocation(), 1, direction);
                 uEntityBox.setX(step.x);
                 uEntityBox.setY(step.y);
-                if (!levelManager.wouldCollide(uEntityBox)) {
+                if (!levelManager.checkCollision(uEntityBox)) {
                     this.x = step.x;
                     this.y = step.y;
                 } else {
-                    tile.parent().onCollide(this, direction);
+                    tiles.forEach(tile -> tile.parent().onCollide(this, direction));
                     break;
                 }
             }
@@ -195,13 +194,15 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public boolean isOnGround() {
+        HitBox uEntityBox = getHitBox();
+        uEntityBox.move(0, 1);
         LevelManager levelManager = getGamePanel().getLevelManager();
-        HitBox collideBox = levelManager.wouldCollideHitBox(getHitBox());
+        List<HitBox> collideBoxes = levelManager.getCollisions(uEntityBox);
 
-        if (collideBox != null) {
-            if (collideBox.getY() < getY() - getHeight()) {
-                return true;
-            }
+        if (!collideBoxes.isEmpty()) {
+            return collideBoxes
+                    .stream()
+                    .anyMatch(box -> getY() + getHeight() <= box.getY());
         }
         return false;
     }

@@ -23,7 +23,7 @@ public abstract class Animation {
 
     public void drawAnimation(Graphics g) {
         this.graphics = g;
-        if (!drawAnimation()) {
+        if (!drawAnimation() || !checkValidation()) {
             return;
         }
         g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y, getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
@@ -31,7 +31,7 @@ public abstract class Animation {
 
     @Timed(delay = 0)
     public void updateIndex() {
-        if (getDelay() > 0) {
+        if (getDelay() > 0 && checkValidation()) {
             if (isAllowedToUpdate()) counter++;
             if (counter >= getDelay()) {
                 counter = 1;
@@ -42,8 +42,6 @@ public abstract class Animation {
                     index = 0;
                 }
             }
-        } else {
-            onFrameUpdate(getFrames()[index]);
         }
     }
 

@@ -68,4 +68,9 @@ public class HitBox {
     public void setY(int y) {
         this.y = y;
     }
+
+    @Override
+    public String toString() {
+        return "HitBox [x=" + x + ", y=" + y + ", width=" + width + ", height=" + height;
+    }
 }
