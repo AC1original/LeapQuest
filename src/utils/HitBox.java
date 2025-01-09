@@ -1,10 +1,13 @@
 package utils;
 
+import java.awt.*;
+
 public class HitBox {
     private int x;
     private int y;
     private int width;
     private int height;
+    private final Point location = new Point();
 
     public HitBox(int x, int y, int width, int height) {
         this.x = x;
@@ -14,10 +17,10 @@ public class HitBox {
     }
 
     public boolean intersects(HitBox hitBox) {
-        return this.x < hitBox.x + hitBox.width &&
-                this.x + this.width > hitBox.x &&
-                this.y < hitBox.y + hitBox.height &&
-                this.y + this.height > hitBox.y;
+        return this.x <= hitBox.x + hitBox.width &&
+                this.x + this.width >= hitBox.x &&
+                this.y <= hitBox.y + hitBox.height &&
+                this.y + this.height >= hitBox.y;
     }
 
     public void resize(int width, int height) {
@@ -67,6 +70,11 @@ public class HitBox {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public Point getLocation() {
+        location.move(this.x, this.y);
+        return location;
     }
 
     @Override

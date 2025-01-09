@@ -8,6 +8,7 @@ import main.Main;
 import org.jetbrains.annotations.Nullable;
 import utils.Logger;
 
+//TODO: Drawable interface and support
 public class GameRenderer extends JPanel implements Runnable {
     private final JFrame frame = new JFrame("Leap Quest");
     private final GamePanel gp;

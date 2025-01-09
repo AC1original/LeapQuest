@@ -1,6 +1,7 @@
 package main;
 import utils.Logger;
 
+//TODO: GameLoop helper class
 public class Main {
 	
 	public static void main(String[] args) throws InterruptedException {

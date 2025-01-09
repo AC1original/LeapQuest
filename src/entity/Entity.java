@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-//TODO: Heath & enemies
+//TODO: Health & enemies
 //TODO: Stop jump when bump head
 //TODO: Short jump cooldown
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
@@ -94,15 +94,15 @@ public abstract class Entity<T extends Entity<?>> {
 
         LevelManager levelManager = getGamePanel().getLevelManager();
         HitBox uEntityBox = getHitBox();
-        uEntityBox.setX(targetLoc.x);
-        uEntityBox.setY(targetLoc.y);
+        uEntityBox.setX(targetLoc.x + getHitBoxBufferX() / 2);
+        uEntityBox.setY(targetLoc.y + getHitBoxBufferY() / 2);
 
         List<TileType> tiles = levelManager.getCollisionTiles(uEntityBox);
         if (!tiles.isEmpty()) {
             for (int i = 0; i < speed; i++) {
                 Point step = Direction.getNewLocation(getLocation(), 1, direction);
-                uEntityBox.setX(step.x);
-                uEntityBox.setY(step.y);
+                uEntityBox.setX(step.x + getHitBoxBufferX() / 2);
+                uEntityBox.setY(step.y + getHitBoxBufferY() / 2);
                 if (!levelManager.checkCollision(uEntityBox)) {
                     this.x = step.x;
                     this.y = step.y;
@@ -202,7 +202,7 @@ public abstract class Entity<T extends Entity<?>> {
         if (!collideBoxes.isEmpty()) {
             return collideBoxes
                     .stream()
-                    .anyMatch(box -> getY() + getHeight() <= box.getY());
+                    .anyMatch(box -> getHitBox().getY() + getHitBox().getHeight() <= box.getY());
         }
         return false;
     }
@@ -220,9 +220,9 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public HitBox getHitBox() {
-        hitBox.setX(getX());
-        hitBox.setY(getY());
-        hitBox.resize(getWidth(), getHeight());
+        hitBox.setX(getX() + getHitBoxBufferX() / 2);
+        hitBox.setY(getY() + getHitBoxBufferY() / 2);
+        hitBox.resize(getWidth() - getHitBoxBufferX(), getHeight() - getHitBoxBufferY());
         return hitBox;
     }
 
