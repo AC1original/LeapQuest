@@ -1,9 +1,9 @@
 package utils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
+//TODO: Use Java logging
 public class Logger {
 
     public static void log(String log) {
