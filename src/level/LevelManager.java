@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 /*
 TODO: Create nice level
 TODO: Level movement
-TODO: Extra thread
+TODO: Extra thread (completable future)
  */
 public class LevelManager {
     private final GamePanel gp;

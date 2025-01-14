@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+//TODO: load ressources from ressource folder as stream
 public class ImageLoader {
     private static final Cache<BufferedImage> cachedImages = new Cache.CacheBuilder<BufferedImage>()
             .timeoutDelay(5, TimeUnit.MINUTES)

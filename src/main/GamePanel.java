@@ -2,12 +2,14 @@ package main;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import entity.EntityHelper;
 import graphics.GameRenderer;
 import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
+import utils.GameLoop;
 import utils.Logger;
 import utils.Ticked;
 import utils.caching.Cache;
@@ -17,7 +19,7 @@ import utils.caching.Cache;
 public final class GamePanel {
 	private int gameWidth = 900, gameHeight = 600;
 	private static GamePanel instance = null;
-	private static final Set<Object> ticked = new HashSet<>();
+	private static final Queue<Object> ticked = new ConcurrentLinkedDeque<>();
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
 	private final AnimationManager animationManager = register(new AnimationManager());
@@ -36,7 +38,7 @@ public final class GamePanel {
 		Logger.log(this.getClass(), "Initialized");
 	}
 	
-	public void run() throws InterruptedException, InvocationTargetException {
+	public void run() {
 		running = true;
 
 		entityHelper.spawn(entityHelper.getPlayer(), 400, 150);
@@ -44,19 +46,13 @@ public final class GamePanel {
 		Thread rendererThread = new Thread(gameRenderer);
 		rendererThread.start();
 
-		//Game loop with 50 FPS
-		long now;
-		long updateTime;
-		long wait;
-		int TARGET_FPS = 50;
-		long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
-		while (running) {
-			now = System.nanoTime();
-			updateTime = System.nanoTime() - now;
-			wait = (OPTIMAL_TIME - updateTime) / 1000000;
-			tick();
-			Thread.sleep(wait);
-		}
+		new GameLoop().start(50, (lastFPS) -> {
+            try {
+                tick();
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        });
 	}
 
 	public static<T> T register(T clazz) {
@@ -73,7 +69,12 @@ public final class GamePanel {
 			for (Method method : object.getClass().getMethods()) {
 				if (method.isAnnotationPresent(Ticked.class)) {
 					try {
-						method.invoke(object);
+						if (method.getParameterCount() > 0) {
+							Logger.log(object.getClass(), String.format("Fatal error occurred while trying to invoke method '%s' because it takes too many arguments. Ticked methods aren't allowed to have any arguments! The method has been disabled!", method.getName()), true);
+							unregister(object);
+						} else {
+							method.invoke(object);
+						}
 					} catch (Exception e) {
 						throw new InvocationTargetException(e, String.format("Error while invoking ticked method: %s! Cause: %s", method.getName(), e.getMessage()));
 					}
