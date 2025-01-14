@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import utils.HitBox;
 import utils.Logger;
+import utils.Ticked;
 
 import java.awt.*;
 import java.nio.file.NoSuchFileException;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 /*
 TODO: Create nice level
 TODO: Level movement
+TODO: Extra thread
  */
 public class LevelManager {
     private final GamePanel gp;
@@ -97,6 +99,7 @@ public class LevelManager {
         });
     }
 
+    @Ticked
     public void tick() {
         Tiles.getRegistered().forEach(Tile::tick);
     }

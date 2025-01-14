@@ -2,6 +2,7 @@ package graphics.animation;
 
 import main.GamePanel;
 import utils.Logger;
+import utils.Ticked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,6 @@ public class AnimationManager {
     public synchronized Animation play(Animation animation) {
         if (animation.checkValidation()) {
             animations.add(animation);
-            GamePanel.register(animation);
             animation.onPlay();
         }
         return animation;
@@ -30,9 +30,13 @@ public class AnimationManager {
     public synchronized void stop(Animation animation) {
          if (animations.contains(animation)) {
             animations.remove(animation);
-            GamePanel.unregister(animation);
             animation.onStop();
         }
+    }
+
+    @Ticked
+    public void tick() {
+        animations.forEach(Animation::updateIndex);
     }
 
     public List<Animation> getAnimations() {

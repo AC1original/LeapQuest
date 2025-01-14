@@ -29,9 +29,4 @@ public class FallbackTile implements Tile {
     public boolean isSolid() {
         return true;
     }
-
-    @Override
-    public boolean register() {
-        return false;
-    }
 }

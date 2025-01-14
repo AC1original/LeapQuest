@@ -3,6 +3,7 @@ import entity.player.Player;
 import main.GamePanel;
 import utils.HitBox;
 import utils.Logger;
+import utils.Ticked;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class EntityHelper {
     private final Player player;
 
     public EntityHelper() {
-        player = GamePanel.register(new Player());
+        player = new Player();
         Logger.log(this.getClass(), "Initialized");
     }
 
@@ -49,6 +50,7 @@ public class EntityHelper {
                 .collect(Collectors.toList());
     }
 
+    @Ticked
     public void tick() {
         entities.forEach(Entity::onTick);
     }

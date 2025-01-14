@@ -1,4 +1,5 @@
 package main;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -8,23 +9,21 @@ import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
 import utils.Logger;
-import utils.Timed;
+import utils.Ticked;
+import utils.caching.Cache;
 
 //TODO: Dev cheat-chat
 //TODO: Gamestate management
-//TODO: Timed annotation thread
-//TODO: Timed annotation cant tick error (Maybe cached class)
 public final class GamePanel {
 	private int gameWidth = 900, gameHeight = 600;
 	private static GamePanel instance = null;
-	private static final List<Object> registered = new ArrayList<>();
-	private static final Map<Method, Long> timed = new HashMap<>();
+	private static final Set<Object> ticked = new HashSet<>();
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
 	private final AnimationManager animationManager = register(new AnimationManager());
 	private final EntityHelper entityHelper = register(new EntityHelper());
 	private final LevelManager levelManager = register(new LevelManager(this, "/res/level/test_level.txt"));
-	private final GameRenderer gameRenderer = register(new GameRenderer(this));
+	private final GameRenderer gameRenderer =  new GameRenderer(this);
 
 	public static GamePanel getInstance() {
 		if (instance == null) {
@@ -37,8 +36,7 @@ public final class GamePanel {
 		Logger.log(this.getClass(), "Initialized");
 	}
 	
-	public void run() throws InterruptedException {
-		register(this);
+	public void run() throws InterruptedException, InvocationTargetException {
 		running = true;
 
 		entityHelper.spawn(entityHelper.getPlayer(), 400, 150);
@@ -61,52 +59,26 @@ public final class GamePanel {
 		}
 	}
 
-	public void tick() {
-		entityHelper.tick();
-		levelManager.tick();
-			timed.forEach((method, timeStamp) -> {
-				if (method == null) return;
-				if ((System.currentTimeMillis() - timeStamp >= method.getAnnotation(Timed.class).delay()) || method.getAnnotation(Timed.class).delay() < 1) {
-                    try {
-						Object instance = registered.stream()
-								.filter(obj -> method.getDeclaringClass().isInstance(obj))
-								.findFirst()
-								.orElse(null);
-						if (instance == null) return;
-                        method.invoke(instance);
-						timed.replace(method, System.currentTimeMillis());
-                    } catch (ReflectiveOperationException e) {
-                        Logger.log("GamePanel: Failed to tick \"Timed\" annotation. Cause: " + e.getMessage(), true);
-                    }
-                }
-			});
-	}
-	
-	public static <T> T register(T clazz) {
-		if (!registered.contains(clazz)) {
-			registered.add(clazz);
-			if (!clazz.getClass().getSuperclass().equals(Animation.class))
-				Logger.log("GamePanel: Registered class " + clazz.getClass().getSimpleName());
-		}
-
-		for (Method methods : clazz.getClass().getMethods()) {
-			if (methods.isAnnotationPresent(Timed.class)) {
-				timed.put(methods, System.currentTimeMillis());
-			}
-		}
+	public static<T> T register(T clazz) {
+		ticked.add(clazz);
 		return clazz;
 	}
 
-	public static <T> void unregister(T clazz) {
-		timed.forEach((K, V) -> {
-			if (K.getDeclaringClass().equals(clazz.getClass())) {
-				timed.remove(K);
+	public static<T> void unregister(T clazz) {
+		ticked.remove(clazz);
+	}
+
+	public void tick() throws InvocationTargetException {
+		for (Object object : ticked) {
+			for (Method method : object.getClass().getMethods()) {
+				if (method.isAnnotationPresent(Ticked.class)) {
+					try {
+						method.invoke(object);
+					} catch (Exception e) {
+						throw new InvocationTargetException(e, String.format("Error while invoking ticked method: %s! Cause: %s", method.getName(), e.getMessage()));
+					}
+				}
 			}
-		});
-		if (registered.contains(clazz)) {
-			registered.remove(clazz);
-			if (!clazz.getClass().getSuperclass().equals(Animation.class))
-				Logger.log("GamePanel: Unregistered class " + clazz.getClass().getSimpleName());
 		}
 	}
 

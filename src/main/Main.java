@@ -1,10 +1,12 @@
 package main;
 import utils.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+
 //TODO: GameLoop helper class
 public class Main {
 	
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, InvocationTargetException {
 		Logger.log("Main: Starting Game Loop");
 		GamePanel.getInstance().run();
 		Logger.log("Main: Game Loop failed", true);

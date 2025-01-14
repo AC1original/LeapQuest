@@ -19,7 +19,6 @@ public interface Tile {
     void tick();
     void onCollide(Entity<?> entity, Direction direction);
     boolean isSolid();
-    boolean register();
     default GamePanel getGamePanel() {
         return GamePanel.getInstance();
     }

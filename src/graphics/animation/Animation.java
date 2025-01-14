@@ -1,7 +1,5 @@
 package graphics.animation;
 import main.GamePanel;
-import utils.Logger;
-import utils.Timed;
 
 import java.awt.*;
 
@@ -29,7 +27,6 @@ public abstract class Animation {
         g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y, getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
     }
 
-    @Timed(delay = 0)
     public void updateIndex() {
         if (getDelay() > 0 && checkValidation()) {
             if (isAllowedToUpdate()) counter++;

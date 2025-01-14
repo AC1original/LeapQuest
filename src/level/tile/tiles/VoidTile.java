@@ -30,9 +30,4 @@ public class VoidTile implements Tile {
     public boolean isSolid() {
         return false;
     }
-
-    @Override
-    public boolean register() {
-        return false;
-    }
 }

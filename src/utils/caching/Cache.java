@@ -1,10 +1,8 @@
 package utils.caching;
 
 import main.GamePanel;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import utils.Logger;
-import utils.Timed;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +27,6 @@ public final class Cache<T> {
         this.timeoutDelete = timeoutDelete;
     }
 
-    @Timed(delay = 0)
     public void tick() {
        if (timeoutDelete) {
            cached.forEach((k, v) -> {
@@ -96,9 +93,29 @@ public final class Cache<T> {
     }
 
     public static final class CacheBuilder<C> {
+        private static final Set<Cache<?>> caches = new HashSet<>();
+        private static boolean running = false;
         private int delTime = 10, maxIndex = 0;
         private TimeUnit timeUnit = TimeUnit.MINUTES;
         private boolean unusedDelete = false, oldestIndexDelete = false, timeoutDelete = false;
+
+        private static void tick() {
+            running = !running;
+
+            if (running) {
+                new Thread(() -> {
+                    while (running) {
+                        try {
+                            caches.forEach(Cache::tick);
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+            caches.forEach(Cache::tick);
+        }
 
         public CacheBuilder<C> timeoutDelay(int timeoutAfter, TimeUnit timeUnit) {
             this.delTime = timeoutAfter;
@@ -124,7 +141,12 @@ public final class Cache<T> {
 
         public Cache<C> build() {
             Logger.log(this.getClass(), "Initialized new cache");
-            return GamePanel.register(new Cache<>(delTime, timeUnit, unusedDelete, oldestIndexDelete, maxIndex, timeoutDelete));
+            Cache<C> cache = new Cache<>(delTime, timeUnit, unusedDelete, oldestIndexDelete, maxIndex, timeoutDelete);
+            if (!running) {
+                tick();
+            }
+            caches.add(cache);
+            return cache;
         }
     }
 
