@@ -7,14 +7,12 @@ import level.tile.TileType;
 import level.tile.Tiles;
 import main.GamePanel;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import utils.HitBox;
 import utils.Logger;
 import utils.Ticked;
 
 import java.awt.*;
 import java.nio.file.NoSuchFileException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +35,11 @@ public class LevelManager {
         this.gp = gp;
         level = loadLevel(Objects.requireNonNull(getClass().getResource(resourceLocation)).getPath());
         reloadLevelDat();
-        showHitBox(true);
-        Logger.log(this.getClass(), "Initialized");
+        Logger.info(this, "Initialized.");
     }
 
     public int[][] loadLevel(String path) {
-        Logger.log(this.getClass(), "Try to load level at: " + path);
+        Logger.info(this, "Try to load level at: " + path + ".");
         try {
             fileManager.setPath(path);
         } catch (NoSuchFileException e) {
@@ -55,17 +52,17 @@ public class LevelManager {
                 try {
                     level[line][number] = Integer.parseInt(nums[number]);
                 } catch (NumberFormatException e) {
-                    Logger.log(this.getClass(), "Failed to read level from file. Returned empty 2D-int-array instead", true);
+                    Logger.error(this, "Failed to read level from file. Returned empty 2D-int-array instead.");
                     return new int[0][0];
                 }
             }
         }
-        Logger.log(this.getClass(), "Successfully loaded level at: " + path);
+        Logger.info(this, "Successfully loaded level at: " + path + ".");
         return level;
     }
 
     public void reloadLevelDat() {
-        Logger.log(this.getClass(), "Try to reload level data");
+        Logger.info(this, "Try to reload level data.");
         levelDat.clear();
         for (int y = 0; y < level.length; y++) {
             for (int x = 0; x < level[y].length; x++) {
@@ -73,7 +70,7 @@ public class LevelManager {
                 levelDat.put(new HitBox(x * type.width(), y * type.height(), type.width(), type.height()), type);
             }
         }
-        Logger.log(this.getClass(), "Successfully reloaded level data");
+        Logger.info(this, "Successfully reloaded level data.");
     }
 
     public void drawLevel(@NotNull Graphics g) {

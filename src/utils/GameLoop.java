@@ -3,7 +3,7 @@ package utils;
 import java.util.function.Consumer;
 
 public class GameLoop {
-    private static boolean running = false;
+    private boolean running = false;
 
     public void start(final int TARGET_FPS, Consumer<Integer> action) {
         if (!running) {

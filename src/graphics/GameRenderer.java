@@ -6,10 +6,11 @@ import javax.swing.*;
 import main.GamePanel;
 import main.Main;
 import org.jetbrains.annotations.Nullable;
+import utils.GameLoop;
 import utils.Logger;
 
 //TODO: Drawable interface and support
-public class GameRenderer extends JPanel implements Runnable {
+public final class GameRenderer extends JPanel implements Runnable {
     private final JFrame frame = new JFrame("Leap Quest");
     private final GamePanel gp;
     private Graphics graphics = null;
@@ -23,29 +24,31 @@ public class GameRenderer extends JPanel implements Runnable {
         frame.add(this);
         frame.addKeyListener(gp.getEntityHelper().getPlayer().getUserKeyboardInput());
         frame.setVisible(true);
-        Logger.log("GameRenderer: Initialized");
+        Logger.info(this, "Initialized.");
     }
 
 
 	@Override
 	public void run() {
-        long now;
-        long updateTime;
-        long wait;
-        int TARGET_FPS = 60;
-        long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
-        while (GamePanel.isRunning()) {
-            now = System.nanoTime();
-            updateTime = System.nanoTime() - now;
-            wait = (OPTIMAL_TIME - updateTime) / 1000000;
-            repaintTick();
-            try {
-                Thread.sleep(wait);
-            } catch (Exception e) {
-                e.printStackTrace();
+        new GameLoop().start(60, (fps) -> {
+            long now;
+            long updateTime;
+            long wait;
+            int TARGET_FPS = 60;
+            long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+            while (GamePanel.isRunning()) {
+                now = System.nanoTime();
+                updateTime = System.nanoTime() - now;
+                wait = (OPTIMAL_TIME - updateTime) / 1000000;
+                repaintTick();
+                try {
+                    Thread.sleep(wait);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        Logger.log(this.getClass(), "Failed to run rendering thread", true);
+        });
+        Logger.error(this, "Failed to run rendering thread.");
 	}
 
     private void repaintTick() {

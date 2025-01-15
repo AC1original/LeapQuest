@@ -140,7 +140,7 @@ public final class Cache<T> {
         }
 
         public Cache<C> build() {
-            Logger.log(this.getClass(), "Initialized new cache");
+            Logger.info(this, "Initialized new cache.");
             Cache<C> cache = new Cache<>(delTime, timeUnit, unusedDelete, oldestIndexDelete, maxIndex, timeoutDelete);
             if (!running) {
                 tick();

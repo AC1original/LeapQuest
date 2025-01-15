@@ -32,14 +32,14 @@ public abstract class Entity<T extends Entity<?>> {
     private Animation animation;
 
     public abstract BufferedImage getImage();
-    public abstract T onRemove();
-    public abstract T onSpawn();
+    protected abstract T onRemove();
+    protected abstract T onSpawn();
     public abstract T setImage(BufferedImage image);
     public abstract int getWidth();
     public abstract int getHeight();
 
 
-    public T onTick() {
+    protected T onTick() {
         if (System.currentTimeMillis() - lastMoved >= 350) {
             setMoving(false);
         }
@@ -60,10 +60,6 @@ public abstract class Entity<T extends Entity<?>> {
     }
 
     public synchronized T playAnimation(Animation animation) {
-        if (getAnimationManager() == null) {
-            Logger.log(this.getClass(), "Failed playing animation " + animation.getClass().getSimpleName() + ". AnimationManager is null", true);
-            return (T) this;
-        }
         if (this.animation != null) {
             if (this.animation.getClass() != animation.getClass()) {
                 stopAnimation();
@@ -77,10 +73,6 @@ public abstract class Entity<T extends Entity<?>> {
 
     public synchronized T stopAnimation() {
         if (animation != null) {
-            if (getAnimationManager() == null) {
-                Logger.log(this.getClass(), "Failed to stop animation " + animation.getClass().getSimpleName() + ". AnimationManager is null", true);
-                return (T) this;
-            }
             getAnimationManager().stop(animation);
             animation = null;
         }
@@ -132,7 +124,7 @@ public abstract class Entity<T extends Entity<?>> {
     public T teleport(int x, int y) {
         this.x = x;
         this.y = y;
-        Logger.log(Entity.class, "Teleported entity \"" + this.getClass().getSimpleName() + "\" to (X | Y): " + x + " | " + y);
+        Logger.info(this, "Teleported to (X | Y): " + x + " | " + y);
         return (T) this;
     }
 
@@ -157,7 +149,7 @@ public abstract class Entity<T extends Entity<?>> {
         return direction;
     }
 
-    public T setDirection(Direction direction) {
+    protected T setDirection(Direction direction) {
         this.direction = direction;
         setLookDirection(direction);
         return (T) this;
@@ -179,12 +171,12 @@ public abstract class Entity<T extends Entity<?>> {
         return moving;
     }
 
-    public T setMoving(boolean moving) {
+    protected T setMoving(boolean moving) {
         this.moving = moving;
         return (T) this;
     }
 
-    public T checkPhysics() {
+    protected T checkPhysics() {
         if (!isOnGround()) {
             fallSpeed += getGravity();
             if (fallSpeed > maxFallSpeed) fallSpeed = maxFallSpeed;
@@ -260,7 +252,7 @@ public abstract class Entity<T extends Entity<?>> {
         return lastMoved;
     }
 
-    public T setLookDirection(Direction lookDirection) {
+    protected T setLookDirection(Direction lookDirection) {
         if (lookDirection.equals(Direction.LEFT) || lookDirection.equals(Direction.RIGHT)) {
             this.lookDirection = lookDirection;
         }

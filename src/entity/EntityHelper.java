@@ -11,13 +11,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EntityHelper {
+public final class EntityHelper {
     private final HashSet<Entity<?>> entities = new HashSet<>();
     private final Player player;
 
     public EntityHelper() {
         player = new Player();
-        Logger.log(this.getClass(), "Initialized");
+        Logger.info(this, "Initialized.");
     }
 
     public void spawn(Entity<?> entity) {
@@ -28,18 +28,22 @@ public class EntityHelper {
         entity.x = x;
         entity.y = y;
         entity.onSpawn();
-        entities.add(entity);
-        Logger.log(this.getClass(), "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\"");
+        synchronized (entities) {
+            entities.add(entity);
+        }
+        Logger.info(this, "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
 
     public void remove(Entity<?> entity) {
         if (entities.contains(entity)) {
-            Logger.log(this.getClass(), "Failed to remove Entity \"" + entity.getClass().getSimpleName() + "\". Entity not found!", true);
+            Logger.warn(this.getClass(), "Failed to remove Entity \"" + entity.getClass().getSimpleName() + "\". Entity not found!");
             return;
         }
         entity.onRemove();
-        entities.remove(entity);
-        Logger.log(this.getClass(), "Successfully removed Entity \"" + entity.getClass().getSimpleName() + "\".");
+        synchronized (entities) {
+            entities.remove(entity);
+        }
+        Logger.info(this, "Successfully removed Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
 
     public List<Entity<?>> getEntitiesAt(int x, int y) {

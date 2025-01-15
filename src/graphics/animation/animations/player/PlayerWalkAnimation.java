@@ -37,7 +37,7 @@ public class PlayerWalkAnimation extends Animation {
     }
 
     @Override
-    public void onFrameUpdate(AnimationFrame frame) {
+    protected void onFrameUpdate(AnimationFrame frame) {
         player.setImage(frame.getImage());
     }
 

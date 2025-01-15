@@ -42,7 +42,7 @@ public class ImageLoader {
 
     public static BufferedImage cache(BufferedImage img, String name) {
         cachedImages.add(name, img);
-        Logger.log(ImageLoader.class, "Cached image '" + name + "'");
+        Logger.info(ImageLoader.class, "Cached image '" + name + "'.");
         return img;
     }
 
@@ -50,9 +50,9 @@ public class ImageLoader {
         BufferedImage image;
         try {
             image = ImageIO.read(Objects.requireNonNull(ImageLoader.class.getResource(path)));
-            Logger.log("ImageLoader: Loaded image at: " + path + ".");
+            Logger.info(ImageLoader.class, "Loaded image at: " + path + ".");
         } catch (Exception e) {
-            Logger.log("ImageLoader: Failed loading image \""+path+"\" | " + e + ". Returned fallback image instead.", true);
+            Logger.warn(ImageLoader.class, "Failed loading image \""+path+"\" | " + e + ". Returned fallback image instead.");
             return getFallback();
         }
         return image;

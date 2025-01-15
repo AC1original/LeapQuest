@@ -35,7 +35,7 @@ public final class GamePanel {
 	}
 
 	private GamePanel() {
-		Logger.log(this.getClass(), "Initialized");
+		Logger.info(this, "Initialized.");
 	}
 	
 	public void run() {
@@ -68,16 +68,17 @@ public final class GamePanel {
 		for (Object object : ticked) {
 			for (Method method : object.getClass().getMethods()) {
 				if (method.isAnnotationPresent(Ticked.class)) {
-					try {
-						if (method.getParameterCount() > 0) {
-							Logger.log(object.getClass(), String.format("Fatal error occurred while trying to invoke method '%s' because it takes too many arguments. Ticked methods aren't allowed to have any arguments! The method has been disabled!", method.getName()), true);
-							unregister(object);
-						} else {
+					if (method.getParameterCount() > 0) {
+						Logger.warn(object, String.format("Error occurred while trying to invoke method '%s' because it takes too many arguments. Ticked methods aren't allowed to have any arguments! The method has been disabled!", method.getName()));
+						unregister(object);
+					} else {
+						try {
 							method.invoke(object);
+						} catch (Exception e) {
+							throw new InvocationTargetException(e, String.format("Error while invoking ticked method: %s! Cause: %s", method.getName(), e));
 						}
-					} catch (Exception e) {
-						throw new InvocationTargetException(e, String.format("Error while invoking ticked method: %s! Cause: %s", method.getName(), e.getMessage()));
 					}
+
 				}
 			}
 		}

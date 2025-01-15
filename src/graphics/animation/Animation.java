@@ -7,7 +7,7 @@ public abstract class Animation {
     public abstract AnimationFrame[] getFrames();
     public abstract int getDelay();
     public abstract boolean drawAnimation();
-    public abstract void onFrameUpdate(AnimationFrame frame);
+    protected abstract void onFrameUpdate(AnimationFrame frame);
     private final GamePanel gp = GamePanel.getInstance();
     private Graphics graphics;
     private int counter = 1;
@@ -27,7 +27,7 @@ public abstract class Animation {
         g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y, getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
     }
 
-    public void updateIndex() {
+    protected void updateIndex() {
         if (getDelay() > 0 && checkValidation()) {
             if (isAllowedToUpdate()) counter++;
             if (counter >= getDelay()) {

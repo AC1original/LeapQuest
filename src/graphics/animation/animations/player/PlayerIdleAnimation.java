@@ -35,7 +35,7 @@ public class PlayerIdleAnimation extends Animation {
     }
 
     @Override
-    public void onFrameUpdate(AnimationFrame newFrame) {
+    protected void onFrameUpdate(AnimationFrame newFrame) {
         player.setImage(newFrame.getImage());
     }
 

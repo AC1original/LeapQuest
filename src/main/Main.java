@@ -1,15 +1,13 @@
 package main;
 import utils.Logger;
 
-import java.lang.reflect.InvocationTargetException;
-
 //TODO: GameLoop helper class
 public class Main {
 	
-	public static void main(String[] args) throws InterruptedException, InvocationTargetException {
-		Logger.log("Main: Starting Game Loop");
+	public static void main(String[] args) {
+		Logger.info(Main.class, "Starting Game Loop.");
 		GamePanel.getInstance().run();
-		Logger.log("Main: Game Loop failed", true);
+		Logger.error(Main.class, "Game Loop failed!");
 	}
 
 	public static long getMaxMemory() {

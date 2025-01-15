@@ -22,7 +22,7 @@ public final class Player extends Entity<Player> {
     }
 
     @Override
-    public Player onTick() {
+    protected Player onTick() {
         super.onTick();
 
         for (char c : moveRequests) {
@@ -44,9 +44,8 @@ public final class Player extends Entity<Player> {
     }
 
     @Override
-    public Player onSpawn() {
-        showHitBox(true);
-        return this;
+    protected Player onSpawn() {
+        return null;
     }
 
     @Override
@@ -66,7 +65,7 @@ public final class Player extends Entity<Player> {
     }
 
     @Override
-    public Player onRemove() {
+    protected Player onRemove() {
         return this;
     }
 

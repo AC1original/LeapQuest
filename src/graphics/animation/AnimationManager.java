@@ -9,7 +9,7 @@ import java.util.List;
 
 //TODO: Animation caching (Remove GamePanel line 79)
 //TODO: Animations on extra thread
-public class AnimationManager {
+public final class AnimationManager {
     private final List<Animation> animations = new ArrayList<>();
 
     public synchronized Animation play(Animation animation) {
@@ -21,7 +21,7 @@ public class AnimationManager {
     }
 
     public synchronized void stopByClass(Class<?> clazz) {
-        Logger.log(this.getClass(), "Stopping all animations from class: " + clazz.getSimpleName());
+        Logger.info(clazz, "Stopping animations.");
         animations.stream()
                 .filter(animation -> animation.getClass().equals(clazz))
                 .forEach(this::stop);

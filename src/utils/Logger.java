@@ -3,35 +3,58 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
-//TODO: Use Java logging
 public class Logger {
 
-    public static void log(String log) {
-        log(null, log, false);
+    public static<T> void info(T clazz, String log) {
+        log(clazz, log, LogLevel.INFO);
     }
-    public static void log(Class<?> clazz, String log) {
-        log(clazz, log, false);
-    }
-    public static void log(String log, boolean error) {
-        log(null, log, error);
+    public static void info(Class<?> clazz, String log) {
+        log(clazz, log, LogLevel.INFO);
     }
 
-    public static void log(@Nullable Class<?> clazz, String log, boolean error) {
+    public static<T> void warn(T clazz, String log) {
+        log(clazz, log, LogLevel.WARNING);
+    }
+    public static void warn(Class<?> clazz, String log) {
+        log(clazz, log, LogLevel.WARNING);
+    }
+
+    public static<T> void error(T clazz, String log) {
+        log(clazz, log, LogLevel.ERROR);
+    }
+    public static void error(Class<?> clazz, String log) {
+        log(clazz, log, LogLevel.ERROR);
+    }
+
+    public static<T> void log(T clazz, String log, LogLevel level) {
+        log(clazz.getClass(), log, level);
+    }
+    public static<T> void log(@Nullable Class<?> clazz, String log, LogLevel level) {
         LocalDateTime time = LocalDateTime.now();
         int hours = time.getHour();
         int minutes = time.getMinute();
         int seconds = time.getSecond();
         int milli = time.getNano()/1000;
-        if (log.endsWith(".")) {
-            log = log.substring(0, log.length()-1);
+        String message = String.format("[LOGGER/%s/%d:%d:%d:%d] %s %s", level.name(), hours, minutes, seconds, milli,
+                clazz == null ? "" : clazz.getSimpleName() + ": ", log);
+
+        if (level.error) {
+            System.err.println(message);
+        } else {
+            System.out.println(message);
         }
 
-        if (clazz != null) {
-            if (error) System.err.printf("[LOGGER/WARN/%d:%d:%d:%d] " + clazz.getSimpleName() + ": " + log + "%n", hours, minutes, seconds, milli);
-            else System.out.printf("[LOGGER/INFO/%d:%d:%d:%d] " + clazz.getSimpleName() + ": " + log + "%n", hours, minutes, seconds, milli);
-        } else {
-            if (error) System.err.printf("[LOGGER/WARN/%d:%d:%d:%d] " + log + "%n", hours, minutes, seconds, milli);
-            else System.out.printf("[LOGGER/INFO/%d:%d:%d:%d] " + log + "%n", hours, minutes, seconds, milli);
+
+    }
+
+    public enum LogLevel {
+        INFO(false),
+        WARNING(true),
+        ERROR(true);
+
+        final boolean error;
+        LogLevel(boolean error) {
+            this.error = error;
         }
     }
 }

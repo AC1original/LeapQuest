@@ -21,7 +21,7 @@ public class Tiles {
 
     private static Tile register(Tile tile) {
         registered.add(tile);
-        Logger.log(tile.getClass(), "Loaded tile: " + tile.getName());
+        Logger.info(tile, "Registered tile: " + tile.getName() + ".");
         return tile;
     }
 
