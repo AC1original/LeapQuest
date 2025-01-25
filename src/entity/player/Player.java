@@ -73,7 +73,7 @@ public final class Player extends Entity<Player> {
         return userKeyboardInput;
     }
 
-    public synchronized void addMoveRequest(char key) {
+    public void addMoveRequest(char key) {
         if (hasMoveRequest(key)) return;
         for (int i = 0; i < moveRequests.length; i++) {
             if (moveRequests[i] == 0) {
@@ -83,7 +83,7 @@ public final class Player extends Entity<Player> {
         }
     }
 
-    public synchronized void removeMoveRequest(char key) {
+    public void removeMoveRequest(char key) {
         for (int i = 0; i < moveRequests.length; i++) {
             if (moveRequests[i] == key) {
                 moveRequests[i] = 0;

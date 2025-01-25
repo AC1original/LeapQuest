@@ -59,7 +59,7 @@ public abstract class Entity<T extends Entity<?>> {
         return Math.abs(fx - x + fy - y);
     }
 
-    public synchronized T playAnimation(Animation animation) {
+    public T playAnimation(Animation animation) {
         if (this.animation != null) {
             if (this.animation.getClass() != animation.getClass()) {
                 stopAnimation();
@@ -71,7 +71,7 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public synchronized T stopAnimation() {
+    public T stopAnimation() {
         if (animation != null) {
             getAnimationManager().stop(animation);
             animation = null;
@@ -79,7 +79,7 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public synchronized T move(Direction direction, int speed) {
+    public T move(Direction direction, int speed) {
         setDirection(direction);
 
         Point targetLoc = Direction.getNewLocation(getLocation(), speed, direction);
@@ -113,7 +113,7 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public synchronized T move(Direction direction) {
+    public T move(Direction direction) {
         return move(direction, getSpeed());
     }
 

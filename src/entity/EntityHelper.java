@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class EntityHelper {
@@ -28,9 +29,7 @@ public final class EntityHelper {
         entity.x = x;
         entity.y = y;
         entity.onSpawn();
-        synchronized (entities) {
-            entities.add(entity);
-        }
+        entities.add(entity);
         Logger.info(this, "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
 
@@ -40,9 +39,7 @@ public final class EntityHelper {
             return;
         }
         entity.onRemove();
-        synchronized (entities) {
-            entities.remove(entity);
-        }
+        entities.remove(entity);
         Logger.info(this, "Successfully removed Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
 

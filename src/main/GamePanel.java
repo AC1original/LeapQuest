@@ -6,13 +6,11 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import entity.EntityHelper;
 import graphics.GameRenderer;
-import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
 import utils.GameLoop;
 import utils.Logger;
 import utils.Ticked;
-import utils.caching.Cache;
 
 //TODO: Dev cheat-chat
 //TODO: Gamestate management

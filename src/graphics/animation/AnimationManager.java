@@ -12,7 +12,7 @@ import java.util.List;
 public final class AnimationManager {
     private final List<Animation> animations = new ArrayList<>();
 
-    public synchronized Animation play(Animation animation) {
+    public Animation play(Animation animation) {
         if (animation.checkValidation()) {
             animations.add(animation);
             animation.onPlay();
@@ -20,14 +20,14 @@ public final class AnimationManager {
         return animation;
     }
 
-    public synchronized void stopByClass(Class<?> clazz) {
+    public void stopByClass(Class<?> clazz) {
         Logger.info(clazz, "Stopping animations.");
         animations.stream()
                 .filter(animation -> animation.getClass().equals(clazz))
                 .forEach(this::stop);
     }
 
-    public synchronized void stop(Animation animation) {
+    public void stop(Animation animation) {
          if (animations.contains(animation)) {
             animations.remove(animation);
             animation.onStop();

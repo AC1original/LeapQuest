@@ -1,5 +1,4 @@
 package graphics;
-import utils.caching.Cache;
 import utils.Logger;
 import javax.imageio.ImageIO;
 import java.awt.*;
