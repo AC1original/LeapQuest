@@ -13,7 +13,7 @@ public class ImageLoader {
     private static final Cache<BufferedImage> cachedImages = new Cache.CacheBuilder<BufferedImage>()
             .objectsExpires(true)
             .objectsOnlyExpiresWhenUnused(true)
-            .objectsExpiresAfter(5, TimeUnit.SECONDS)
+            .objectsExpiresAfter(5, TimeUnit.MINUTES)
             .deleteObjectsWhenExpired(true)
             .build();
 
