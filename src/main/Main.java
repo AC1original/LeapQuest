@@ -2,7 +2,7 @@ package main;
 
 import utils.Logger;
 
-//TODO: GameLoop helper class
+//TODO: Better project structure
 public class Main {
 	
 	public static void main(String[] args) throws InterruptedException {
