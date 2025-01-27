@@ -2,14 +2,19 @@ package utils.caching;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import utils.GameLoop;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class Cache<T> {
-    private final Set<CachedObject<T>> cached = Collections.synchronizedSet(new LinkedHashSet<>());
+public final class Cache<T> {
+    private final LinkedHashSet<CachedObject<T>> cached = new LinkedHashSet<>();
+    private final List<CacheListener> registeredClasses = Collections.synchronizedList(new ArrayList<>());
     private final boolean expires;
     private final int expiresAfter;
     private final TimeUnit expireTimeUnit;
@@ -18,8 +23,8 @@ public class Cache<T> {
     private final boolean deleteOldIndexes;
     private final int deleteIndexAfter;
 
-    protected Cache(final boolean expires, final int expiresAfter, final TimeUnit expireTimeUnit, final boolean deleteAfterExpiration,
-                    final boolean onlyExpireWhenUnused, final boolean deleteOldIndexes, final int deleteIndexAfter) {
+    private Cache(final boolean expires, final int expiresAfter, final TimeUnit expireTimeUnit, final boolean deleteAfterExpiration,
+                  final boolean onlyExpireWhenUnused, final boolean deleteOldIndexes, final int deleteIndexAfter) {
         this.expires = expires;
         this.expiresAfter = expiresAfter;
         this.expireTimeUnit = expireTimeUnit;
@@ -29,47 +34,72 @@ public class Cache<T> {
         this.deleteIndexAfter = deleteIndexAfter;
     }
 
+    public void register(CacheListener listener) {
+        registeredClasses.add(listener);
+    }
+
+    public void unregister(CacheListener listener) {
+        registeredClasses.remove(listener);
+    }
+
     private void tick() {
         if (isExpires()) {
-            stream().filter(obj -> (onlyExpireWhenUnused ? obj.lastUpdated : obj.timeAdded) > expireTimeUnit.toMillis(expiresAfter))
-                    .forEach(obj -> obj.expired = true);
+           stream().filter(obj -> !obj.isExpired())
+                   .filter(obj -> (System.currentTimeMillis() - (isOnlyExpireWhenUnused() ? obj.getLastUpdated() : obj.getTimeAdded())) >= getExpireTimeUnit().toMillis(getExpiresAfter()))
+                   .forEach(obj -> {
+                        registeredClasses.forEach(listener -> listener.onCachedObjectExpire(obj));
+                       obj.expire();
+                   });
         }
         if (isDeleteAfterExpiration()) {
-            cached.removeIf(CachedObject::isExpired);
+            stream().filter(CachedObject::isExpired)
+                    .findAny()
+                    .ifPresent(this::remove);
         }
 
         if (isDeleteOldIndexes()) {
+            if (cached.size() > getDeleteIndexAfter()) {
+                remove(cached.getLast());
+            }
         }
+
+
     }
 
     public void add(String key, T object) {
-        cached.add(new CachedObject<>(key, object));
+        CachedObject<T> cachedObject = new CachedObject<>(key, object);
+        registeredClasses.forEach(listener -> listener.onCachedObjectAdd(cachedObject));
+        synchronized (cached) {
+            cached.add(cachedObject);
+        }
     }
 
     @Nullable
     public T get(String key) {
-        Optional<CachedObject<T>> retu = cached.stream()
-                .filter(obj -> obj.getKey().equals(key))
-                .findFirst();
-
-        return retu.map(CachedObject::getObject).orElse(null);
+        synchronized (cached) {
+            Optional<CachedObject<T>> retu = stream()
+                    .filter(obj -> obj.getKey().equals(key))
+                    .findFirst();
+            return retu.map(CachedObject::getObject).orElse(null);
+        }
     }
 
     @Nullable
     public String getKey(T object) {
-        Optional<CachedObject<T>> retu = cached.stream()
-                .filter(obj -> obj.object.equals(object))
-                .findFirst();
-
-        return retu.map(CachedObject::getKey).orElse(null);
+        synchronized (cached) {
+            Optional<CachedObject<T>> retu = stream()
+                    .filter(obj -> obj.object.equals(object))
+                    .findFirst();
+            return retu.map(CachedObject::getKey).orElse(null);
+        }
     }
 
     public boolean contains(T object) {
-        return getKey(object) == null;
+        return getKey(object) != null;
     }
 
     public boolean contains(String key) {
-        return get(key) == null;
+        return get(key) != null;
     }
 
     public boolean contains(@NotNull CachedObject<?> cObject) {
@@ -77,20 +107,30 @@ public class Cache<T> {
     }
 
     public void remove(String key) {
-        cached.removeIf(obj -> obj.getKey().equals(key));
+        synchronized (cached) {
+            cached.stream()
+                    .filter(obj -> obj.getKey().equals(key))
+                    .forEach(obj -> {
+                        registeredClasses.forEach(listener -> listener.onCachedObjectRemove(obj));
+                        cached.remove(obj);
+                    });
+        }
     }
 
+
     public void remove(T object) {
-        cached.removeIf(obj -> obj.object.equals(object));
+        synchronized (cached) {
+            cached.stream()
+                    .filter(obj -> obj.object.equals(object))
+                    .forEach(obj -> remove(obj.getKey()));
+        }
     }
 
     public void remove(CachedObject<?> cObject) {
-        cached.remove(cObject);
-    }
-
-    public void replace(String key, T newObject) {
-        remove(key);
-        add(key, newObject);
+        synchronized (cached) {
+            registeredClasses.forEach(listener -> listener.onCachedObjectRemove(cObject));
+            cached.remove(cObject);
+        }
     }
 
     public Set<CachedObject<T>> getCopyOfCached() {
@@ -98,11 +138,15 @@ public class Cache<T> {
     }
 
     public Stream<CachedObject<T>> stream() {
-        return cached.stream();
+        synchronized (cached) {
+            return cached.stream();
+        }
     }
 
     public void forEach(final Consumer<? super CachedObject<T>> action) {
-        cached.forEach(action);
+        synchronized (cached) {
+            cached.forEach(action);
+        }
     }
 
     public boolean isExpires() {
@@ -167,6 +211,82 @@ public class Cache<T> {
 
         public boolean isExpired() {
             return expired;
+        }
+
+        public void expire() {
+            expired = true;
+        }
+
+        @Override
+        public String toString() {
+            return "CachedObject{" +
+                    "key='" + key + '\'' +
+                    ", object=" + object +
+                    ", timeAdded=" + timeAdded +
+                    ", lastUpdated=" + lastUpdated +
+                    ", expired=" + expired +
+                    '}';
+        }
+    }
+
+    public static class CacheBuilder<T> {
+        private static final Set<Cache<?>> caches = Collections.synchronizedSet(new HashSet<>());
+        private boolean expires = false;
+        private int expiresAfter = 1;
+        private TimeUnit expireTimeUnit = TimeUnit.MINUTES;
+        private boolean deleteAfterExpiration = false;
+        private boolean onlyExpireWhenUnused = false;
+        private boolean deleteOldIndexes = false;
+        private int deleteIndexAfter = 100;
+
+        static {
+            tick();
+        }
+
+        private static void tick() {
+            ExecutorService executor = Executors.newFixedThreadPool(3);
+            executor.submit(() -> {
+                new GameLoop().start(25, (_) -> {
+                    caches.forEach(Cache::tick);
+                });
+            });
+        }
+
+        public CacheBuilder<T> objectsExpires(final boolean expires) {
+            this.expires = expires;
+            return this;
+        }
+
+        public CacheBuilder<T> objectsExpiresAfter(final int expiresAfter, final TimeUnit expireTimeUnit) {
+            this.expiresAfter = expiresAfter;
+            this.expireTimeUnit = expireTimeUnit;
+            return this;
+        }
+
+        public CacheBuilder<T> deleteObjectsWhenExpired(final boolean deleteAfterExpiration) {
+            this.deleteAfterExpiration = deleteAfterExpiration;
+            return this;
+        }
+
+        public CacheBuilder<T> objectsOnlyExpiresWhenUnused(final boolean onlyExpireWhenUnused) {
+            this.onlyExpireWhenUnused = onlyExpireWhenUnused;
+            return this;
+        }
+
+        public CacheBuilder<T> deleteOldIndexes(final boolean deleteOldIndexes) {
+            this.deleteOldIndexes = deleteOldIndexes;
+            return this;
+        }
+
+        public CacheBuilder<T> deleteIndexAfter(final int deleteIndexAfter) {
+            this.deleteIndexAfter = deleteIndexAfter;
+            return this;
+        }
+
+        public final Cache<T> build() {
+            Cache<T> cache = new Cache<T>(expires, expiresAfter, expireTimeUnit, deleteAfterExpiration, onlyExpireWhenUnused, deleteOldIndexes, deleteIndexAfter);
+            caches.add(cache);
+            return cache;
         }
     }
 }

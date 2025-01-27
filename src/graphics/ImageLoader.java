@@ -1,5 +1,7 @@
 package graphics;
 import utils.Logger;
+import utils.caching.Cache;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,9 +11,10 @@ import java.util.concurrent.TimeUnit;
 //TODO: load ressources from ressource folder as stream
 public class ImageLoader {
     private static final Cache<BufferedImage> cachedImages = new Cache.CacheBuilder<BufferedImage>()
-            .timeoutDelay(5, TimeUnit.MINUTES)
-            .deleteAfterTimeout(true)
-            .onlyDeleteWhenUnused(true)
+            .objectsExpires(true)
+            .objectsOnlyExpiresWhenUnused(true)
+            .objectsExpiresAfter(5, TimeUnit.SECONDS)
+            .deleteObjectsWhenExpired(true)
             .build();
 
     private static BufferedImage fallback = null;
