@@ -5,7 +5,6 @@ import entity.Entity;
 import graphics.ImageLoader;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
-import main.GamePanel;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;

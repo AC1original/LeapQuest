@@ -1,4 +1,5 @@
 package utils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -26,17 +27,17 @@ public class Logger {
         log(clazz, log, LogLevel.ERROR);
     }
 
-    public static<T> void log(T clazz, String log, LogLevel level) {
+    public static<T> void log(@NotNull T clazz, String log, LogLevel level) {
         log(clazz.getClass(), log, level);
     }
-    public static<T> void log(@Nullable Class<?> clazz, String log, LogLevel level) {
+    public static<T> void log(@Nullable Class<?> clazz, String log, @NotNull LogLevel level) {
         LocalDateTime time = LocalDateTime.now();
         int hours = time.getHour();
         int minutes = time.getMinute();
         int seconds = time.getSecond();
         int milli = time.getNano()/1000;
-        String message = String.format("[LOGGER/%s/%d:%d:%d:%d] %s %s", level.name(), hours, minutes, seconds, milli,
-                clazz == null ? "" : clazz.getSimpleName() + ": ", log);
+        String message = String.format("[LOGGER/%s/%s/%d:%d:%d:%d] %s %s", level.name(), Thread.currentThread().getName(), hours, minutes, seconds, milli,
+                clazz == null ? "" : clazz.getSimpleName() + ":", log);
 
         if (level.error) {
             System.err.println(message);
