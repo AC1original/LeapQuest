@@ -1,9 +1,6 @@
 package level.tile;
 import entity.Direction;
 import entity.Entity;
-import main.GamePanel;
-
-import java.awt.*;
 
 public interface Tile {
     int DEFAULT_SIZE = 64;
@@ -19,7 +16,4 @@ public interface Tile {
     void tick();
     void onCollide(Entity<?> entity, Direction direction);
     boolean isSolid();
-    default GamePanel getGamePanel() {
-        return GamePanel.getInstance();
-    }
 }

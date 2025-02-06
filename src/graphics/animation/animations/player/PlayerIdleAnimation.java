@@ -9,11 +9,14 @@ import graphics.animation.AnimationFrame;
 
 public class PlayerIdleAnimation extends Animation {
     private final Player player;
-    private final AnimationFrame[] animationRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right"), 12);
-    private final AnimationFrame[] animationLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_left.png", "player_idle_left"), 12);
+    private final AnimationFrame[] animationRight;
+    private final AnimationFrame[] animationLeft;
 
     public PlayerIdleAnimation(Player player) {
         this.player = player;
+
+        animationRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right"), 12);
+        animationLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_left.png", "player_idle_left"), 12);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package graphics.animation;
 
-import main.GamePanel;
 import utils.Logger;
 import utils.Ticked;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 //TODO: Animation caching (Remove GamePanel line 79)
 //TODO: Animations on extra thread
-public final class AnimationManager {
+public class AnimationManager {
     private final List<Animation> animations = new ArrayList<>();
 
     public Animation play(Animation animation) {

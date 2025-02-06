@@ -4,7 +4,6 @@ import level.tile.tiles.BarrierTile;
 import level.tile.tiles.FallbackTile;
 import level.tile.tiles.GrassTile;
 import level.tile.tiles.VoidTile;
-import main.GamePanel;
 import utils.Logger;
 
 import java.util.ArrayList;

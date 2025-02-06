@@ -4,7 +4,7 @@ import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
 import level.tile.TileType;
-import main.GamePanel;
+import main.LeapQuest;
 import org.jetbrains.annotations.NotNull;
 import utils.HitBox;
 import utils.Logger;
@@ -155,12 +155,12 @@ public abstract class Entity<T extends Entity<?>> {
         return (T) this;
     }
 
-    public final GamePanel getGamePanel() {
-        return GamePanel.getInstance();
+    public final LeapQuest getGamePanel() {
+        return LeapQuest.instance;
     }
 
     public AnimationManager getAnimationManager() {
-        return GamePanel.getInstance().getAnimationManager();
+        return getGamePanel().getAnimationManager();
     }
 
     public Animation getAnimation() {

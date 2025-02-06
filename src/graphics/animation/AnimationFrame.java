@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 public class AnimationFrame {
     private BufferedImage image;
     private int imgWidth, imgHeight;
-    private static final AnimationFrame[] empty = new AnimationFrame[0];
+    private static final AnimationFrame[] empty;
 
     private AnimationFrame(BufferedImage image, int imgWidth, int imgHeight) {
         this.image = image;
@@ -61,6 +61,10 @@ public class AnimationFrame {
             frame.setImgWidth(newWidth);
             frame.setImgHeight(newHeight);
         }
+    }
+
+    static {
+        empty = new AnimationFrame[10];
     }
 }
 

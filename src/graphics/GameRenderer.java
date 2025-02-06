@@ -1,79 +1,88 @@
 package graphics;
 
 import java.awt.*;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import javax.swing.*;
 
-import main.GamePanel;
-import main.Main;
+import main.LeapQuest;
 import org.jetbrains.annotations.Nullable;
-import utils.GameLoop;
 import utils.Logger;
 
 //TODO: Drawable interface and support
-public final class GameRenderer extends JPanel implements Runnable {
-    private final JFrame frame = new JFrame("Leap Quest");
-    private final GamePanel gp;
+public class GameRenderer extends JPanel {
+    private final JFrame frame;
     private Graphics graphics = null;
+    private final LeapQuest gp;
+    private Timer timer;
+    private int fps;
 
-    public GameRenderer(GamePanel gp) {
-        this.gp = gp;
+    public GameRenderer(String title, int width, int height, int fps) {
+        this.fps = fps;
+        this.gp = LeapQuest.instance;
 
-        frame.setSize(gp.getGameWidth(), gp.getGameHeight());
+        frame = new JFrame(title);
+        frame.setSize(width, height);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(this);
-        frame.addKeyListener(gp.getEntityHelper().getPlayer().getUserKeyboardInput());
-        frame.setVisible(true);
-        Logger.info(this, "Initialized.");
     }
 
+    public void initialize() {
+        frame.add(this);
+        frame.setVisible(true);
+        Logger.info(this, "Initialized.");
 
-	@Override
-	public void run() {
-        new GameLoop().start(60, (fps) -> {
-            long now;
-            long updateTime;
-            long wait;
-            int TARGET_FPS = 60;
-            long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
-            while (GamePanel.isRunning()) {
-                now = System.nanoTime();
-                updateTime = System.nanoTime() - now;
-                wait = (OPTIMAL_TIME - updateTime) / 1000000;
-                repaintTick();
-                try {
-                    Thread.sleep(wait);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        Logger.error(this, "Failed to run rendering thread.");
-	}
+        timer = new Timer(1000 / fps, e -> repaint());
+        timer.start();
+    }
 
-    private void repaintTick() {
-        if (frame.isFocused()) repaint();
+    public void setKeyListener(KeyListener keyListener) {
+        frame.addKeyListener(keyListener);
+    }
+
+    public void setMouseListener(MouseListener mouseListener) {
+        frame.addMouseListener(mouseListener);
     }
 	
 	@Override
-	protected void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         if (graphics == null) graphics = g;
 
-		super.paintComponent(g);
-        gp.getLevelManager().drawLevel(g);
-        gp.getEntityHelper().drawEntities(g);
-        gp.getAnimationManager().getAnimations().forEach(animation -> animation.drawAnimation(g));
+        if (gp == null || !LeapQuest.isRunning()) return;
 
-        g.setFont(new Font("Arial", Font.BOLD, 12));
-        g.drawString(Main.getUsedMemory() / (1024 * 1024) + "MB", 20, 20);
+		super.paintComponent(g);
+
+        try {
+            gp.getLevelManager().drawLevel(g);
+            gp.getEntityHelper().drawEntities(g);
+            gp.getAnimationManager().getAnimations().forEach(animation -> animation.drawAnimation(g));
+
+            g.setFont(new Font("Arial", Font.BOLD, 12));
+            g.drawString(LeapQuest.getUsedMemory() / (1024 * 1024) + "MB", 20, 20);
+        } catch (Exception ex) {
+            timer.stop();
+            Logger.error(this, "Failed to repaint! Threw exception: " + ex);
+        }
     }
 
     public JFrame getFrame() {
         return frame;
     }
 
+    public void resizeFrame(int width, int height) {
+        frame.setSize(width, height);
+    }
+
     @Nullable
     public Graphics getUGraphics() {
         return graphics;
+    }
+
+    public void setTargetFps(int fps) {
+        this.fps = fps;
+    }
+
+    public int getTargetFps() {
+        return fps;
     }
 }

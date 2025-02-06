@@ -9,11 +9,14 @@ import graphics.animation.AnimationFrame;
 
 public class PlayerWalkAnimation extends Animation {
     private final Player player;
-    private final AnimationFrame[] walkLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_left.png", "player_walk_left"), 6);
-    private final AnimationFrame[] walkRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_right.png", "player_walk_right"), 6);
+    private final AnimationFrame[] walkLeft;
+    private final AnimationFrame[] walkRight;
 
     public PlayerWalkAnimation(Player player) {
         this.player = player;
+
+        walkLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_left.png", "player_walk_left"), 6);
+        walkRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_right.png", "player_walk_right"), 6);
     }
 
     @Override

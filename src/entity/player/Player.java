@@ -5,6 +5,7 @@ import entity.Entity;
 import graphics.ImageLoader;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
+import main.LeapQuest;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -44,6 +45,7 @@ public final class Player extends Entity<Player> {
 
     @Override
     protected Player onSpawn() {
+        LeapQuest.instance.getGameRenderer().setKeyListener(userKeyboardInput);
         return null;
     }
 

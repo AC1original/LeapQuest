@@ -5,7 +5,7 @@ import graphics.ImageLoader;
 import level.tile.Tile;
 import level.tile.TileType;
 import level.tile.Tiles;
-import main.GamePanel;
+import main.LeapQuest;
 import org.jetbrains.annotations.NotNull;
 import utils.HitBox;
 import utils.Logger;
@@ -25,14 +25,16 @@ TODO: Level movement
 TODO: Extra thread (completable future)
  */
 public class LevelManager {
-    private final GamePanel gp;
-    private final Filemanager fileManager = new Filemanager();
+    private final LeapQuest gp;
+    private final Filemanager fileManager;
     private boolean showHitBox = false;
     private final int[][] level;
     private final Map<HitBox, TileType> levelDat = new HashMap<>();
 
-    public LevelManager(GamePanel gp, String resourceLocation) {
+    public LevelManager(LeapQuest gp, String resourceLocation) {
         this.gp = gp;
+
+        fileManager = new Filemanager();
         level = loadLevel(Objects.requireNonNull(getClass().getResource(resourceLocation)).getPath());
         reloadLevelDat();
         Logger.info(this, "Initialized.");
@@ -75,13 +77,13 @@ public class LevelManager {
 
     public void drawLevel(@NotNull Graphics g) {
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sky.png", "background_sky"),
-                0, 0, gp.getGameWidth(), gp.getGameHeight(), null);
+                0, 0, gp.getGameRenderer().getFrame().getWidth(), gp.getGameRenderer().getFrame().getHeight(), null);
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/mountains.png", "background_mountains"),
-                0, 0, gp.getGameWidth(), gp.getGameHeight(), null);
+                0, 0, gp.getGameRenderer().getFrame().getWidth(), gp.getGameRenderer().getFrame().getHeight(), null);
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/ruins.png", "background_ruins"),
-                0, 0, gp.getGameWidth(), gp.getGameHeight(), null);
+                0, 0, gp.getGameRenderer().getFrame().getWidth(), gp.getGameRenderer().getFrame().getHeight(), null);
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sun.png", "background_sun"),
-                gp.getGameWidth() - 120, 10, 100, 100, null);
+                gp.getGameRenderer().getFrame().getWidth() - 120, 10, 100, 100, null);
 
 
         levelDat.forEach((loc, type) -> {

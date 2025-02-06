@@ -1,15 +1,13 @@
 package entity;
 import entity.player.Player;
-import main.GamePanel;
+import main.LeapQuest;
 import utils.HitBox;
 import utils.Logger;
 import utils.Ticked;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class EntityHelper {

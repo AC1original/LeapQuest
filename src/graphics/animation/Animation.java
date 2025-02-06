@@ -1,5 +1,5 @@
 package graphics.animation;
-import main.GamePanel;
+import main.LeapQuest;
 
 import java.awt.*;
 
@@ -8,7 +8,7 @@ public abstract class Animation {
     public abstract int getDelay();
     public abstract boolean drawAnimation();
     protected abstract void onFrameUpdate(AnimationFrame frame);
-    private final GamePanel gp = GamePanel.getInstance();
+    private final LeapQuest gp = LeapQuest.instance;
     private Graphics graphics;
     private int counter = 1;
     private int index = 0;
