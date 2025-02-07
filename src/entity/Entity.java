@@ -28,7 +28,7 @@ public abstract class Entity<T extends Entity<?>> {
     private boolean moving = false, showHitBox = false;
     private float fallSpeed = 0;
     protected int maxFallSpeed = 10;
-    protected final float GRAVITY = 0.3f;
+    protected float GRAVITY = 0.3f;
     private Animation animation;
 
     public abstract BufferedImage getImage();

@@ -4,7 +4,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import entity.EntityHelper;
+import entity.EntityManager;
+import entity.player.Player;
 import graphics.GameRenderer;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
@@ -20,7 +21,7 @@ public final class LeapQuest {
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
 	private AnimationManager animationManager;
-	private EntityHelper entityHelper;
+	private EntityManager entityHelper;
 	private LevelManager levelManager;
 	private GameRenderer gameRenderer;
 
@@ -42,14 +43,14 @@ public final class LeapQuest {
 		running = true;
 
 		animationManager = register(new AnimationManager());
-		entityHelper = register(new EntityHelper());
+		entityHelper = register(new EntityManager(new Player()));
 		levelManager = register(new LevelManager(this, "/res/level/test_level.txt"));
-		gameRenderer = register(new GameRenderer("Leap Quest", 800, 600, 60));
+		gameRenderer = register(new GameRenderer("Leap Quest", 800, 600, 120));
 
 		entityHelper.spawn(entityHelper.getPlayer(), 400, 150);
 		gameRenderer.initialize();
 
-		new GameLoop().start(50, (lastFPS) -> {
+		new GameLoop().start(60, (lastFPS) -> {
 			try {
 				tick();
 			} catch (InvocationTargetException e) {
@@ -99,7 +100,7 @@ public final class LeapQuest {
 		running = false;
 	}
 
-	public EntityHelper getEntityHelper() {
+	public EntityManager getEntityHelper() {
 		return entityHelper;
 	}
 

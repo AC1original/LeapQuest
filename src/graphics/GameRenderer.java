@@ -1,9 +1,10 @@
 package graphics;
 
 import java.awt.*;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
+import java.util.*;
+import java.util.List;
 import javax.swing.*;
+import javax.swing.Timer;
 
 import main.LeapQuest;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +17,7 @@ public class GameRenderer extends JPanel {
     private final LeapQuest gp;
     private Timer timer;
     private int fps;
+    private final List<Drawable> drawables = Collections.synchronizedList(new ArrayList<>());
 
     public GameRenderer(String title, int width, int height, int fps) {
         this.fps = fps;
@@ -35,15 +37,18 @@ public class GameRenderer extends JPanel {
         timer = new Timer(1000 / fps, e -> repaint());
         timer.start();
     }
-
-    public void setKeyListener(KeyListener keyListener) {
-        frame.addKeyListener(keyListener);
+	public void addDrawable(Drawable drawable) {
+        this.drawables.add(drawable);
     }
 
-    public void setMouseListener(MouseListener mouseListener) {
-        frame.addMouseListener(mouseListener);
+    public void removeDrawable(Drawable drawable) {
+        this.drawables.remove(drawable);
     }
-	
+
+    private void sortDrawables() {
+        drawables.stream().filter()
+    }
+
 	@Override
     protected void paintComponent(Graphics g) {
         if (graphics == null) graphics = g;
@@ -52,6 +57,13 @@ public class GameRenderer extends JPanel {
 
 		super.paintComponent(g);
 
+        drawables.stream()
+                .filter(drawable -> drawable.priority().equals(Drawable.Priority.LOWEST))
+                .forEachOrdered(drawable -> {
+                    if (drawable.drawImage() != null) {
+                        g.drawImage(drawable.drawImage(), drawable.imageX(), drawable.imageY(), drawable.width(), drawable.height(), null);
+                    }
+                });
         try {
             gp.getLevelManager().drawLevel(g);
             gp.getEntityHelper().drawEntities(g);

@@ -7,11 +7,12 @@ import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
 import main.LeapQuest;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 public final class Player extends Entity<Player> {
-    private final PlayerKeyboardInput userKeyboardInput = new PlayerKeyboardInput(this);
     private final BufferedImage fullImage = ImageLoader.getCachedOrLoad(DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right");
     private BufferedImage playerImage = fullImage.getSubimage(0, 0, fullImage.getWidth()/12, fullImage.getHeight());
     private final char[] moveRequests = new char[10];
@@ -45,7 +46,20 @@ public final class Player extends Entity<Player> {
 
     @Override
     protected Player onSpawn() {
-        LeapQuest.instance.getGameRenderer().setKeyListener(userKeyboardInput);
+        UserKeyboardInput.instance.addListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                addMoveRequest(UserKeyboardInput.translateArrowKey(e));
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                removeMoveRequest(UserKeyboardInput.translateArrowKey(e));
+            }
+        });
         return null;
     }
 
@@ -68,10 +82,6 @@ public final class Player extends Entity<Player> {
     @Override
     protected Player onRemove() {
         return this;
-    }
-
-    public PlayerKeyboardInput getUserKeyboardInput() {
-        return userKeyboardInput;
     }
 
     public void addMoveRequest(char key) {
