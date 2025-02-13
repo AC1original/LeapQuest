@@ -1,13 +1,16 @@
 package utils;
 
+import graphics.Drawable;
+
 import java.awt.*;
 
-public class HitBox {
+public class HitBox implements Drawable {
     private int x;
     private int y;
     private int width;
     private int height;
     private final Point location = new Point();
+    private boolean visible = false;
 
     public HitBox(int x, int y, int width, int height) {
         this.x = x;
@@ -72,6 +75,14 @@ public class HitBox {
         this.y = y;
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
     public Point getLocation() {
         location.move(this.x, this.y);
         return location;
@@ -80,5 +91,20 @@ public class HitBox {
     @Override
     public String toString() {
         return "HitBox [x=" + x + ", y=" + y + ", width=" + width + ", height=" + height;
+    }
+
+    @Override
+    public Priority priority() {
+        return Priority.DEFAULT;
+    }
+
+    @Override
+    public void freeDraw(Graphics graphics) {
+        graphics.drawRect(x, y, width, height);
+    }
+
+    @Override
+    public boolean visible() {
+        return visible;
     }
 }

@@ -4,10 +4,10 @@ import utils.Logger;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 public interface Drawable {
-    default BufferedImage drawImage() {
+
+    default BufferedImage image() {
         return null;
     }
 
@@ -31,6 +31,11 @@ public interface Drawable {
         //do nothing
     }
 
+    default int layer() {
+        return -1;
+    }
+
+    boolean visible();
     Priority priority();
 
     enum Priority {

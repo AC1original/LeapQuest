@@ -1,5 +1,6 @@
 package graphics.animation;
 
+import main.LeapQuest;
 import utils.Logger;
 import utils.Ticked;
 
@@ -14,6 +15,7 @@ public class AnimationManager {
     public Animation play(Animation animation) {
         if (animation.checkValidation()) {
             animations.add(animation);
+            LeapQuest.instance.getGameRenderer().addDrawable(animation);
             animation.onPlay();
         }
         return animation;
@@ -29,6 +31,7 @@ public class AnimationManager {
     public void stop(Animation animation) {
          if (animations.contains(animation)) {
             animations.remove(animation);
+            LeapQuest.instance.getGameRenderer().removeDrawable(animation);
             animation.onStop();
         }
     }

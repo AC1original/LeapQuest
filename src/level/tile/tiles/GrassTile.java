@@ -10,27 +10,27 @@ import level.tile.Tiles;
 import java.awt.image.BufferedImage;
 
 public class GrassTile implements Tile {
-    private final BufferedImage tileset = ImageLoader.getCachedOrLoad("/res/level/tiles/default_tileset.png", "default_tileset");
+    private final BufferedImage tileSet = ImageLoader.getCachedOrLoad("/res/level/tiles/default_tileset.png", "default_tileset");
 
     private final TileType[] types = {
             new TileType(this, Tiles.getNextID(), "/res/level/tiles/default_tileset.png",
-                    ImageLoader.getCachedOrLoad(tileset.getSubimage(0, 128, 24, 32),
+                    ImageLoader.getCachedOrLoad(tileSet.getSubimage(0, 128, 24, 32),
                             "grass_bottom_left"), -1, -1),
 
             new TileType(this, Tiles.getNextID() + 1, "/res/level/tiles/default_tileset.png",
-                    ImageLoader.getCachedOrLoad(tileset.getSubimage(24, 128, 24, 32),
+                    ImageLoader.getCachedOrLoad(tileSet.getSubimage(24, 128, 24, 32),
                             "grass_bottom_middle_1"), -1, -1),
 
             new TileType(this, Tiles.getNextID() + 2, "/res/level/tiles/default_tileset.png",
-                    ImageLoader.getCachedOrLoad(tileset.getSubimage(48, 128, 24, 32),
+                    ImageLoader.getCachedOrLoad(tileSet.getSubimage(48, 128, 24, 32),
                             "grass_bottom_middle_2"), -1, -1),
 
             new TileType(this, Tiles.getNextID() + 3, "/res/level/tiles/default_tileset.png",
-                    ImageLoader.getCachedOrLoad(tileset.getSubimage(72, 128, 24, 32),
+                    ImageLoader.getCachedOrLoad(tileSet.getSubimage(72, 128, 24, 32),
                             "grass_bottom_right"), -1, -1),
 
             new TileType(this, Tiles.getNextID() + 4, "/res/level/tiles/default_tileset.png",
-                    ImageLoader.getCachedOrLoad(tileset.getSubimage(288, 96, 64, 32),
+                    ImageLoader.getCachedOrLoad(tileSet.getSubimage(288, 96, 64, 32),
                             "default_grass_block"), 64 * 2, 32 * 2)
     };
 

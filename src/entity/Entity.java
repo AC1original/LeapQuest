@@ -1,5 +1,6 @@
 package entity;
 
+import graphics.Drawable;
 import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
@@ -17,7 +18,7 @@ import java.util.List;
 //TODO: Stop jump when bump head
 //TODO: Short jump cooldown
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
-public abstract class Entity<T extends Entity<?>> {
+public abstract class Entity<T extends Entity<?>> implements Drawable {
     public static final String DEFAULT_PATH = "/res/entity/";
     protected int x = 0, y = 0, speed = 4;
     protected Direction direction = Direction.RIGHT;
@@ -233,6 +234,7 @@ public abstract class Entity<T extends Entity<?>> {
 
     public T showHitBox(boolean hitBox) {
         this.showHitBox = hitBox;
+        this.getHitBox().setVisible(hitBox);
         return (T) this;
     }
 
@@ -269,5 +271,35 @@ public abstract class Entity<T extends Entity<?>> {
 
     public final float getGravity() {
         return GRAVITY;
+    }
+
+    @Override
+    public Priority priority() {
+        return Priority.DEFAULT;
+    }
+
+    @Override
+    public BufferedImage image() {
+        return getImage();
+    }
+
+    @Override
+    public int imageX() {
+        return this.getX();
+    }
+
+    @Override
+    public int imageY() {
+        return this.getY();
+    }
+
+    @Override
+    public int width() {
+        return this.getWidth();
+    }
+
+    @Override
+    public int height() {
+        return this.getHeight();
     }
 }

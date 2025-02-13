@@ -5,7 +5,6 @@ import entity.Entity;
 import graphics.ImageLoader;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
-import main.LeapQuest;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -25,7 +24,6 @@ public final class Player extends Entity<Player> {
     @Override
     protected Player onTick() {
         super.onTick();
-
         for (char c : moveRequests) {
             switch (c) {
                 case ' ' -> jump();
@@ -124,5 +122,10 @@ public final class Player extends Entity<Player> {
             if (moveRequest != 0) return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean visible() {
+        return true;
     }
 }

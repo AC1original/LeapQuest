@@ -1,9 +1,11 @@
 package graphics.animation;
+import graphics.Drawable;
 import main.LeapQuest;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
-public abstract class Animation {
+public abstract class Animation implements Drawable {
     public abstract AnimationFrame[] getFrames();
     public abstract int getDelay();
     public abstract boolean drawAnimation();
@@ -19,12 +21,8 @@ public abstract class Animation {
         return getFrames().length > 0;
     }
 
-    public void drawAnimation(Graphics g) {
-        this.graphics = g;
-        if (!drawAnimation() || !checkValidation()) {
-            return;
-        }
-        g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y, getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
+    public Animation() {
+
     }
 
     protected void updateIndex() {
@@ -73,5 +71,40 @@ public abstract class Animation {
 
     public boolean isAllowedToUpdate() {
         return gp.getGameRenderer().getFrame().isFocused();
+    }
+
+    @Override
+    public BufferedImage image() {
+        return getFrames()[index].getImage();
+    }
+
+    @Override
+    public int imageX() {
+        return getLocation().x;
+    }
+
+    @Override
+    public int imageY() {
+        return getLocation().y;
+    }
+
+    @Override
+    public int width() {
+        return getFrames()[index].getImgWidth();
+    }
+
+    @Override
+    public int height() {
+        return getFrames()[index].getImgHeight();
+    }
+
+    @Override
+    public Priority priority() {
+        return Priority.DEFAULT;
+    }
+
+    @Override
+    public boolean visible() {
+        return drawAnimation() && checkValidation();
     }
 }

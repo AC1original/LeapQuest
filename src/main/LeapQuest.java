@@ -42,13 +42,14 @@ public final class LeapQuest {
 	public void run() {
 		running = true;
 
+		gameRenderer = register(new GameRenderer("Leap Quest", 800, 600, 120));
+		gameRenderer.initialize();
+
 		animationManager = register(new AnimationManager());
 		entityHelper = register(new EntityManager(new Player()));
 		levelManager = register(new LevelManager(this, "/res/level/test_level.txt"));
-		gameRenderer = register(new GameRenderer("Leap Quest", 800, 600, 120));
 
 		entityHelper.spawn(entityHelper.getPlayer(), 400, 150);
-		gameRenderer.initialize();
 
 		new GameLoop().start(60, (lastFPS) -> {
 			try {

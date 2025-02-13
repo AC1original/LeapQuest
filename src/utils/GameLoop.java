@@ -5,11 +5,11 @@ import java.util.function.Consumer;
 public class GameLoop {
     private boolean running = false;
 
-    public void start(final int TARGET_FPS, Consumer<Integer> action) {
+    public GameLoop start(final int TARGET_FPS, Consumer<Integer> action) {
         if (!running) {
             running = true;
         } else {
-            return;
+            return this;
         }
 
         final long OPTIMAL_TIME = 1_000_000_000 / TARGET_FPS;
@@ -44,6 +44,7 @@ public class GameLoop {
                 }
             }
         }
+        return this;
     }
 
     public void stop() {

@@ -1,5 +1,6 @@
 package entity;
 import entity.player.Player;
+import main.LeapQuest;
 import utils.HitBox;
 import utils.Logger;
 import utils.Ticked;
@@ -27,6 +28,8 @@ public class EntityManager {
         entity.y = y;
         entity.onSpawn();
         entities.add(entity);
+        LeapQuest.instance.getGameRenderer().addDrawable(entity);
+        LeapQuest.instance.getGameRenderer().addDrawable(entity.getHitBox());
         Logger.info(this, "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
 
@@ -36,6 +39,8 @@ public class EntityManager {
             return;
         }
         entity.onRemove();
+        LeapQuest.instance.getGameRenderer().removeDrawable(entity);
+        LeapQuest.instance.getGameRenderer().removeDrawable(entity.getHitBox());
         entities.remove(entity);
         Logger.info(this, "Successfully removed Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
@@ -51,18 +56,6 @@ public class EntityManager {
     @Ticked
     public void tick() {
         entities.forEach(Entity::onTick);
-    }
-
-    public void drawEntities(Graphics g) {
-        for (Entity<?> entity : entities) {
-            entity.onDraw(g);
-            g.drawImage(entity.getImage(), entity.x, entity.y, entity.getWidth(), entity.getHeight(), null);
-
-            if (entity.isHitBoxShown()) {
-                g.setColor(Color.RED);
-                g.drawRect(entity.getHitBox().getX(), entity.getHitBox().getY(), entity.getHitBox().getWidth(), entity.getHitBox().getHeight());
-            }
-        }
     }
 
     public List<Entity<?>> getEntities() {

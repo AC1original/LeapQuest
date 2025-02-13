@@ -3,11 +3,15 @@ package graphics;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.*;
-import javax.swing.Timer;
 
+import entity.Entity;
 import main.LeapQuest;
 import org.jetbrains.annotations.Nullable;
+import utils.GameLoop;
 import utils.Logger;
 
 //TODO: Drawable interface and support
@@ -15,9 +19,11 @@ public class GameRenderer extends JPanel {
     private final JFrame frame;
     private Graphics graphics = null;
     private final LeapQuest gp;
-    private Timer timer;
-    private int fps;
+    private GameLoop loop;
+    private final int fps;
+    private int currentFps;
     private final List<Drawable> drawables = Collections.synchronizedList(new ArrayList<>());
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public GameRenderer(String title, int width, int height, int fps) {
         this.fps = fps;
@@ -32,47 +38,74 @@ public class GameRenderer extends JPanel {
     public void initialize() {
         frame.add(this);
         frame.setVisible(true);
-        Logger.info(this, "Initialized.");
 
-        timer = new Timer(1000 / fps, e -> repaint());
-        timer.start();
+        Executors.newSingleThreadExecutor(r -> {
+            Thread renderThread = new Thread(r);
+            renderThread.setName("Render-Thread");
+            return renderThread;
+        }).execute(() -> {
+            Logger.info(this, "Initialized.");
+
+            loop = new GameLoop().start(fps, (fps) -> {
+                currentFps = fps;
+                this.repaint();
+            });
+        });
     }
-	public void addDrawable(Drawable drawable) {
-        this.drawables.add(drawable);
+
+    public void addDrawable(Drawable drawable) {
+        lock.writeLock().lock();
+        try {
+            this.drawables.add(drawable);
+            sortDrawables();
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public void removeDrawable(Drawable drawable) {
-        this.drawables.remove(drawable);
+        lock.writeLock().lock();
+        try {
+            this.drawables.remove(drawable);
+            sortDrawables();
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
-    private void sortDrawables() {
-        drawables.stream().filter()
+    public void sortDrawables() {
+        drawables.sort(Comparator.comparing(Drawable::priority));
+        drawables.stream()
+                .filter(drawable -> drawable.layer() >= 0)
+                .forEach(drawable -> drawables.add(drawable.layer(), drawable));
     }
 
-	@Override
+    @Override
     protected void paintComponent(Graphics g) {
         if (graphics == null) graphics = g;
 
         if (gp == null || !LeapQuest.isRunning()) return;
 
-		super.paintComponent(g);
+        super.paintComponent(g);
 
-        drawables.stream()
-                .filter(drawable -> drawable.priority().equals(Drawable.Priority.LOWEST))
-                .forEachOrdered(drawable -> {
-                    if (drawable.drawImage() != null) {
-                        g.drawImage(drawable.drawImage(), drawable.imageX(), drawable.imageY(), drawable.width(), drawable.height(), null);
-                    }
-                });
         try {
-            gp.getLevelManager().drawLevel(g);
-            gp.getEntityHelper().drawEntities(g);
-            gp.getAnimationManager().getAnimations().forEach(animation -> animation.drawAnimation(g));
+            lock.readLock().lock();
+            try {
+                drawables.stream()
+                        .filter(Drawable::visible)
+                        .forEach(drawable -> drawable.freeDraw(g));
 
-            g.setFont(new Font("Arial", Font.BOLD, 12));
-            g.drawString(LeapQuest.getUsedMemory() / (1024 * 1024) + "MB", 20, 20);
+                drawables.stream()
+                        .filter(Drawable::visible)
+                        .filter(drawable -> drawable.image() != null)
+                        .forEach(drawable -> {
+                            g.drawImage(drawable.image(), drawable.imageX(), drawable.imageY(), drawable.width(), drawable.height(), null);
+                        });
+            } finally {
+                lock.readLock().unlock();
+            }
         } catch (Exception ex) {
-            timer.stop();
+            loop.stop();
             Logger.error(this, "Failed to repaint! Threw exception: " + ex);
         }
     }
@@ -81,17 +114,13 @@ public class GameRenderer extends JPanel {
         return frame;
     }
 
-    public void resizeFrame(int width, int height) {
-        frame.setSize(width, height);
-    }
-
     @Nullable
     public Graphics getUGraphics() {
         return graphics;
     }
 
-    public void setTargetFps(int fps) {
-        this.fps = fps;
+    public int getCurrentFps() {
+        return currentFps;
     }
 
     public int getTargetFps() {

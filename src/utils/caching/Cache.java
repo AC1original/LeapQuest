@@ -243,8 +243,8 @@ public final class Cache<T> {
         }
 
         private static void tick() {
-            ExecutorService executor = Executors.newFixedThreadPool(3);
-            executor.submit(() -> {
+            ExecutorService executor = Executors.newFixedThreadPool(2);
+            executor.execute(() -> {
                 new GameLoop().start(25, (_) -> {
                     caches.forEach(Cache::tick);
                 });
