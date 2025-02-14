@@ -1,5 +1,6 @@
 package graphics.animation;
 
+import graphics.GameRenderer;
 import main.LeapQuest;
 import utils.Logger;
 import utils.Ticked;
@@ -11,11 +12,17 @@ import java.util.List;
 //TODO: Animations on extra thread
 public class AnimationManager {
     private final List<Animation> animations = new ArrayList<>();
+    private final GameRenderer renderer;
+
+    public AnimationManager(GameRenderer renderer) {
+        this.renderer = renderer;
+    }
 
     public Animation play(Animation animation) {
         if (animation.checkValidation()) {
             animations.add(animation);
-            LeapQuest.instance.getGameRenderer().addDrawable(animation);
+
+            renderer.addDrawable(animation);
             animation.onPlay();
         }
         return animation;
@@ -31,7 +38,7 @@ public class AnimationManager {
     public void stop(Animation animation) {
          if (animations.contains(animation)) {
             animations.remove(animation);
-            LeapQuest.instance.getGameRenderer().removeDrawable(animation);
+            renderer.removeDrawable(animation);
             animation.onStop();
         }
     }

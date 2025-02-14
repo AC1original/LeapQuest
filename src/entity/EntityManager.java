@@ -1,5 +1,6 @@
 package entity;
 import entity.player.Player;
+import graphics.GameRenderer;
 import main.LeapQuest;
 import utils.HitBox;
 import utils.Logger;
@@ -13,8 +14,10 @@ import java.util.stream.Collectors;
 public class EntityManager {
     private final HashSet<Entity<?>> entities = new HashSet<>();
     private final Player player;
+    private final GameRenderer renderer;
 
-    public EntityManager(Player player) {
+    public EntityManager(GameRenderer renderer, Player player) {
+        this.renderer = renderer;
         this.player = player;
         Logger.info(this, "Initialized.");
     }
@@ -28,8 +31,8 @@ public class EntityManager {
         entity.y = y;
         entity.onSpawn();
         entities.add(entity);
-        LeapQuest.instance.getGameRenderer().addDrawable(entity);
-        LeapQuest.instance.getGameRenderer().addDrawable(entity.getHitBox());
+        renderer.addDrawable(entity);
+        renderer.addDrawable(entity.getHitBox());
         Logger.info(this, "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
 
@@ -39,8 +42,8 @@ public class EntityManager {
             return;
         }
         entity.onRemove();
-        LeapQuest.instance.getGameRenderer().removeDrawable(entity);
-        LeapQuest.instance.getGameRenderer().removeDrawable(entity.getHitBox());
+        renderer.removeDrawable(entity);
+        renderer.removeDrawable(entity.getHitBox());
         entities.remove(entity);
         Logger.info(this, "Successfully removed Entity \"" + entity.getClass().getSimpleName() + "\".");
     }

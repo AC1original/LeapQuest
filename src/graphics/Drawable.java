@@ -3,30 +3,8 @@ package graphics;
 import utils.Logger;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public interface Drawable {
-
-    default BufferedImage image() {
-        return null;
-    }
-
-    default int imageX() {
-        return 0;
-    }
-
-    default int imageY() {
-        return 0;
-    }
-
-    default int width() {
-        return 0;
-    }
-
-    default int height() {
-        return 0;
-    }
-
     default void freeDraw(Graphics graphics) {
         //do nothing
     }

@@ -279,27 +279,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
     }
 
     @Override
-    public BufferedImage image() {
-        return getImage();
-    }
-
-    @Override
-    public int imageX() {
-        return this.getX();
-    }
-
-    @Override
-    public int imageY() {
-        return this.getY();
-    }
-
-    @Override
-    public int width() {
-        return this.getWidth();
-    }
-
-    @Override
-    public int height() {
-        return this.getHeight();
+    public void freeDraw(Graphics g) {
+        g.drawImage(getImage(), getX(), getY(), getWidth(), getHeight(), null);
     }
 }

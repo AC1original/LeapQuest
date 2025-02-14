@@ -94,13 +94,6 @@ public class GameRenderer extends JPanel {
                 drawables.stream()
                         .filter(Drawable::visible)
                         .forEach(drawable -> drawable.freeDraw(g));
-
-                drawables.stream()
-                        .filter(Drawable::visible)
-                        .filter(drawable -> drawable.image() != null)
-                        .forEach(drawable -> {
-                            g.drawImage(drawable.image(), drawable.imageX(), drawable.imageY(), drawable.width(), drawable.height(), null);
-                        });
             } finally {
                 lock.readLock().unlock();
             }

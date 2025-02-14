@@ -1,6 +1,7 @@
 package graphics.animation;
 import graphics.Drawable;
 import main.LeapQuest;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,10 +12,10 @@ public abstract class Animation implements Drawable {
     public abstract boolean drawAnimation();
     protected abstract void onFrameUpdate(AnimationFrame frame);
     private final LeapQuest gp = LeapQuest.instance;
-    private Graphics graphics;
     private int counter = 1;
     private int index = 0;
     private final Point location = new Point(0, 0);
+    private Graphics graphics;
 
 
     public boolean checkValidation() {
@@ -61,6 +62,7 @@ public abstract class Animation implements Drawable {
         this.index = 0;
     }
 
+    @Nullable
     public Graphics getGraphics() {
         return graphics;
     }
@@ -74,28 +76,11 @@ public abstract class Animation implements Drawable {
     }
 
     @Override
-    public BufferedImage image() {
-        return getFrames()[index].getImage();
-    }
+    public void freeDraw(Graphics g) {
+        if (graphics == null) graphics = g;
 
-    @Override
-    public int imageX() {
-        return getLocation().x;
-    }
-
-    @Override
-    public int imageY() {
-        return getLocation().y;
-    }
-
-    @Override
-    public int width() {
-        return getFrames()[index].getImgWidth();
-    }
-
-    @Override
-    public int height() {
-        return getFrames()[index].getImgHeight();
+        g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y,
+                getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
     }
 
     @Override

@@ -45,9 +45,9 @@ public final class LeapQuest {
 		gameRenderer = register(new GameRenderer("Leap Quest", 800, 600, 120));
 		gameRenderer.initialize();
 
-		animationManager = register(new AnimationManager());
-		entityHelper = register(new EntityManager(new Player()));
-		levelManager = register(new LevelManager(this, "/res/level/test_level.txt"));
+		animationManager = register(new AnimationManager(gameRenderer));
+		entityHelper = register(new EntityManager(gameRenderer, new Player()));
+		levelManager = register(new LevelManager(gameRenderer, "/res/level/test_level.txt"));
 
 		entityHelper.spawn(entityHelper.getPlayer(), 400, 150);
 
