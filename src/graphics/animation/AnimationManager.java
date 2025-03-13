@@ -1,15 +1,12 @@
 package graphics.animation;
 
 import graphics.GameRenderer;
-import main.LeapQuest;
 import utils.Logger;
 import utils.Ticked;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: Animation caching (Remove GamePanel line 79)
-//TODO: Animations on extra thread
 public class AnimationManager {
     private final List<Animation> animations = new ArrayList<>();
     private final GameRenderer renderer;

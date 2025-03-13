@@ -5,35 +5,35 @@ import java.util.function.Consumer;
 public class GameLoop {
     private boolean running = false;
 
-    public GameLoop start(final int TARGET_FPS, Consumer<Integer> action) {
+    public GameLoop start(final int TARGET_TPS, Consumer<Integer> action) {
         if (!running) {
             running = true;
         } else {
             return this;
         }
 
-        final long OPTIMAL_TIME = 1_000_000_000 / TARGET_FPS;
+        final long OPTIMAL_TIME = 1_000_000_000 / TARGET_TPS;
 
         long lastLoopTime = System.nanoTime();
-        int fps = 0;
-        int lastFPS = 0;
-        long lastFpsTime = 0;
+        int tps = 0;
+        int lastTps = 0;
+        long lastTpsTime = 0;
 
         while (running) {
             long now = System.nanoTime();
             long updateLength = now - lastLoopTime;
             lastLoopTime = now;
 
-            fps++;
+            tps++;
 
-            lastFpsTime += updateLength;
-            if (lastFpsTime >= 1_000_000_000) {
-                lastFPS = fps;
-                lastFpsTime = 0;
-                fps = 0;
+            lastTpsTime += updateLength;
+            if (lastTpsTime >= 1_000_000_000) {
+                lastTps = tps;
+                lastTpsTime = 0;
+                tps = 0;
             }
 
-            action.accept(lastFPS);
+            action.accept(lastTps);
 
             long sleepTime = (lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1_000_000;
             if (sleepTime > 0) {

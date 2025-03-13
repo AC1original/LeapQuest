@@ -29,7 +29,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
     private boolean moving = false, showHitBox = false;
     private float fallSpeed = 0;
     protected int maxFallSpeed = 10;
-    protected float GRAVITY = 0.3f;
+    protected float gravity = 0.3f;
     private Animation animation;
 
     public abstract BufferedImage getImage();
@@ -270,7 +270,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
     }
 
     public final float getGravity() {
-        return GRAVITY;
+        return gravity;
     }
 
     @Override
@@ -279,7 +279,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
     }
 
     @Override
-    public void freeDraw(Graphics g) {
+    public void fDraw(Graphics g) {
         g.drawImage(getImage(), getX(), getY(), getWidth(), getHeight(), null);
     }
 }

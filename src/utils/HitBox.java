@@ -99,7 +99,7 @@ public class HitBox implements Drawable {
     }
 
     @Override
-    public void freeDraw(Graphics graphics) {
+    public void fDraw(Graphics graphics) {
         graphics.drawRect(x, y, width, height);
     }
 

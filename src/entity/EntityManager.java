@@ -37,7 +37,7 @@ public class EntityManager {
     }
 
     public void remove(Entity<?> entity) {
-        if (entities.contains(entity)) {
+        if (!entities.contains(entity)) {
             Logger.warn(this.getClass(), "Failed to remove Entity \"" + entity.getClass().getSimpleName() + "\". Entity not found!");
             return;
         }

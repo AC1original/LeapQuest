@@ -4,13 +4,13 @@ import main.LeapQuest;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public abstract class Animation implements Drawable {
     public abstract AnimationFrame[] getFrames();
     public abstract int getDelay();
     public abstract boolean drawAnimation();
     protected abstract void onFrameUpdate(AnimationFrame frame);
+
     private final LeapQuest gp = LeapQuest.instance;
     private int counter = 1;
     private int index = 0;
@@ -22,12 +22,8 @@ public abstract class Animation implements Drawable {
         return getFrames().length > 0;
     }
 
-    public Animation() {
-
-    }
-
     protected void updateIndex() {
-        if (getDelay() > 0 && checkValidation()) {
+        if (getDelay() >= 0 && checkValidation()) {
             if (isAllowedToUpdate()) counter++;
             if (counter >= getDelay()) {
                 counter = 1;
@@ -72,15 +68,17 @@ public abstract class Animation implements Drawable {
     public void onStop() {}
 
     public boolean isAllowedToUpdate() {
-        return gp.getGameRenderer().getFrame().isFocused();
+        return true;
     }
 
     @Override
-    public void freeDraw(Graphics g) {
+    public void fDraw(Graphics g) {
         if (graphics == null) graphics = g;
 
+        if (drawAnimation()) {
         g.drawImage(getFrames()[index].getImage(), getLocation().x, getLocation().y,
                 getFrames()[index].getImgWidth(), getFrames()[index].getImgHeight(), null);
+        }
     }
 
     @Override

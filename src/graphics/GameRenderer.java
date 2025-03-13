@@ -8,7 +8,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.*;
 
-import entity.Entity;
 import main.LeapQuest;
 import org.jetbrains.annotations.Nullable;
 import utils.GameLoop;
@@ -82,18 +81,17 @@ public class GameRenderer extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         if (graphics == null) graphics = g;
 
         if (gp == null || !LeapQuest.isRunning()) return;
-
-        super.paintComponent(g);
 
         try {
             lock.readLock().lock();
             try {
                 drawables.stream()
                         .filter(Drawable::visible)
-                        .forEach(drawable -> drawable.freeDraw(g));
+                        .forEach(drawable -> drawable.fDraw(g));
             } finally {
                 lock.readLock().unlock();
             }

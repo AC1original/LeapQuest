@@ -4,8 +4,11 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import de.ac.Filemanager;
 import entity.EntityManager;
 import entity.player.Player;
+import entity.player.command.CommandExecutor;
+import entity.player.command.Commands;
 import graphics.GameRenderer;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
@@ -13,6 +16,7 @@ import utils.GameLoop;
 import utils.Logger;
 import utils.Ticked;
 
+//TODO: Performance issue -> Laggy gamerenderer under 120 FPS
 //TODO: Dev cheat-chat
 //TODO: Gamestate management
 public final class LeapQuest {
@@ -24,6 +28,7 @@ public final class LeapQuest {
 	private EntityManager entityHelper;
 	private LevelManager levelManager;
 	private GameRenderer gameRenderer;
+	private CommandExecutor commandExecutor;
 
 	static {
 		instance = new LeapQuest();
@@ -31,6 +36,7 @@ public final class LeapQuest {
 
 	public static void main(String[] args) {
 		Logger.info(LeapQuest.class, "Starting Game.");
+
 		instance.run();
 		Logger.error(LeapQuest.class, "Main Game Loop failed!");
 	}
@@ -48,10 +54,11 @@ public final class LeapQuest {
 		animationManager = register(new AnimationManager(gameRenderer));
 		entityHelper = register(new EntityManager(gameRenderer, new Player()));
 		levelManager = register(new LevelManager(gameRenderer, "/res/level/test_level.txt"));
+		commandExecutor = register(new CommandExecutor(System.in, System.out, new Commands()));
 
 		entityHelper.spawn(entityHelper.getPlayer(), 400, 150);
 
-		new GameLoop().start(60, (lastFPS) -> {
+		new GameLoop().start(60, (lastTps) -> {
 			try {
 				tick();
 			} catch (InvocationTargetException e) {

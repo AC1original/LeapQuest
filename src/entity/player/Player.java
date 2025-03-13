@@ -6,6 +6,7 @@ import graphics.ImageLoader;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -122,10 +123,5 @@ public final class Player extends Entity<Player> {
             if (moveRequest != 0) return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean visible() {
-        return true;
     }
 }

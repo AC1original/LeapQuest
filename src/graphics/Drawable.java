@@ -5,16 +5,18 @@ import utils.Logger;
 import java.awt.*;
 
 public interface Drawable {
-    default void freeDraw(Graphics graphics) {
-        //do nothing
-    }
+
+    void fDraw(Graphics graphics);
+
+    Priority priority();
 
     default int layer() {
         return -1;
     }
 
-    boolean visible();
-    Priority priority();
+    default boolean visible() {
+        return true;
+    }
 
     enum Priority {
         LOWEST,

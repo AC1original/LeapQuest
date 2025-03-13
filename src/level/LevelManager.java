@@ -26,7 +26,7 @@ TODO: Level movement
 TODO: Extra thread (completable future)
 TODO: Object oriented use
  */
-public class LevelManager implements Drawable{
+public class LevelManager implements Drawable {
     private final GameRenderer renderer;
     private final Filemanager fileManager;
     private boolean showHitBox = false;
@@ -79,15 +79,15 @@ public class LevelManager implements Drawable{
     }
 
     @Override
-    public void freeDraw(Graphics g) {
+    public void fDraw(Graphics g) {
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sky.png", "background_sky"),
-                0, 0, renderer.getFrame().getWidth(), renderer.getFrame().getHeight(), null);
+                0, 0, renderer.getWidth(), renderer.getHeight(), null);
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/mountains.png", "background_mountains"),
-                0, 0, renderer.getFrame().getWidth(), renderer.getFrame().getHeight(), null);
+                0, 0, renderer.getWidth(), renderer.getHeight(), null);
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/ruins.png", "background_ruins"),
-                0, 0, renderer.getFrame().getWidth(), renderer.getFrame().getHeight(), null);
+                0, 0, renderer.getWidth(), renderer.getHeight(), null);
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sun.png", "background_sun"),
-                renderer.getFrame().getWidth() - 120, 10, 100, 100, null);
+                renderer.getWidth() - 120, 10, 100, 100, null);
 
 
         levelDat.forEach((loc, type) -> {
@@ -131,11 +131,6 @@ public class LevelManager implements Drawable{
                 .filter(rect -> levelDat.get(rect).parent().isSolid())
                 .filter(hitBox::intersects)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean visible() {
-        return true;
     }
 
     @Override
