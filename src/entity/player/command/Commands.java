@@ -1,5 +1,6 @@
 package entity.player.command;
 
+import entity.player.command.commands.HitBoxCommand;
 import entity.player.command.commands.TeleportCommand;
 import utils.Logger;
 
@@ -10,6 +11,7 @@ public class Commands implements CommandProvider {
     private final List<Command> commands = new ArrayList<>();
 
     public final Command TELEPORT_COMMAND = register(new TeleportCommand());
+    public final Command HITBOX_COMMAND = register(new HitBoxCommand());
 
     @Override
     public Command register(Command command) {

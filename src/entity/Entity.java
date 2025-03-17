@@ -83,9 +83,9 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
     public T move(Direction direction, int speed) {
         setDirection(direction);
 
-        Point targetLoc = Direction.getNewLocation(getLocation(), speed, direction);
+        var targetLoc = direction.getNewLocation(getLocation(), speed);
 
-        LevelManager levelManager = getGamePanel().getLevelManager();
+        LevelManager levelManager = LeapQuest.instance.getLevelManager();
         HitBox uEntityBox = getHitBox();
         uEntityBox.setX(targetLoc.x + getHitBoxBufferX() / 2);
         uEntityBox.setY(targetLoc.y + getHitBoxBufferY() / 2);
@@ -93,7 +93,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
         List<TileType> tiles = levelManager.getCollisionTiles(uEntityBox);
         if (!tiles.isEmpty()) {
             for (int i = 0; i < speed; i++) {
-                Point step = Direction.getNewLocation(getLocation(), 1, direction);
+                Point step = direction.getNewLocation(getLocation(), 1);
                 uEntityBox.setX(step.x + getHitBoxBufferX() / 2);
                 uEntityBox.setY(step.y + getHitBoxBufferY() / 2);
                 if (!levelManager.checkCollision(uEntityBox)) {
@@ -156,12 +156,8 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
         return (T) this;
     }
 
-    public final LeapQuest getGamePanel() {
-        return LeapQuest.instance;
-    }
-
     public AnimationManager getAnimationManager() {
-        return getGamePanel().getAnimationManager();
+        return LeapQuest.instance.getAnimationManager();
     }
 
     public Animation getAnimation() {
@@ -189,7 +185,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
     public boolean isOnGround() {
         HitBox uEntityBox = getHitBox();
         uEntityBox.move(0, 1);
-        LevelManager levelManager = getGamePanel().getLevelManager();
+        LevelManager levelManager = LeapQuest.instance.getLevelManager();
         List<HitBox> collideBoxes = levelManager.getCollisions(uEntityBox);
 
         if (!collideBoxes.isEmpty()) {
@@ -206,7 +202,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
 
     public T jump(short strength) {
         if (isOnGround()) {
-            fallSpeed -= (float) strength;
+            fallSpeed -= strength;
             move(Direction.UP, strength);
         }
         return (T) this;
@@ -271,6 +267,22 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
 
     public final float getGravity() {
         return gravity;
+    }
+
+    public int possibleMovementUntilCollision(Direction direction, int speed) {
+        LevelManager levelManager = LeapQuest.instance.getLevelManager();
+
+        for (int i = 0; i < speed; i++) {
+            HitBox uHitBox = getHitBox();
+            var newPos = direction.getNewLocation(getLocation(), 1);
+
+            uHitBox.move(direction.getDeltaX(), direction.getDeltaY());
+
+            if (levelManager.checkCollision(uHitBox)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override

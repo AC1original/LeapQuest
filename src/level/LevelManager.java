@@ -87,7 +87,7 @@ public class LevelManager implements Drawable {
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/ruins.png", "background_ruins"),
                 0, 0, renderer.getWidth(), renderer.getHeight(), null);
         g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sun.png", "background_sun"),
-                renderer.getWidth() - 120, 10, 100, 100, null);
+                renderer.getWidth() - 200, 10, 150, 150, null);
 
 
         levelDat.forEach((loc, type) -> {
@@ -102,6 +102,10 @@ public class LevelManager implements Drawable {
         });
     }
 
+    public void moveLevel(int deltaX, int deltaY) {
+        levelDat.forEach((loc, type) -> loc.move(deltaX, deltaY));
+    }
+
     @Ticked
     public void tick() {
         Tiles.getRegistered().forEach(Tile::tick);
@@ -110,6 +114,7 @@ public class LevelManager implements Drawable {
     public void showHitBox(boolean hitBox) {
         this.showHitBox = hitBox;
     }
+
     public boolean isHitBoxShown() {
         return showHitBox;
     }

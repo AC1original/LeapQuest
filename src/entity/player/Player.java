@@ -6,7 +6,6 @@ import graphics.ImageLoader;
 import graphics.animation.animations.player.PlayerIdleAnimation;
 import graphics.animation.animations.player.PlayerWalkAnimation;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -62,6 +61,16 @@ public final class Player extends Entity<Player> {
         return null;
     }
 
+//    @Override
+//    public Player move(Direction direction, int speed) {
+//        if (direction.isHorizontal()) {
+//            LeapQuest.instance.getLevelManager().moveLevel((getSpeed() * direction.getDeltaX()) * -1, 0);
+//        } else {
+//            super.move(direction, speed);
+//        }
+//        return this;
+//    }
+
     @Override
     public Player setImage(BufferedImage image) {
         this.playerImage = image;
@@ -91,6 +100,8 @@ public final class Player extends Entity<Player> {
                 return;
             }
         }
+
+
     }
 
     public void removeMoveRequest(char key) {

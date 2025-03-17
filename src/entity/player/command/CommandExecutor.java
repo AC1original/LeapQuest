@@ -46,7 +46,7 @@ public class CommandExecutor {
                            })
                            .findFirst()
                            .ifPresentOrElse(cmd -> cmd.execute(this, arguments),
-                                   () -> printMessage("Command " + Arrays.toString(command) + " not found."));
+                                   () -> printMessage("Command '" + String.join(" ", command) + "' not found."));
                }
            }
         });

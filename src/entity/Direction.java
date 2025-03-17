@@ -22,9 +22,17 @@ public enum Direction {
         return deltaY;
     }
 
-    private static final Point newLoc = new Point(0, 0);
-    public static Point getNewLocation(Point location, int speed, Direction direction) {
-        newLoc.move(location.x + speed * direction.getDeltaX(), location.y + speed * direction.getDeltaY());
+    public boolean isHorizontal() {
+        return this.deltaX != 0;
+    }
+
+    public boolean isVertical() {
+        return this.deltaY != 0;
+    }
+
+    private final Point newLoc = new Point(0, 0);
+    public Point getNewLocation(Point location, int speed) {
+        newLoc.move(location.x + speed * this.getDeltaX(), location.y + speed * this.getDeltaY());
         return newLoc;
     }
 }
