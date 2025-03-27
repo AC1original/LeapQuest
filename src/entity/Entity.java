@@ -4,7 +4,6 @@ import graphics.Drawable;
 import graphics.animation.Animation;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
-import level.tile.TileType;
 import main.LeapQuest;
 import org.jetbrains.annotations.NotNull;
 import utils.HitBox;
@@ -83,31 +82,9 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
     public T move(Direction direction, int speed) {
         setDirection(direction);
 
-        var targetLoc = direction.getNewLocation(getLocation(), speed);
-
-        LevelManager levelManager = LeapQuest.instance.getLevelManager();
-        HitBox uEntityBox = getHitBox();
-        uEntityBox.setX(targetLoc.x + getHitBoxBufferX() / 2);
-        uEntityBox.setY(targetLoc.y + getHitBoxBufferY() / 2);
-
-        List<TileType> tiles = levelManager.getCollisionTiles(uEntityBox);
-        if (!tiles.isEmpty()) {
-            for (int i = 0; i < speed; i++) {
-                Point step = direction.getNewLocation(getLocation(), 1);
-                uEntityBox.setX(step.x + getHitBoxBufferX() / 2);
-                uEntityBox.setY(step.y + getHitBoxBufferY() / 2);
-                if (!levelManager.checkCollision(uEntityBox)) {
-                    this.x = step.x;
-                    this.y = step.y;
-                } else {
-                    tiles.forEach(tile -> tile.parent().onCollide(this, direction));
-                    break;
-                }
-            }
-        } else {
-            this.x = targetLoc.x;
-            this.y = targetLoc.y;
-        }
+        int cP = collisionPrediction(direction, speed);
+        this.x += cP * direction.getDeltaX();
+        this.y += cP * direction.getDeltaY();
 
         setMoving(true);
         lastMoved = System.currentTimeMillis();
@@ -269,20 +246,26 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
         return gravity;
     }
 
-    public int possibleMovementUntilCollision(Direction direction, int speed) {
+    public int collisionPrediction(Direction direction, int speed) {
+        return collisionPrediction(getHitBox(), direction, speed);
+    }
+
+    public int collisionPrediction(HitBox hitBox, Direction direction, int speed) {
+        return collisionPrediction(hitBox.getX(), hitBox.getY(), hitBox.getWidth(), hitBox.getHeight(), direction, speed);
+    }
+
+    public int collisionPrediction(int x, int y, int width, int height, Direction direction, int speed) {
         LevelManager levelManager = LeapQuest.instance.getLevelManager();
 
         for (int i = 0; i < speed; i++) {
-            HitBox uHitBox = getHitBox();
-            var newPos = direction.getNewLocation(getLocation(), 1);
+            x += direction.getDeltaX();
+            y += direction.getDeltaY();
 
-            uHitBox.move(direction.getDeltaX(), direction.getDeltaY());
-
-            if (levelManager.checkCollision(uHitBox)) {
+            if (levelManager.checkCollision(x, y, width, height)) {
                 return i;
             }
         }
-        return -1;
+        return speed;
     }
 
     @Override

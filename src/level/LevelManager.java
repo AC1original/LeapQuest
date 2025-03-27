@@ -125,17 +125,24 @@ public class LevelManager implements Drawable {
                 .collect(Collectors.toList());
     }
 
+    public boolean checkCollision(int x, int y, int width, int height) {
+        return !getCollisions(x, y, width, height).isEmpty();
+    }
 
     public boolean checkCollision(HitBox hitBox) {
         return !getCollisions(hitBox).isEmpty();
     }
 
-    public List<HitBox> getCollisions(@NotNull HitBox hitBox) {
+    public List<HitBox> getCollisions(int x, int y, int width, int height) {
         return levelDat.keySet()
                 .stream()
                 .filter(rect -> levelDat.get(rect).parent().isSolid())
-                .filter(hitBox::intersects)
+                .filter(hb -> hb.intersects(x, y, width, height))
                 .collect(Collectors.toList());
+    }
+
+    public List<HitBox> getCollisions(@NotNull HitBox hitBox) {
+        return getCollisions(hitBox.getX(), hitBox.getY(), hitBox.getWidth(), hitBox.getHeight());
     }
 
     @Override

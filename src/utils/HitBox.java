@@ -20,10 +20,14 @@ public class HitBox implements Drawable {
     }
 
     public boolean intersects(HitBox hitBox) {
-        return this.x <= hitBox.x + hitBox.width &&
-                this.x + this.width >= hitBox.x &&
-                this.y <= hitBox.y + hitBox.height &&
-                this.y + this.height >= hitBox.y;
+        return intersects(hitBox.getX(), hitBox.getY(), hitBox.getWidth(), hitBox.getHeight());
+    }
+
+    public boolean intersects(int x, int y, int width, int height) {
+        return this.x <= x + width &&
+                this.x + this.width >= x &&
+                this.y <= y + height &&
+                this.y + this.height >= y;
     }
 
     public void resize(int width, int height) {
@@ -41,6 +45,13 @@ public class HitBox implements Drawable {
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    public void setBounds(HitBox hitBox) {
+        this.x = hitBox.x;
+        this.y = hitBox.y;
+        this.width = hitBox.width;
+        this.height = hitBox.height;
     }
 
     public int getWidth() {
