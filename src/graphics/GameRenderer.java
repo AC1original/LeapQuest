@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import utils.GameLoop;
 import utils.Logger;
 
-//TODO: Drawable interface and support
 public class GameRenderer extends JPanel {
     private final JFrame frame;
     private Graphics graphics = null;
@@ -23,6 +22,11 @@ public class GameRenderer extends JPanel {
     private int currentFps;
     private final List<Drawable> drawables = Collections.synchronizedList(new ArrayList<>());
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    /*
+     * ReadWriteLock:
+     * Read Lock = Prevent writing
+     * Write Lock = Prevent writing AND reading
+     */
 
     public GameRenderer(String title, int width, int height, int fps) {
         this.fps = fps;
@@ -38,18 +42,15 @@ public class GameRenderer extends JPanel {
         frame.add(this);
         frame.setVisible(true);
 
-        Executors.newSingleThreadExecutor(r -> {
-            Thread renderThread = new Thread(r);
-            renderThread.setName("Render-Thread");
-            return renderThread;
-        }).execute(() -> {
-            Logger.info(this, "Initialized.");
+        Logger.info(this, "Initialized.");
 
-            loop = new GameLoop().start(fps, (fps) -> {
-                currentFps = fps;
-                this.repaint();
-            });
-        });
+        loop = new GameLoop()
+                .runOnThread(true)
+                .setThreadName("Render-Thread")
+                .start(fps, (fps) -> {
+                    currentFps = fps;
+                    SwingUtilities.invokeLater(this::repaint);
+                });
     }
 
     public void addDrawable(Drawable drawable) {
@@ -73,10 +74,15 @@ public class GameRenderer extends JPanel {
     }
 
     public void sortDrawables() {
-        drawables.sort(Comparator.comparing(Drawable::priority));
-        drawables.stream()
-                .filter(drawable -> drawable.layer() >= 0)
-                .forEach(drawable -> drawables.add(drawable.layer(), drawable));
+        lock.writeLock().lock();
+        try {
+            drawables.sort(Comparator.comparing(Drawable::priority));
+            drawables.stream()
+                    .filter(drawable -> drawable.layer() >= 0)
+                    .forEach(drawable -> drawables.add(drawable.layer(), drawable));
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     @Override
@@ -99,6 +105,7 @@ public class GameRenderer extends JPanel {
             loop.stop();
             Logger.error(this, "Failed to repaint! Threw exception: " + ex);
         }
+        Toolkit.getDefaultToolkit().sync();
     }
 
     public JFrame getFrame() {

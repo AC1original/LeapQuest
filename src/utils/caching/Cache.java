@@ -43,27 +43,25 @@ public final class Cache<T> {
 
     private void tick() {
         if (isExpires()) {
-           stream().filter(obj -> !obj.isExpired())
-                   .filter(obj -> (System.currentTimeMillis() - (isOnlyExpireWhenUnused() ? obj.getLastUpdated() : obj.getTimeAdded())) >= getExpireTimeUnit().toMillis(getExpiresAfter()))
-                   .forEach(obj -> {
+            stream().filter(obj -> !obj.isExpired())
+                    .filter(obj -> (System.currentTimeMillis() - (isOnlyExpireWhenUnused() ? obj.getLastUpdated() : obj.getTimeAdded()))
+                            >= getExpireTimeUnit().toMillis(getExpiresAfter()))
+                    .forEach(obj -> {
                         registeredClasses.forEach(listener -> listener.onCachedObjectExpire(obj));
-                       obj.expire();
-                   });
+                        obj.expire();
+                    });
         }
+
         if (isDeleteAfterExpiration()) {
             stream().filter(CachedObject::isExpired)
-                    .findAny()
-                    .ifPresent(this::remove);
+                    .forEach(this::remove);
         }
 
-        if (isDeleteOldIndexes()) {
-            if (cached.size() > getDeleteIndexAfter()) {
-                remove(cached.getLast());
-            }
+        if (isDeleteOldIndexes() && cached.size() > getDeleteIndexAfter()) {
+            remove(cached.getLast());
         }
-
-
     }
+
 
     public void add(String key, T object) {
         CachedObject<T> cachedObject = new CachedObject<>(key, object);
@@ -243,12 +241,12 @@ public final class Cache<T> {
         }
 
         private static void tick() {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(() -> {
-                new GameLoop().start(20, (_) -> {
-                    caches.forEach(Cache::tick);
-                });
-            });
+            new GameLoop()
+                    .runOnThread(true)
+                    .setThreadName("Caching-Thread")
+                    .start(20, (_) -> {
+                        caches.forEach(Cache::tick);
+                    });
         }
 
         public CacheBuilder<T> objectsExpires(final boolean expires) {
