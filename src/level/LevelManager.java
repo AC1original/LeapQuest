@@ -149,4 +149,9 @@ public class LevelManager implements Drawable {
     public Priority priority() {
         return Priority.LOW;
     }
+
+    @Override
+    public Drawable parent() {
+        return this;
+    }
 }

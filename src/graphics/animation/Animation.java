@@ -82,6 +82,11 @@ public abstract class Animation implements Drawable {
     }
 
     @Override
+    public Drawable parent() {
+        return this;
+    }
+
+    @Override
     public Priority priority() {
         return Priority.DEFAULT;
     }

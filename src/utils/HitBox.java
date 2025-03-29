@@ -110,6 +110,11 @@ public class HitBox implements Drawable {
     }
 
     @Override
+    public Drawable parent() {
+        return this;
+    }
+
+    @Override
     public void fDraw(Graphics graphics) {
         graphics.drawRect(x, y, width, height);
     }

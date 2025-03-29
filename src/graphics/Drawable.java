@@ -10,6 +10,8 @@ public interface Drawable {
 
     Priority priority();
 
+    Drawable parent();
+
     default int layer() {
         return -1;
     }

@@ -7,8 +7,6 @@ import graphics.ImageLoader;
 import graphics.animation.Animation;
 import graphics.animation.AnimationFrame;
 
-import java.awt.*;
-
 public class PlayerIdleAnimation extends Animation {
     private final Player player;
     private final AnimationFrame[] animationRight;
