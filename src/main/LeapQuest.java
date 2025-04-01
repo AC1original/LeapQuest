@@ -4,11 +4,10 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import de.ac.Filemanager;
 import entity.EntityManager;
 import entity.player.Player;
 import entity.player.command.CommandExecutor;
-import entity.player.command.Commands;
+import entity.player.command.CommandProviderImpl;
 import graphics.GameRenderer;
 import graphics.animation.AnimationManager;
 import level.LevelManager;
@@ -54,7 +53,7 @@ public final class LeapQuest {
 		animationManager = register(new AnimationManager(gameRenderer));
 		entityHelper = register(new EntityManager(gameRenderer, new Player()));
 		levelManager = register(new LevelManager(gameRenderer, "/res/level/test_level.txt"));
-		commandExecutor = register(new CommandExecutor(System.in, System.out, new Commands()));
+		commandExecutor = register(new CommandExecutor(System.in, System.out, new CommandProviderImpl()));
 
 		entityHelper.spawn(entityHelper.getPlayer(), 400, 150);
 

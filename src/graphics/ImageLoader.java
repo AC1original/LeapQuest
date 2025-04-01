@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 //TODO: load ressources from ressource folder as stream
+//TODO: Dont save textures as variables
 public class ImageLoader {
     private static final Cache<BufferedImage> cachedImages = new Cache.CacheBuilder<BufferedImage>()
             .objectsExpires(true)

@@ -7,7 +7,7 @@ import utils.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Commands implements CommandProvider {
+public class CommandProviderImpl implements CommandProvider {
     private final List<Command> commands = new ArrayList<>();
 
     public final Command TELEPORT_COMMAND = register(new TeleportCommand());

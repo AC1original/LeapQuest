@@ -16,6 +16,8 @@ import java.util.List;
 //TODO: Health & enemies
 //TODO: Stop jump when bump head
 //TODO: Short jump cooldown
+//TODO: Ressource management / Default ressource path
+//TODO: HitBox fix
 @SuppressWarnings({"UnusedReturnValue", "unchecked"})
 public abstract class Entity<T extends Entity<?>> implements Drawable {
     public static final String DEFAULT_PATH = "/res/entity/";
