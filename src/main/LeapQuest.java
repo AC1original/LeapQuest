@@ -1,6 +1,10 @@
 package main;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -20,6 +24,7 @@ import utils.Ticked;
 //TODO: Gamestate management
 public final class LeapQuest {
 	public static final LeapQuest instance;
+	private final LocalDateTime startTime = LocalDateTime.now();
 	private static final Queue<Object> ticked = new ConcurrentLinkedDeque<>();
 	private GameStates gameState = GameStates.MENU;
 	private static boolean running = false;
@@ -127,6 +132,10 @@ public final class LeapQuest {
 		return levelManager;
 	}
 
+	public CommandExecutor getCommandExecutor() {
+		return commandExecutor;
+	}
+
 	public static long getMaxMemory() {
 		return Runtime.getRuntime().maxMemory();
 	}
@@ -141,5 +150,9 @@ public final class LeapQuest {
 
 	public static long getFreeMemory() {
 		return Runtime.getRuntime().freeMemory();
+	}
+
+	public long getRunTimeSec() {
+		return ChronoUnit.SECONDS.between(startTime, LocalDateTime.now());
 	}
 }
