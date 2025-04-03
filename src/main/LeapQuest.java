@@ -3,8 +3,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -152,7 +150,7 @@ public final class LeapQuest {
 		return Runtime.getRuntime().freeMemory();
 	}
 
-	public long getRunTimeSec() {
-		return ChronoUnit.SECONDS.between(startTime, LocalDateTime.now());
+	public long getRuntime(ChronoUnit unit) {
+		return unit.between(startTime, LocalDateTime.now());
 	}
 }

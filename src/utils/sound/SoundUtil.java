@@ -18,7 +18,7 @@ public class SoundUtil {
             .build();
 
     public static void play(String path) {
-        play(path, path);
+        play(path, String.valueOf(path.hashCode()));
     }
 
     public static void play(String path, String name) {
