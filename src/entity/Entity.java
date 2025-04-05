@@ -45,7 +45,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
         if (System.currentTimeMillis() - lastMoved >= 350) {
             setMoving(false);
         }
-        checkPhysics();
+        applyPhysics();
         return (T) this;
     }
 
@@ -85,11 +85,13 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
         setDirection(direction);
 
         int cP = collisionPrediction(direction, speed);
-        this.x += cP * direction.getDeltaX();
-        this.y += cP * direction.getDeltaY();
+        if (cP != 0) {
+            this.x += cP * direction.getDeltaX();
+            this.y += cP * direction.getDeltaY();
 
-        setMoving(true);
-        lastMoved = System.currentTimeMillis();
+            setMoving(true);
+            lastMoved = System.currentTimeMillis();
+        }
         return (T) this;
     }
 
@@ -152,10 +154,13 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
         return (T) this;
     }
 
-    protected T checkPhysics() {
+    protected T applyPhysics() {
         if (!isOnGround()) {
-            fallSpeed += getGravity();
-            if (fallSpeed > maxFallSpeed) fallSpeed = maxFallSpeed;
+            if (fallSpeed < maxFallSpeed) {
+                fallSpeed += getGravity();
+            } else if (fallSpeed > maxFallSpeed) {
+                fallSpeed = maxFallSpeed;
+            }
             move(Direction.DOWN, Math.round(fallSpeed));
         } else fallSpeed = 0;
         return (T) this;

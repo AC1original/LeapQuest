@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 /*
 TODO: Create nice level
-TODO: Level movement
 TODO: Extra thread (completable future)
 TODO: Object oriented use
  */
@@ -48,7 +47,8 @@ public class LevelManager implements Drawable {
         try {
             fileManager.setPath(path);
         } catch (NoSuchFileException e) {
-            throw new RuntimeException(e);
+            Logger.error(this, "Failed to read level from file. Returned empty 2D-int-array instead.");
+            return new int[0][0];
         }
         int[][] level = new int[fileManager.lines()][fileManager.get(0).split(" ").length];
         for (int line = 0; line < fileManager.lines(); line++) {

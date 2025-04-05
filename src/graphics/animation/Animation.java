@@ -1,6 +1,5 @@
 package graphics.animation;
 import graphics.Drawable;
-import main.LeapQuest;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -11,7 +10,6 @@ public abstract class Animation implements Drawable {
     public abstract boolean drawAnimation();
     protected abstract void onFrameUpdate(AnimationFrame frame);
 
-    private final LeapQuest gp = LeapQuest.instance;
     private int counter = 1;
     private int index = 0;
     private final Point location = new Point(0, 0);
