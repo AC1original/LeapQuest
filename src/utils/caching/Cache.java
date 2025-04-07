@@ -3,10 +3,9 @@ package utils.caching;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import utils.GameLoop;
+import utils.Logger;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -243,6 +242,7 @@ public final class Cache<T> {
         private static void tick() {
             new GameLoop()
                     .runOnThread(true)
+                    .runThreadVirtual(true)
                     .setThreadName("Caching-Thread")
                     .start(20, (_) -> {
                         caches.forEach(Cache::tick);
@@ -283,6 +283,7 @@ public final class Cache<T> {
         public final Cache<T> build() {
             Cache<T> cache = new Cache<T>(expires, expiresAfter, expireTimeUnit, deleteAfterExpiration, onlyExpireWhenUnused, deleteOldIndexes, deleteIndexAfter);
             caches.add(cache);
+            Logger.info(cache, "Initialized new cache.");
             return cache;
         }
     }

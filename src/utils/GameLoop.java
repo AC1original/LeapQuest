@@ -1,5 +1,6 @@
 package utils;
 
+import javax.xml.stream.FactoryConfigurationError;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
@@ -8,10 +9,16 @@ public class GameLoop {
     private boolean running = false;
     private boolean paused = false;
     private boolean runOnThread = false;
+    private boolean virtualThread = false;
     private String threadName = "";
 
     public GameLoop runOnThread(boolean runOnThread) {
         this.runOnThread = runOnThread;
+        return this;
+    }
+
+    public GameLoop runThreadVirtual(boolean virtual) {
+        this.virtualThread = virtual;
         return this;
     }
 
@@ -65,14 +72,22 @@ public class GameLoop {
         };
 
         if (runOnThread) {
-            ThreadFactory namedThreadFactory = (r) -> {
-                Thread thread = new Thread(r, threadName);
+            if (virtualThread) {
+                var thread = Thread.ofVirtual();
                 if (!threadName.isBlank()) {
-                    thread.setName(threadName);
+                    thread.name(threadName);
+                    thread.start(runnable);
                 }
-                return thread;
-            };
-            Executors.newSingleThreadExecutor(namedThreadFactory).execute(runnable);
+            } else {
+                ThreadFactory namedThreadFactory = (r) -> {
+                    Thread thread = new Thread(r, threadName);
+                    if (!threadName.isBlank()) {
+                        thread.setName(threadName);
+                    }
+                    return thread;
+                };
+                Executors.newSingleThreadExecutor(namedThreadFactory).execute(runnable);
+            }
         } else {
             runnable.run();
         }
@@ -89,5 +104,21 @@ public class GameLoop {
 
     public void unpause() {
         paused = false;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public boolean isRunOnThread() {
+        return runOnThread;
+    }
+
+    public boolean isVirtualThread() {
+        return virtualThread;
     }
 }

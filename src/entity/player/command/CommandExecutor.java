@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
+//TODO: Don't run on Completable Future
 public class CommandExecutor {
     private final InputStream in;
     private final OutputStream out;

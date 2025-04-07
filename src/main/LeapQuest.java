@@ -83,7 +83,7 @@ public final class LeapQuest {
 			for (Method method : object.getClass().getMethods()) {
 				if (method.isAnnotationPresent(Ticked.class)) {
 					if (method.getParameterCount() > 0) {
-						Logger.warn(object, String.format("Error occurred while trying to invoke method '%s' because it takes too many arguments. Ticked methods aren't allowed to have any arguments! The method has been disabled!", method.getName()));
+						Logger.warn(object, String.format("Error occurred while trying to invoke method '%s' because it takes too many arguments. Ticked methods aren't allowed to have any arguments! The class of this method has been disabled!", method.getName()));
 						unregister(object);
 					} else {
 						try {
@@ -105,7 +105,7 @@ public final class LeapQuest {
 		return gameState;
 	}
 	
-	public void forceStop() {
+	public void stop() {
 		//save logic
 		running = false;
 	}

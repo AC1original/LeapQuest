@@ -3,7 +3,6 @@ package graphics;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.*;
