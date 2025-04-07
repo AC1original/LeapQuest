@@ -16,6 +16,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="filemanager-1.8" level="project" />
+    <orderEntry type="library" name="filemanager-1.10" level="project" />
   </component>
 </module>

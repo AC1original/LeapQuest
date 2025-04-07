@@ -3,13 +3,13 @@ import utils.Logger;
 import utils.caching.Cache;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-//TODO: load ressources from ressource folder as stream
-//TODO: Dont save textures as variables
 public class ImageLoader {
     private static final Cache<BufferedImage> cachedImages = new Cache.CacheBuilder<BufferedImage>()
             .objectsExpires(true)
@@ -25,6 +25,10 @@ public class ImageLoader {
         fallback.setRGB(1, 0, new Color(0, 0, 0).getRGB());
         fallback.setRGB(1, 1, new Color(241, 28, 28).getRGB());
         fallback.setRGB(0, 1, new Color(0, 0, 0).getRGB());
+    }
+
+    public static BufferedImage getCachedOrLoad(String path) {
+        return getCachedOrLoad(path, String.valueOf(path.hashCode()));
     }
 
     public static BufferedImage getCachedOrLoad(BufferedImage image, String name) {
@@ -58,8 +62,9 @@ public class ImageLoader {
 
     public static BufferedImage load(String path) {
         BufferedImage image;
-        try {
-            image = ImageIO.read(Objects.requireNonNull(ImageLoader.class.getResource(path)));
+        try (var stream = ImageLoader.class.getResourceAsStream(path)) {
+            if (stream == null) throw new IllegalArgumentException("Resource not found: " + path);
+            image = ImageIO.read(stream);
             Logger.info(ImageLoader.class, "Loaded image at: " + path + ".");
         } catch (Exception e) {
             Logger.warn(ImageLoader.class, "Failed loading image \""+path+"\" | " + e + ". Returned fallback image instead.");

@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="filemanager-1.8">
+  <library name="filemanager-1.10">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/filemanager-1.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/filemanager-1.10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

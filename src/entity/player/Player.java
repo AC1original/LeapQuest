@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 public final class Player extends Entity<Player> {
-    private final BufferedImage fullImage = ImageLoader.getCachedOrLoad(DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right");
+    private final BufferedImage fullImage = ImageLoader.getCachedOrLoad(DEFAULT_PATH + "player/player_idle_right.png");
     private BufferedImage playerImage = fullImage.getSubimage(0, 0, fullImage.getWidth() / 12, fullImage.getHeight());
     private final char[] moveRequests = new char[10];
     private final int LEVEL_MOVE_BUFF = 100;

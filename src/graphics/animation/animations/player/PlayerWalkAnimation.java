@@ -15,8 +15,8 @@ public class PlayerWalkAnimation extends Animation {
     public PlayerWalkAnimation(Player player) {
         this.player = player;
 
-        walkLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_left.png", "player_walk_left"), 6);
-        walkRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_right.png", "player_walk_right"), 6);
+        walkLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_left.png"), 6);
+        walkRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_walk_right.png"), 6);
     }
 
     @Override

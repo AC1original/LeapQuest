@@ -13,6 +13,7 @@ import utils.Logger;
 import utils.Ticked;
 
 import java.awt.*;
+import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
 /*
 TODO: Create nice level
 TODO: Extra thread (completable future)
-TODO: Object oriented use
  */
 public class LevelManager implements Drawable {
     private final GameRenderer renderer;
@@ -45,8 +45,8 @@ public class LevelManager implements Drawable {
     public int[][] loadLevel(String path) {
         Logger.info(this, "Try to load level at: " + path + ".");
         try {
-            fileManager.setPath(path);
-        } catch (NoSuchFileException e) {
+            fileManager.setSource(path);
+        } catch (IOException e) {
             Logger.error(this, "Failed to read level from file. Returned empty 2D-int-array instead.");
             return new int[0][0];
         }
@@ -80,13 +80,13 @@ public class LevelManager implements Drawable {
 
     @Override
     public void fDraw(Graphics g) {
-        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sky.png", "background_sky"),
+        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sky.png"),
                 0, 0, renderer.getWidth(), renderer.getHeight(), null);
-        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/mountains.png", "background_mountains"),
+        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/mountains.png"),
                 0, 0, renderer.getWidth(), renderer.getHeight(), null);
-        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/ruins.png", "background_ruins"),
+        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/ruins.png"),
                 0, 0, renderer.getWidth(), renderer.getHeight(), null);
-        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sun.png", "background_sun"),
+        g.drawImage(ImageLoader.getCachedOrLoad("/res/level/background/sun.png"),
                 renderer.getWidth() - 200, 10, 150, 150, null);
 
 

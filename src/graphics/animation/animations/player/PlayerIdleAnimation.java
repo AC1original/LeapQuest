@@ -15,8 +15,8 @@ public class PlayerIdleAnimation extends Animation {
     public PlayerIdleAnimation(Player player) {
         this.player = player;
 
-        animationRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_right.png", "player_idle_right"), 12);
-        animationLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_left.png", "player_idle_left"), 12);
+        animationRight = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_right.png"), 12);
+        animationLeft = AnimationFrame.create(ImageLoader.getCachedOrLoad(Entity.DEFAULT_PATH + "player/player_idle_left.png"), 12);
     }
 
     @Override
