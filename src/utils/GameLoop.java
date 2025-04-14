@@ -1,6 +1,5 @@
 package utils;
 
-import javax.xml.stream.FactoryConfigurationError;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
