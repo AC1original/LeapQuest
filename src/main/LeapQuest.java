@@ -17,7 +17,7 @@ import utils.GameLoop;
 import utils.Logger;
 import utils.Ticked;
 
-//TODO: Performance issue -> Laggy gamerenderer under 120 FPS
+//TODO: Performance issue -> Laggy gamerenderer under 120 FPS (Maybe gameloop issue)
 //TODO: Dev cheat-chat
 //TODO: Gamestate management
 public final class LeapQuest {

@@ -42,6 +42,7 @@ public class EntityManager {
             return;
         }
         entity.onRemove();
+        LeapQuest.unregister(entity);
         renderer.removeDrawable(entity);
         renderer.removeDrawable(entity.getHitBox());
         entities.remove(entity);

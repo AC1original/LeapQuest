@@ -53,23 +53,13 @@ public class GameRenderer extends JPanel {
     }
 
     public void addDrawable(Drawable drawable) {
-        lock.writeLock().lock();
-        try {
-            this.drawables.add(drawable);
-            sortDrawables();
-        } finally {
-            lock.writeLock().unlock();
-        }
+        this.drawables.add(drawable);
+        sortDrawables();
     }
 
     public void removeDrawable(Drawable drawable) {
-        lock.writeLock().lock();
-        try {
-            this.drawables.remove(drawable);
-            sortDrawables();
-        } finally {
-            lock.writeLock().unlock();
-        }
+        this.drawables.remove(drawable);
+        sortDrawables();
     }
 
     public void sortDrawables() {

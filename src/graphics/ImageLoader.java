@@ -73,6 +73,16 @@ public class ImageLoader {
         return image;
     }
 
+    public static BufferedImage toBufferedImage(Image img) {
+        BufferedImage bufferedImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = bufferedImage.createGraphics();
+
+        g2d.drawImage(img, 0, 0, null);
+        g2d.dispose();
+
+        return bufferedImage;
+    }
+
     public static BufferedImage getFallback() {
         return fallback;
     }

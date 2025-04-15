@@ -167,17 +167,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
     }
 
     public boolean isOnGround() {
-        HitBox uEntityBox = getHitBox();
-        uEntityBox.move(0, 1);
-        LevelManager levelManager = LeapQuest.instance.getLevelManager();
-        List<HitBox> collideBoxes = levelManager.getCollisions(uEntityBox);
-
-        if (!collideBoxes.isEmpty()) {
-            return collideBoxes
-                    .stream()
-                    .anyMatch(box -> getHitBox().getY() + getHitBox().getHeight() <= box.getY());
-        }
-        return false;
+        return collisionPrediction(Direction.DOWN, 1) <= 0;
     }
 
     public T jump() {
@@ -261,6 +251,7 @@ public abstract class Entity<T extends Entity<?>> implements Drawable {
         return collisionPrediction(hitBox.getX(), hitBox.getY(), hitBox.getWidth(), hitBox.getHeight(), direction, speed);
     }
 
+    //Better collision prediction
     public int collisionPrediction(int x, int y, int width, int height, Direction direction, int speed) {
         LevelManager levelManager = LeapQuest.instance.getLevelManager();
 

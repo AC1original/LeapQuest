@@ -34,6 +34,7 @@ public final class Player extends Entity<Player> {
             }
         }
 
+        //TODO: Too much initializations (See pacman)
         if (hasMoveRequests()) {
             playAnimation(new PlayerWalkAnimation(this));
         } else if (isOnGround()) {
@@ -109,7 +110,7 @@ public final class Player extends Entity<Player> {
         if (hasMoveRequest(key)) return;
         for (int i = 0; i < moveRequests.length; i++) {
             if (moveRequests[i] == 0) {
-                moveRequests[i] = key;
+                moveRequests[i] = Character.toLowerCase(key);
                 return;
             }
         }

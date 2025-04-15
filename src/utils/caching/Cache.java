@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import utils.GameLoop;
 import utils.Logger;
+import utils.ThreadHelper;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,6 @@ import java.util.stream.Stream;
 
 //TODO: Fix CurrentModification Exception
 public final class Cache<T> {
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final LinkedHashSet<CachedObject<T>> cached = new LinkedHashSet<>();
     private final List<CacheListener> registeredClasses = Collections.synchronizedList(new ArrayList<>());
     private final boolean expires;
@@ -46,28 +46,20 @@ public final class Cache<T> {
 
     private void tick() {
         if (isExpires()) {
-            lock.readLock().lock();
-            try {
-                stream().filter(obj -> !obj.isExpired())
-                        .filter(obj -> (System.currentTimeMillis() - (isOnlyExpireWhenUnused() ? obj.getLastUpdated() : obj.getTimeAdded()))
-                                >= getExpireTimeUnit().toMillis(getExpiresAfter()))
-                        .forEach(obj -> {
-                            registeredClasses.forEach(listener -> listener.onCachedObjectExpire(obj));
-                            obj.expire();
-                        });
-            } finally {
-                lock.readLock().unlock();
-            }
+            ThreadHelper.runStreamSafe(cached, stream ->
+                            stream.filter(obj -> isExpires()))
+                    .filter(obj -> (System.currentTimeMillis() - (isOnlyExpireWhenUnused() ? obj.getLastUpdated() : obj.getTimeAdded()))
+                            >= getExpireTimeUnit().toMillis(getExpiresAfter()))
+                    .forEach(obj -> {
+                        registeredClasses.forEach(lstnr -> lstnr.onCachedObjectExpire(obj));
+                        obj.expire();
+                    });
         }
 
         if (isDeleteAfterExpiration()) {
-            lock.readLock().lock();
-            try {
-                stream().filter(CachedObject::isExpired)
-                        .forEach(this::remove);
-            } finally {
-                lock.readLock().unlock();
-            }
+            ThreadHelper.runStreamSafe(cached, stream ->
+                            stream.filter(CachedObject::isExpired))
+                    .forEach(this::remove);
         }
 
         if (isDeleteOldIndexes() && cached.size() > getDeleteIndexAfter()) {
@@ -84,29 +76,22 @@ public final class Cache<T> {
 
     @Nullable
     public T get(String key) {
-        lock.readLock().lock();
-        try {
-            Optional<CachedObject<T>> retu = stream()
-                    .filter(obj -> obj.getKey().equals(key))
-                    .findFirst();
-            return retu.map(CachedObject::getObject).orElse(null);
-        } finally {
-            lock.readLock().unlock();
-        }
+        return ThreadHelper.runStreamSafe(cached, stream ->
+                        stream.filter(obj -> obj.getKey().equals(key)))
+                .findFirst()
+                .map(CachedObject::getObject)
+                .orElse(null);
     }
 
     @Nullable
     public String getKey(T object) {
-        lock.readLock().lock();
-        try {
-            Optional<CachedObject<T>> retu = stream()
-                    .filter(obj -> obj.object.equals(object))
-                    .findFirst();
-            return retu.map(CachedObject::getKey).orElse(null);
-        } finally {
-            lock.readLock().unlock();
-        }
+        return ThreadHelper.runStreamSafe(cached, stream ->
+                        stream.filter(obj -> obj.object.equals(object)))
+                .map(CachedObject::getKey)
+                .findFirst()
+                .orElse(null);
     }
+
 
     public boolean contains(T object) {
         return getKey(object) != null;
@@ -121,39 +106,27 @@ public final class Cache<T> {
     }
 
     public void remove(String key) {
-        lock.readLock().lock();
-        try {
-            cached.stream()
-                    .filter(obj -> obj.getKey().equals(key))
-                    .forEach(obj -> {
-                        registeredClasses.forEach(listener -> listener.onCachedObjectRemove(obj));
-                        cached.remove(obj);
-                    });
-        } finally {
-            lock.readLock().unlock();
-        }
+        ThreadHelper.runStreamSafe(cached, stream ->
+                        stream.filter(obj -> obj.getKey().equals(key)))
+                .forEach(obj -> {
+                    registeredClasses.forEach(lstnr -> lstnr.onCachedObjectRemove(obj));
+                    cached.remove(obj);
+                });
     }
 
 
     public void remove(T object) {
-        lock.readLock().lock();
-        try {
-            cached.stream()
-                    .filter(obj -> obj.object.equals(object))
-                    .forEach(obj -> remove(obj.getKey()));
-        } finally {
-            lock.readLock().unlock();
-        }
+        ThreadHelper.runStreamSafe(cached, stream ->
+                        stream.filter(obj -> obj.object.equals(object)))
+                .forEach(obj -> remove(obj.getKey()));
     }
 
     public void remove(CachedObject<?> cObject) {
-        lock.readLock().lock();
-        try {
-            registeredClasses.forEach(listener -> listener.onCachedObjectRemove(cObject));
-        } finally {
-            lock.readLock().unlock();
-        }
-        cached.remove(cObject);
+        ThreadHelper.runStreamSafe(registeredClasses, stream -> {
+            stream.forEach(lstnr -> lstnr.onCachedObjectRemove(cObject));
+            cached.remove(cObject);
+            return null;
+        });
     }
 
     public Set<CachedObject<T>> getCopyOfCached() {
@@ -161,15 +134,18 @@ public final class Cache<T> {
     }
 
     public Stream<CachedObject<T>> stream() {
-        synchronized (cached) {
-            return cached.stream();
-        }
+        return cached.stream();
     }
 
     public void forEach(final Consumer<? super CachedObject<T>> action) {
-        synchronized (cached) {
-            cached.forEach(action);
-        }
+        ThreadHelper.runStreamSafe(cached, stream -> {
+            stream.forEach(action);
+            return null;
+        });
+    }
+
+    public void clear() {
+        cached.clear();
     }
 
     public boolean isExpires() {
