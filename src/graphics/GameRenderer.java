@@ -53,13 +53,23 @@ public class GameRenderer extends JPanel {
     }
 
     public void addDrawable(Drawable drawable) {
-        this.drawables.add(drawable);
-        sortDrawables();
+        lock.writeLock().lock();
+        try {
+            this.drawables.add(drawable);
+            sortDrawables();
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public void removeDrawable(Drawable drawable) {
-        this.drawables.remove(drawable);
-        sortDrawables();
+        lock.writeLock().lock();
+        try {
+            this.drawables.remove(drawable);
+            sortDrawables();
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public void sortDrawables() {
@@ -81,18 +91,17 @@ public class GameRenderer extends JPanel {
 
         if (gp == null || !LeapQuest.isRunning()) return;
 
+        lock.readLock().lock();
         try {
-            lock.readLock().lock();
-            try {
-                drawables.stream()
-                        .filter(Drawable::visible)
-                        .forEach(drawable -> drawable.fDraw(g));
-            } finally {
-                lock.readLock().unlock();
-            }
+            drawables.stream()
+                    .filter(Drawable::visible)
+                    .forEach(drawable -> drawable.fDraw(g));
         } catch (Exception ex) {
             loop.stop();
-            Logger.error(this, "Failed to repaint! Threw exception: " + ex);
+            Logger.error(this, "Failed to repaint! Threw exception: ");
+            ex.printStackTrace();
+        } finally {
+            lock.readLock().unlock();
         }
         Toolkit.getDefaultToolkit().sync();
     }

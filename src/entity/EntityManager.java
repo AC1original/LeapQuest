@@ -6,13 +6,17 @@ import utils.HitBox;
 import utils.Logger;
 import utils.Ticked;
 
-import java.awt.*;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class EntityManager {
-    private final HashSet<Entity<?>> entities = new HashSet<>();
+    private final Set<Entity<?>> entities = Collections.synchronizedSet(new HashSet<>());
+    private final Set<Entity<?>> markedRemove = Collections.synchronizedSet(new HashSet<>());
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Player player;
     private final GameRenderer renderer;
 
@@ -33,20 +37,16 @@ public class EntityManager {
         entities.add(entity);
         renderer.addDrawable(entity);
         renderer.addDrawable(entity.getHitBox());
-        Logger.info(this, "Successfully added Entity \"" + entity.getClass().getSimpleName() + "\".");
+        Logger.info(this, "Added Entity \"" + entity.getClass().getSimpleName() + "\".");
     }
 
-    public void remove(Entity<?> entity) {
+    public void markForRemoval(Entity<?> entity) {
         if (!entities.contains(entity)) {
             Logger.warn(this.getClass(), "Failed to remove Entity \"" + entity.getClass().getSimpleName() + "\". Entity not found!");
             return;
         }
-        entity.onRemove();
-        LeapQuest.unregister(entity);
-        renderer.removeDrawable(entity);
-        renderer.removeDrawable(entity.getHitBox());
-        entities.remove(entity);
-        Logger.info(this, "Successfully removed Entity \"" + entity.getClass().getSimpleName() + "\".");
+
+        markedRemove.add(entity);
     }
 
     public List<Entity<?>> getEntitiesAt(int x, int y) {
@@ -59,7 +59,25 @@ public class EntityManager {
 
     @Ticked
     public void tick() {
-        entities.forEach(Entity::onTick);
+        rwLock.writeLock().lock();
+        try {
+            var iterator = entities.iterator();
+            while (iterator.hasNext()) {
+                var e = iterator.next();
+                e.onTick();
+                if (markedRemove.contains(e)) {
+                    e.onRemove();
+                    LeapQuest.unregister(e);
+                    renderer.removeDrawable(e);
+                    renderer.removeDrawable(e.getHitBox());
+                    iterator.remove();
+                    markedRemove.remove(e);
+                    Logger.info(this, "Removed Entity \"" + e.getClass().getSimpleName() + "\".");
+                }
+            }
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 
     public List<Entity<?>> getEntities() {
